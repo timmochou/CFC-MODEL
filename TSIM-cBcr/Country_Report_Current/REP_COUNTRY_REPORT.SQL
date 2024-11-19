@@ -15,7 +15,7 @@ WITH TB1 AS (
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    WHERE T1.REPORT_TYPE = 'report1'
+    WHERE T1.REPORT_NAME = 'report1'
     AND T3.FR_LOCALE='${fr_locale}'
     AND T1.PERIOD = '${P_PERIOD}'
     
