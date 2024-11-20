@@ -1,0 +1,4062 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20211223" releaseVersion="11.0.0">
+<TableDataMap>
+<TableData name="REP_TABLE" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="GP_USERNAME"/>
+<O>
+<![CDATA[STAFF1]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_COMPANY"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_END_DATE"/>
+<O t="Date">
+<![CDATA[1464710400000]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_START_DATE"/>
+<O t="Date">
+<![CDATA[1717430400000]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_SECURITY"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_ACCOUNT"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[WITH FILES AS (
+SELECT 
+t1.TRS_FACT_INV_ID,
+t1.ATTACHMENT
+FROM TRS_FACT_INV_DETAIL t1
+JOIN V_TRS_DIM_ENTITY_CUR t2 ON t1.ENTITY_CODE = t2.ENTITY_CODE 
+WHERE 1=1 
+AND t2.CURRENT_CODE = '${P_COMPANY}'
+AND t1.INV_SECURITY_CODE = '${P_SECURITY}'
+AND t1.INV_ACCOUNT_CODE ='${P_ACCOUNT}'
+/*${if(1=1,"AND PERIOD BETWEEN TO_DATE('"+P_START_DATE+"','yyyy-MM-dd') AND TO_DATE('"+P_END_DATE+"','yyyy-MM-dd')","")}*/
+${if(1=1,"AND PERIOD <= TO_DATE('"+P_END_DATE+"','yyyy-MM-dd')","")}
+)
+SELECT 
+  TO_CHAR(PERIOD,'yyyy') AS YEAR,
+  TO_CHAR(PERIOD,'MM/DD') AS MMDD,
+ t1.TRS_FACT_INV_ID,
+  PERIOD,
+  SERIAL,
+  ENTITY_CODE,
+  INV_SECURITY_CODE,
+  INV_CATEGORY_CODE,
+  INV_ACCOUNT_CODE, 
+  AREA,
+  ADD_LESS,
+  INV_ADJITEM_CODE,
+  SHARE_QTY,
+  COST_NTD,
+  NVL(COST_ORIGIN_CURR,0) AS COST_ORIGIN_CURR,
+  ACC_SHARE_QTY-SHARE_QTY AS BEGIN_SHARE,
+  CURRENCY_CODE,
+  ACC_COST_NTD AS BEGIN_COST_NTD,
+  SUM(NVL(COST_ORIGIN_CURR,0) ) OVER (PARTITION BY ENTITY_CODE, INV_SECURITY_CODE, INV_CATEGORY_CODE, INV_ACCOUNT_CODE ORDER BY PERIOD, SERIAL)- NVL(COST_ORIGIN_CURR,0)  AS BEGIN_ORI_COST,
+  ITEM_NOTE,
+  SALE_PRICE_NTD,
+  --'NA' AS CFC_AMOUNT,
+  TRADE_TAX,
+  TRADE_FEE,
+  SALE_PRICE_NTD+COST_NTD AS DISPOSAL_PROFIT,
+  NOTE,
+  ATTACHMENT,
+  FILENAME
+FROM V_TRS_FACT_INV_DETAIL t1
+JOIN FILES t2 ON t1.TRS_FACT_INV_ID = t2.TRS_FACT_INV_ID
+JOIN v_trs_data_authorization t2 ON  t1.entity_code = t2.ent_id AND username = '${GP_USERNAME}' AND module = 'App05'
+WHERE 1=1
+AND t1.ENTITY_CODE = '${P_COMPANY}'
+AND t1.INV_SECURITY_CODE = '${P_SECURITY}'
+AND t1.INV_ACCOUNT_CODE ='${P_ACCOUNT}'
+/*${if(1=1,"AND PERIOD BETWEEN TO_DATE('"+P_START_DATE+"','yyyy-MM-dd') AND TO_DATE('"+P_END_DATE+"','yyyy-MM-dd')","")}*/
+${if(1=1,"AND PERIOD <= TO_DATE('"+P_END_DATE+"','yyyy-MM-dd')","")}
+ORDER BY ENTITY_CODE,PERIOD,SERIAL]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="DIC_ADD_LESS" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT
+ADD_LESS
+FROM V_TRS_DIM_INV_ADJITEM
+WHERE LANGUAGE = '${fr_locale}'
+ORDER BY ADD_LESS]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="DIC_ADJITEM" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT
+INV_ADJITEM_CODE,
+INV_ADJITEM_NAME
+FROM V_TRS_DIM_INV_ADJITEM
+WHERE 1=1
+AND LANGUAGE = '${fr_locale}']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="DIC_COMPANY_FILTER" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="GP_USERNAME"/>
+<O>
+<![CDATA[STAFF1]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT
+t1.ENTITY_CODE,
+t2.CURRENT_CODE,
+t3.COMPANY_NAME
+FROM TRS_FACT_INV_DETAIL t1
+LEFT JOIN V_TRS_DIM_ENTITY t2 ON t1.ENTITY_CODE = t2.ENTITY_CODE
+LEFT JOIN V_TRS_DIM_COMPANY t3 ON t2.COMPANY_ID = t3.COMPANY_ID AND t2.LANGUAGE = t3.LANGUAGE
+-- 取權限表交集
+JOIN v_trs_data_authorization t4 ON  t1.entity_code = t4.ent_id AND username = '${GP_USERNAME}' AND module = 'App05'
+WHERE 1=1
+AND t2.LANGUAGE='${fr_locale}'
+ORDER BY t1.ENTITY_CODE]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="DIC_SECURITY_FILTER" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_COMPANY"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT
+t1.INV_SECURITY_CODE,
+t2.INV_SECURITY_NAME,
+t2.CORR_COMPANY_ID
+FROM TRS_FACT_INV_DETAIL t1
+LEFT JOIN V_TRS_DIM_INV_SECURITY t2 ON t1.INV_SECURITY_CODE= t2.INV_SECURITY_CODE
+LEFT JOIN V_TRS_DIM_ENTITY t3 ON t1.ENTITY_CODE = t3.ENTITY_CODE
+WHERE 1=1
+AND t2.LANGUAGE='${fr_locale}'
+AND t3.CURRENT_CODE IN ('${P_COMPANY}')
+ORDER BY t1.INV_SECURITY_CODE]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="DIC_ACCOUNT_FILTER" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_SECURITY"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_COMPANY"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT
+t1.INV_ACCOUNT_CODE,
+t2.INV_ACCOUNT_NAME
+FROM TRS_FACT_INV_DETAIL t1
+LEFT JOIN V_TRS_DIM_INV_ACCOUNT t2 ON t1.INV_ACCOUNT_CODE= t2.INV_ACCOUNT_CODE
+LEFT JOIN V_TRS_DIM_ENTITY t3 ON t1.ENTITY_CODE = t3.ENTITY_CODE
+WHERE 1=1
+AND t2.LANGUAGE='${fr_locale}'
+AND t3.CURRENT_CODE IN ('${P_COMPANY}')
+AND t1.INV_SECURITY_CODE = '${P_SECURITY}'
+ORDER BY t1.INV_ACCOUNT_CODE]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="REP_CFC_DISPOSAL" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[WITH  CTE_THIS_YEAR AS(
+SELECT
+	SUM(DEDUCTION) AS DEDUCTION,
+	SCENARIO,
+	ENTITY_CODE,
+	CFC_ENTITY_CODE,
+	PERIOD,
+	FISCAL_YEAR
+FROM V_TRS_CFC_10Y_DEDUCTION_DETAIL
+WHERE TRUNC(PERIOD, 'YYYY') = TRUNC(DEDUCTED_YEAR, 'YYYY') AND SCENARIO = 'Per Audit'
+GROUP BY PERIOD, SCENARIO, ENTITY_CODE, CFC_ENTITY_CODE, FISCAL_YEAR
+)
+,PROFIT000 AS (
+SELECT
+	t1.PERIOD,
+	t1.SCENARIO,
+	t1.ENTITY_CODE,
+	t1.INV_ENTITY_CODE AS CFC_ENTITY_CODE,
+	CASE WHEN t3.APPROVAL = 'true' AND t2.GAIN_LOSS = 'EARN' THEN t2.AMOUNT
+	WHEN t3.APPROVAL = 'true' AND t2.GAIN_LOSS = 'LOSS' THEN t2.AMOUNT * -1
+	ELSE t1.CFC_EARNINGS END AS CFC_EARNINGS,
+	'PROFIT' AS DATA_TYPE,
+	--t1.LIMIT_ITEMS,
+	t1.AVG_RATIO_HOLD,
+	CASE WHEN SUM(t1.CFC_EARNINGS) OVER(PARTITION BY t1.PERIOD, t1.SCENARIO, t1.ENTITY_CODE) >= 7000000 AND CFC_EARNINGS >= 0 THEN 'true'
+	WHEN CFC_EARNINGS >= 7000000 THEN 'true' 
+	ELSE 'false' END AS IS_TAX
+FROM V_TRS_FACT_CFC_TAX_INCOME t1
+LEFT JOIN V_TRS_FACT_CFC_APPROVAL_DETAIL t2 ON TO_CHAR(t1.PERIOD, 'YYYY') = t2.YEAR AND t1.SCENARIO = t2.SCENARIO AND t1.ENTITY_CODE = t2.ENTITY_CODE AND t1.INV_ENTITY_CODE = t2.INV_ENTITY_CODE
+LEFT JOIN V_TRS_FACT_CFC_APPROVAL t3 ON TO_CHAR(t1.PERIOD, 'YYYY-MM-DD') = (t3.YEAR || '-12-31') AND t1.ENTITY_CODE = t3.ENTITY_CODE AND t1.SCENARIO = t3.SCENARIO
+AND CFC_EARNINGS >= 0 AND SUB_OPE_EXEMPTION = 'false' --非實質營運才參與計算
+WHERE 1=1
+AND t1.SCENARIO = 'Per Audit'
+AND TO_CHAR(PERIOD,'MM') = 12
+),PROFIT00 AS (
+SELECT
+	PERIOD,
+	SCENARIO,
+	ENTITY_CODE,
+	CFC_ENTITY_CODE,
+	CFC_EARNINGS,
+	DATA_TYPE,
+	--LIMIT_ITEMS,
+	AVG_RATIO_HOLD
+FROM PROFIT000
+WHERE IS_TAX = 'true'
+), CTE_LIMIT AS (
+--	自”限制分配狀況”頁面取數，加總金額；若該CFC為實質營運，則顯示空白
+	SELECT
+		t1.PERIOD,
+		t1.SCENARIO,
+		t1.ENTITY_CODE AS CFC_ENTITY_CODE,
+		NVL(SUM(t1.AMOUNT), 0) AS LIMIT_ITEMS
+	FROM V_TRS_FACT_CFC_RESTRICTED_DISTRIBUTION t1
+	WHERE 1 = 1
+		AND ITEM != 'SPECIAL_RESERVE_NREGU'
+		AND TO_CHAR(t1.PERIOD, 'YYYY') = t1.ORIGIN_YEAR
+	GROUP BY t1.PERIOD, t1.SCENARIO, t1.ENTITY_CODE
+),PROFIT AS (
+SELECT
+	1 AS SERIAL,
+	TO_CHAR(t1.PERIOD,'yyyy') AS FISCAL_YEAR,
+	'PROFIT'  AS ID,
+	t1.PERIOD,
+	--t1.SCENARIO,
+	t1.ENTITY_CODE,
+	t1.CFC_ENTITY_CODE,
+	t1.DATA_TYPE,
+	(t1.CFC_EARNINGS - NVL(t4.DEDUCTION, 0) - NVL(t2.LIMIT_ITEMS,0)) * t1.AVG_RATIO_HOLD AS CFC_EARNINGS 
+FROM PROFIT00 t1
+LEFT JOIN CTE_THIS_YEAR t4 ON t1.PERIOD = t4.PERIOD AND t1.SCENARIO = t4.SCENARIO AND t1.ENTITY_CODE = t4.ENTITY_CODE AND t1.CFC_ENTITY_CODE = t4.CFC_ENTITY_CODE
+LEFT JOIN CTE_LIMIT T2 ON T1.SCENARIO = T2.SCENARIO AND T1.CFC_ENTITY_CODE = T2.CFC_ENTITY_CODE AND T1.PERIOD = T2.PERIOD
+WHERE CFC_EARNINGS>=0
+),EXCHANGE AS (
+SELECT
+PERIOD,
+YEAR,
+CURRENCY_ID,
+TARGET_CURRENCY_ID,
+AVG_EXCHANGE_RATIO
+FROM V_TRS_FACT_EXCHANGE_BANKOFTW
+WHERE MONTH = 12
+AND SCENARIO = 'Per Audit'
+AND TARGET_CURRENCY_ID ='NTD'
+),DIVIDEND_CUR AS(
+SELECT
+	t1.ID,
+	t1.FISCAL_YEAR,
+	t2.CURRENT_CODE AS ENTITY_CODE,
+	t3.CURRENT_CODE AS CFC_ENTITY_CODE,
+	t1.CURRENCY_ID,
+	t1.SCENARIO,
+	t1.DECLARATION_DATE,
+	t1.NON_CHINA_DIVIDEND_PROFIT,
+	t1.CHINA_DIVIDEND_PROFIT
+FROM TRS_FACT_CFC_DIVIDEND T1
+LEFT JOIN V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_CODE = T2.ENTITY_CODE 
+LEFT JOIN V_TRS_DIM_ENTITY_CUR T3 ON T1.CFC_ENTITY_CODE = T3.ENTITY_CODE 
+WHERE t1.SCENARIO = 'Per Audit'
+),DIVIDEND AS (
+SELECT 
+1 AS SERIAL,
+t1.FISCAL_YEAR,
+t1.ID,
+t1.DECLARATION_DATE ,
+t1.ENTITY_CODE,
+t1.CFC_ENTITY_CODE,
+'Dividend' AS DATA_TYPE,
+(NVL(CHINA_DIVIDEND_PROFIT,0)+NVL(NON_CHINA_DIVIDEND_PROFIT,0))*AVG_EXCHANGE_RATIO*-1* t3.RATIO_HOLD AS DIVIDEND
+FROM DIVIDEND_CUR t1
+LEFT JOIN EXCHANGE t2 ON t1.CURRENCY_ID = t2.CURRENCY_ID AND t2.YEAR = TO_CHAR(t1.DECLARATION_DATE,'YYYY')
+LEFT JOIN TRS_FACT_GROUP_INV_REL t3 ON t1.CFC_ENTITY_CODE = t3.INV_ENTITY_CODE AND t1.ENTITY_CODE = t3.ENTITY_CODE AND t1.DECLARATION_DATE BETWEEN t3.START_DATE AND t3.END_DATE
+),SHARES AS (
+SELECT
+	SERIAL,
+	TRS_FACT_INV_ID AS ID,
+	PERIOD,
+	t3.CURRENT_CODE AS ENTITY_CODE,
+	--INV_SECURITY_CODE ,
+	t4.CURRENT_CODE AS CFC_ENTITY_CODE,
+	INV_ADJITEM_CODE,
+	SHARE_QTY,
+	'SHARES' AS DATA_TYPE
+FROM TRS_FACT_INV_DETAIL T1
+LEFT JOIN TRS_DIM_INV_SECURITY t2 ON t1.INV_SECURITY_CODE = t2.INV_SECURITY_CODE
+LEFT JOIN V_TRS_DIM_ENTITY_CUR T3 ON T1.ENTITY_CODE = T3.ENTITY_CODE 
+LEFT JOIN V_TRS_DIM_ENTITY_CUR T4 ON T2.CORR_COMPANY_ID = T4.ENTITY_CODE 
+),SHARE_ORD AS(
+	SELECT 
+	SERIAL,
+	ID,
+	ROW_NUMBER()OVER(PARTITION BY ENTITY_CODE,CFC_ENTITY_CODE ORDER BY PERIOD,SERIAL) AS ORDERS,
+	PERIOD, ENTITY_CODE, CFC_ENTITY_CODE, INV_ADJITEM_CODE, SHARE_QTY, DATA_TYPE
+	FROM SHARES
+),SHARE_CHANGE(SERIAL,ID,ORDERS, PERIOD, ENTITY_CODE,CFC_ENTITY_CODE,SHARE_QTY,ACC_SHARES,CHANGES,INV_ADJITEM_CODE, DATA_TYPE) AS(
+SELECT 
+	SERIAL,
+	ID,
+	ORDERS,
+	PERIOD, ENTITY_CODE,CFC_ENTITY_CODE,SHARE_QTY,
+	0+SHARE_QTY AS ACC_SHARES,
+	NULL AS CHANGES,
+	INV_ADJITEM_CODE,
+	DATA_TYPE
+FROM SHARE_ORD 
+WHERE ORDERS = 1
+UNION ALL
+SELECT 
+	t.SERIAL,
+	t.ID,
+	t.ORDERS,
+	t.PERIOD, t.ENTITY_CODE,t.CFC_ENTITY_CODE,t.SHARE_QTY,
+	t.SHARE_QTY+SHARE_CHANGE.ACC_SHARES AS ACC_SHARES,
+	CASE WHEN SHARE_CHANGE.ACC_SHARES IS NULL OR SHARE_CHANGE.ACC_SHARES = 0 THEN 0 ELSE t.SHARE_QTY/SHARE_CHANGE.ACC_SHARES END AS CHANGES,
+	t.INV_ADJITEM_CODE,
+	t.DATA_TYPE
+FROM SHARE_ORD t
+JOIN SHARE_CHANGE ON t.ORDERS = SHARE_CHANGE.orders+1 AND t.ENTITY_CODE = SHARE_CHANGE.ENTITY_CODE AND t.CFC_ENTITY_CODE = SHARE_CHANGE.CFC_ENTITY_CODE
+),SHARE_DISPOSAL AS(
+SELECT 
+t1.SERIAL,
+t1.ID,
+t1.period,
+t1.ENTITY_CODE,
+t1.CFC_ENTITY_CODE,
+t1.DATA_TYPE,
+CHANGES
+FROM SHARE_CHANGE t1
+WHERE CHANGES<0 AND INV_ADJITEM_CODE LIKE 'disposed_%'
+),FISCAL_YEAR AS(
+SELECT DISTINCT                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          
+	TO_CHAR(PERIOD,'yyyy') AS FISCAL_YEAR
+FROM PROFIT
+WHERE CFC_EARNINGS >=0
+),T AS (
+SELECT 
+SERIAL,
+FISCAL_YEAR,
+ID,
+period,
+TO_CHAR(ENTITY_CODE) AS ENTITY_CODE,
+TO_CHAR(CFC_ENTITY_CODE) AS CFC_ENTITY_CODE,
+DATA_TYPE,
+CHANGES,
+NULL AS AMOUNT
+FROM SHARE_DISPOSAL
+JOIN FISCAL_YEAR ON TO_CHAR(period,'yyyy') >FISCAL_YEAR
+UNION ALL
+SELECT
+SERIAL,
+FISCAL_YEAR,
+ID,
+DECLARATION_DATE ,
+TO_CHAR(ENTITY_CODE),
+TO_CHAR(CFC_ENTITY_CODE),
+DATA_TYPE,
+NULL AS CHANGES,
+DIVIDEND
+FROM DIVIDEND
+UNION ALL
+SELECT
+SERIAL,
+FISCAL_YEAR,
+ID,
+PERIOD,
+TO_CHAR(ENTITY_CODE),
+TO_CHAR(CFC_ENTITY_CODE),
+DATA_TYPE,
+NULL AS CHANGES,
+CFC_EARNINGS
+FROM PROFIT
+),T_ORDER AS(
+SELECT
+	SERIAL,
+	FISCAL_YEAR,
+	ID,
+	ROW_NUMBER()OVER(PARTITION BY ENTITY_CODE,CFC_ENTITY_CODE,FISCAL_YEAR ORDER BY PERIOD,SERIAL) AS ORDERS,
+	PERIOD,
+	ENTITY_CODE,
+	CFC_ENTITY_CODE,
+	NVL(AMOUNT,0) AS AMOUNT,
+	CHANGES,
+	DATA_TYPE
+	FROM T
+),DETAILS(FISCAL_YEAR,ID,ORDERS,PERIOD,ENTITY_CODE,CFC_ENTITY_CODE,AMOUNT,CHANGES,AMOUNT_CHANGES,ACC_AMOUNT, DATA_TYPE) AS(
+SELECT
+FISCAL_YEAR,
+ID,
+ORDERS,
+PERIOD,
+ENTITY_CODE,
+CFC_ENTITY_CODE,
+AMOUNT,
+CHANGES,
+AMOUNT AS AMOUNT_CHANGES,
+AMOUNT AS ACC_AMOUNT, 
+DATA_TYPE
+FROM T_ORDER
+WHERE ORDERS = 1
+UNION ALL 
+SELECT 
+T1.FISCAL_YEAR,
+T1.ID,
+T1.ORDERS,
+T1.PERIOD,
+T1.ENTITY_CODE,
+T1.CFC_ENTITY_CODE,
+T1.AMOUNT,
+T1.CHANGES,
+CASE WHEN T1.CHANGES IS NULL THEN T1.AMOUNT
+	WHEN T1.DATA_TYPE = 'SHARES' AND T2.ACC_AMOUNT <= 0 THEN 0
+	ELSE T1.CHANGES*T2.ACC_AMOUNT 
+	END AS AMOUNT_CHANGES,
+CASE WHEN T1.CHANGES IS NULL THEN T1.AMOUNT
+	WHEN T1.DATA_TYPE = 'SHARES' AND T2.ACC_AMOUNT <= 0 THEN 0
+	ELSE T1.CHANGES*T2.ACC_AMOUNT 
+	END +T2.ACC_AMOUNT AS ACC_AMOUNT,
+t1.DATA_TYPE
+FROM T_ORDER T1
+JOIN DETAILS T2 ON T1.ORDERS = T2.ORDERS+1 AND T1.ENTITY_CODE = T2.ENTITY_CODE AND T1.CFC_ENTITY_CODE = T2.CFC_ENTITY_CODE AND T1.FISCAL_YEAR=T2.FISCAL_YEAR
+)
+SELECT 
+t1.ID,
+t1.PERIOD,
+t1.ENTITY_CODE,
+t1.CFC_ENTITY_CODE,
+t1.AMOUNT_CHANGES AS CFC_DISPOSAL
+FROM DETAILS t1
+WHERE DATA_TYPE = 'SHARES']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1317147" hor="-1" ver="-1"/>
+</color>
+</Background>
+<CSSImport>
+<![CDATA[css/template.css]]></CSSImport>
+<CSSImport>
+<![CDATA[css/datepicker.css]]></CSSImport>
+</ReportWebAttr>
+<ReportFitAttr fitStateInPC="3" fitFont="false" minFontSize="0"/>
+<ElementCaseMobileAttr>
+<ElementCaseMobileAttrProvider horizontal="1" vertical="1" zoom="true" refresh="false" isUseHTML="false" isMobileCanvasSize="false" appearRefresh="false" allowFullScreen="false" allowDoubleClickOrZoom="true" functionalWhenUnactivated="false"/>
+</ElementCaseMobileAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR F="0" T="11"/>
+<FR/>
+<HC F="0" T="3"/>
+<FC/>
+<UPFCR COLUMN="true" ROW="true"/>
+<USE REPEAT="true" PAGE="true" WRITE="true"/>
+</ReportPageAttr>
+<ColumnPrivilegeControl/>
+<RowPrivilegeControl/>
+<RowHeight defaultValue="723900">
+<![CDATA[144000,288000,722880,722880,722880,722880,722880,722880,396000,1152000,1152000,1728000,1728000,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[748800,720000,3600000,5040000,5040000,2880000,5040000,5040000,5040000,2880000,5040000,5040000,5040000,5040000,5040000,2880000,5040000,5040000,2880000,5040000,5040000,5040000,5040000,5040000,5040000,5040000,6370320,3596640,3596640,3396342,720000,722880,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="1" cs="30" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_BOT]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="2" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="2" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="2" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="2" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="13" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="15" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="16" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="17" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="18" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="19" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="20" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="21" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="22" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="23" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="24" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="26" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="27" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="28" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="29" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="30" r="2" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="3" cs="2" s="2">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=DIC_COMPANY_FILTER.SELECT(COMPANY_NAME, CURRENT_CODE = $P_COMPANY)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="3" s="3">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="3" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="3" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="3" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="3" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="15" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="16" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="17" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="18" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="19" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="20" r="3" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="21" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="22" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="23" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="24" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="26" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="27" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="28" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="29" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="30" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="4" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="4" cs="2" s="2">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("investment_cal")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="4" s="3">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="4" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="4" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="4" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="4" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="17" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="18" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="19" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="20" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="21" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="22" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="23" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="24" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="26" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="27" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="28" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="29" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="30" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="5" cs="2" s="2">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=DIC_SECURITY_FILTER.SELECT(INV_SECURITY_NAME, INV_SECURITY_CODE = $P_SECURITY)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="5" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="5" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="5" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="5" s="3">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="5" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="5" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="5" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="5" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="13" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="15" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="16" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="17" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="18" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="19" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="20" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="21" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="22" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="23" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="24" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="25" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="26" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="27" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="28" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="29" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="5" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="6" cs="2" s="2">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=I18N("end_date") + ":" + $P_END_DATE]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="6" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="6" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="6" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="6" s="3">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="6" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="6" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="6" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="6" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="13" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="15" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="16" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="17" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="18" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="19" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="20" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="21" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="22" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="23" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="24" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="25" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="26" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="27" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="28" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="29" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="6" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="7" cs="2" s="2">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("corr_account") + "： " + DIC_ACCOUNT_FILTER.SELECT(INV_ACCOUNT_NAME, INV_ACCOUNT_CODE = $P_ACCOUNT)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="7" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="7" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="7" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="7" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="7" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="13" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="17" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="18" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="19" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="20" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="21" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="22" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="23" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="24" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="26" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="27" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="28" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="29" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="30" r="7" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="8" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="8" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="8" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="8" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="8" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="8" s="1">
+<PrivilegeControl/>
+<Expand upParentDefault="false" up="I10">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="17" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="18" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="19" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="20" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="21" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="22" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="23" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="24" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="26" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="27" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="28" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="29" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="30" r="8" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="9" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("year")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<NameJavaScriptGroup>
+<NameJavaScript name="動態參數1">
+<JavaScript class="com.fr.js.ParameterJavaScript">
+<Parameters>
+<Parameter>
+<Attributes name="a"/>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=if(a = 1,-1,1)]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+</JavaScript>
+</NameJavaScript>
+</NameJavaScriptGroup>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="B10"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="3" r="9" rs="3" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("date")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<NameJavaScriptGroup>
+<NameJavaScript name="動態參數1">
+<JavaScript class="com.fr.js.ParameterJavaScript">
+<Parameters>
+<Parameter>
+<Attributes name="a"/>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=if(a = 1,-1,1)]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+</JavaScript>
+</NameJavaScript>
+</NameJavaScriptGroup>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="9" cs="4" s="6">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("beginning_balance")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="9" cs="4" s="6">
+<O t="DSColumn">
+<Attributes dsName="DIC_ADD_LESS" columnName="ADD_LESS"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ADD_LESS" formula="=i18n($$$)"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[DIC_ADD_LESS]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+</Present>
+<Expand dir="1" upParentDefault="false">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I10"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("item_note")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="13" r="9" rs="3" s="7">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("net_change")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="9" cs="4" s="8">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("ending_balance")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="18" r="9" cs="3" s="8">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("ending_weighted_cost")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="21" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("sale_price_ntd")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="22" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cfc_amount")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="23" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("trade_tax")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="24" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("trade_fee")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="25" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("disposal_profit")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="26" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("note")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="27" r="9" cs="2" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("attachment")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="29" r="9" rs="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=ID]]></Attributes>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="9" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="31" r="9" s="0">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="10" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("share_qty")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="5" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("currency")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost_origin_curr")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="7" r="10" rs="2" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost_ntd")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="10" s="9">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("share_qty")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I11"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="10" cs="3" s="10">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("share_qty")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="15" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("currency")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="16" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost_origin_curr")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="17" r="10" rs="2" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost_ntd")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="18" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("currency")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="19" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("origin_curr")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="20" r="10" rs="2" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("ntd")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="10" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="11" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="11" s="7">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="INV_ADJITEM_CODE"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ADD_LESS]]></CNAME>
+<Compare op="0">
+<ColumnRow column="8" row="9"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="INV_ADJITEM_CODE" viName="INV_ADJITEM_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[DIC_ADJITEM]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+</Present>
+<Expand dir="1">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K15"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="11" s="11">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("currency")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="10" r="11" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost_origin_curr")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="11" r="11" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("cost_ntd")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDefault="true"/>
+<CellPageAttr/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="11" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="12" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="12" s="12">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="YEAR"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="12" s="12">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="MMDD"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="BEGIN_SHARE"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="5" r="12" s="14">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="CURRENCY_CODE"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="12" s="15">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="BEGIN_ORI_COST"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="7" r="12" s="16">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="BEGIN_COST_NTD"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="SHARE_QTY"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ADD_LESS]]></CNAME>
+<Compare op="0">
+<ColumnRow column="8" row="9"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="I13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="9" r="12" s="12">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="CURRENCY_CODE"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ADD_LESS]]></CNAME>
+<Compare op="0">
+<ColumnRow column="8" row="9"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="J13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="10" r="12" s="17">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="COST_ORIGIN_CURR"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ADD_LESS]]></CNAME>
+<Compare op="0">
+<ColumnRow column="8" row="9"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="K13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="11" r="12" s="16">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="COST_NTD"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ADD_LESS]]></CNAME>
+<Compare op="0">
+<ColumnRow column="8" row="9"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="L13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="12" r="12" s="12">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="ITEM_NOTE"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="13" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="SHARE_QTY"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="14" r="12" s="13">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=E13 + SUM(I13)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="15" r="12" s="14">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=F13]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="16" r="12" s="17">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=G13 + SUM(K13)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="17" r="12" s="13">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=H13 + SUM(L13)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="18" r="12" s="14">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=F13]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="19" r="12" s="17">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=Q13 / O13]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="20" r="12" s="17">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=R13 / O13]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="O13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="21" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="SALE_PRICE_NTD"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0" leftParentDefault="false" left="N13">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="V13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="22" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_CFC_DISPOSAL" columnName="CFC_DISPOSAL"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[ID]]></CNAME>
+<Compare op="0">
+<ColumnRow column="29" row="12"/>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="23" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="TRADE_TAX"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0" leftParentDefault="false" left="V13">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="X13"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="24" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="TRADE_FEE"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="25" r="12" s="13">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="DISPOSAL_PROFIT"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="26" r="12" s="14">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="NOTE"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="27" r="12" s="18">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="ATTACHMENT"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsDownload="true">
+<FileName>
+<![CDATA[=AC13]]></FileName>
+</CellGUIAttr>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="28" r="12" s="14">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="FILENAME"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="29" r="12" s="14">
+<O t="DSColumn">
+<Attributes dsName="REP_TABLE" columnName="TRS_FACT_INV_ID"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="12" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="5" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="7" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="9" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="10" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="11" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="12" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="15" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="16" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="17" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="18" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="19" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="20" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="21" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="22" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="23" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="24" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="25" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="26" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="27" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="28" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="29" r="13" s="1">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="30" r="13" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="14" cs="3" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="14" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="5" r="14" cs="3" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="8" r="14" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="9" r="14" cs="3" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="12" r="14" cs="19" s="0">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false" showAsHTML="true"/>
+<CellPageAttr/>
+<CellOptionalAttrHolder>
+<DesensitizationAttr class="com.fr.report.cell.cellattr.CellDesensitizationAttr">
+<Desensitizations desensitizeScope="0"/>
+</DesensitizationAttr>
+</CellOptionalAttrHolder>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<FrozenColumnRow columnrow="E13"/>
+<PaperSetting/>
+<FollowingTheme background="false"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1317147" hor="-1" ver="-1"/>
+</color>
+</Background>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+<PrivilegeControl/>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0" useParamsTemplate="false" currentIndex="36"/>
+<PWTitle>
+<![CDATA[參數]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Parameters/>
+<Layout class="com.fr.form.ui.container.WParameterLayout">
+<Listener event="afterinit" name="初始化後1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[$('.parameter-container').css('visibility','hidden');]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="para"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName=""/>
+<PrivilegeControl/>
+</WidgetAttr>
+<FollowingTheme borderStyle="false"/>
+<Margin top="0" left="0" bottom="0" right="0"/>
+<Border>
+<border style="0" borderRadius="0" type="0" borderStyle="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+<WidgetTitle>
+<O>
+<![CDATA[新增標題]]></O>
+<FRFont name="Microsoft JhengHei" style="0" size="72"/>
+<Position pos="0"/>
+</WidgetTitle>
+<Alpha alpha="1.0"/>
+</Border>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1317147" hor="-1" ver="-1"/>
+</color>
+</Background>
+<LCAttr vgap="0" hgap="0" compInterval="0"/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="P_ACCOUNT"/>
+<WidgetID widgetID="74149d48-ed54-4cb9-9767-3204b022518a"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="comboBox0"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<CustomData>
+<![CDATA[false]]></CustomData>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="INV_ACCOUNT_CODE" viName="INV_ACCOUNT_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[DIC_ACCOUNT_FILTER]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<databinding>
+<![CDATA[{Name:DIC_ACCOUNT_FILTER,Key:INV_ACCOUNT_CODE}]]></databinding>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="326" y="81" width="130" height="30"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="P_SECURITY"/>
+<WidgetID widgetID="391c5fba-4954-430f-991d-5a291386b94f"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="P_COMPANY_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<CustomData>
+<![CDATA[false]]></CustomData>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="INV_SECURITY_CODE" viName="INV_SECURITY_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[DIC_SECURITY_FILTER]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<databinding>
+<![CDATA[{Name:DIC_SECURITY_FILTER,Key:INV_SECURITY_CODE}]]></databinding>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="181" y="81" width="130" height="30"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="P_COMPANY"/>
+<WidgetID widgetID="391c5fba-4954-430f-991d-5a291386b94f"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="comboBox0"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<CustomData>
+<![CDATA[false]]></CustomData>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="CURRENT_CODE" viName="COMPANY_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[DIC_COMPANY_FILTER]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<databinding>
+<![CDATA[{Name:DIC_COMPANY_FILTER,Key:CURRENT_CODE}]]></databinding>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="36" y="81" width="130" height="30"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LABEL_INTERVAL2"/>
+<LabelName name="=i18n(&quot;account_name&quot;) "/>
+<WidgetAttr disabled="true" invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="LABEL_INTERVAL2_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O>
+<![CDATA[~]]></O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="0" autoline="true"/>
+<FRFont name="微軟正黑體" style="0" size="72"/>
+<border style="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+</InnerWidget>
+<BoundsAttr x="797" y="10" width="30" height="25"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="P_END_DATE"/>
+<WidgetID widgetID="9ee4bf50-f7dc-4bc9-a090-71fa7ee53caa"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="P_END_DATE_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<DateAttr/>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=NOW()]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="471" y="81" width="130" height="30"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.DateEditor">
+<WidgetName name="P_START_DATE"/>
+<WidgetID widgetID="9ee4bf50-f7dc-4bc9-a090-71fa7ee53caa"/>
+<WidgetAttr disabled="true" invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="P_START_DATE_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<DateAttr/>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=YEARDELTA(NOW(),-1)]]></Attributes>
+</O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="677" y="10" width="120" height="25"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LABEL_INTERVAL"/>
+<LabelName name="=i18n(&quot;account_name&quot;)"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="LABEL_INTERVAL_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("interval")]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="2" autoline="true"/>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<border style="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+</InnerWidget>
+<BoundsAttr x="471" y="54" width="130" height="25"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LABEL_P_ACCOUNT"/>
+<LabelName name="=i18n(&quot;security&quot;)"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="LABEL_P_ACCOUNT_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("account_name")]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="2" autoline="true"/>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<border style="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+</InnerWidget>
+<BoundsAttr x="326" y="54" width="130" height="25"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LABEL_P_SECURITY"/>
+<LabelName name="=i18n(&quot;company_code&quot;)"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="LABEL_P_AREA"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("security")]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="2" autoline="true"/>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<border style="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+</InnerWidget>
+<BoundsAttr x="181" y="54" width="130" height="25"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LABEL_P_COMPANY"/>
+<LabelName name="=i18n(&quot;language&quot;)+&quot;: &quot;"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName="LABEL_P_COMPANY_c"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("company_code")]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="2" autoline="true"/>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<border style="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+</InnerWidget>
+<BoundsAttr x="36" y="54" width="130" height="25"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<WidgetName name="BTN_SEARCH"/>
+<LabelName name="=i18n(&quot;title&quot;)"/>
+<WidgetID widgetID="35432087-3161-4d53-b674-4934fcbcf6c2"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName=""/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[=i18n("search")]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+<initial>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-3126782" hor="-1" ver="-1"/>
+</color>
+</Background>
+</initial>
+<over>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-3126782" hor="-1" ver="-1"/>
+</color>
+</Background>
+</over>
+<click>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-3126782" hor="-1" ver="-1"/>
+</color>
+</Background>
+</click>
+<FRFont name="Microsoft JhengHei UI" style="0" size="80">
+<foreground>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</foreground>
+</FRFont>
+<isCustomType isCustomType="true"/>
+</InnerWidget>
+<BoundsAttr x="1150" y="81" width="70" height="30"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LAB_TITLE"/>
+<WidgetID widgetID="b8fe644f-b911-4263-95fe-6ac2f79900cc"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName=""/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("investment_cal")]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="2" autoline="true"/>
+<FRFont name="Microsoft JhengHei UI" style="1" size="96"/>
+<border style="0">
+<color>
+<FineColor color="-723724" hor="-1" ver="-1"/>
+</color>
+</border>
+</InnerWidget>
+<BoundsAttr x="36" y="11" width="800" height="40"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.NameWidget">
+<WidgetName name="BTN_EXPORT"/>
+<LabelName name="利潤率計算彙整"/>
+<WidgetID widgetID="b3e92c7e-453d-45d5-9d2d-11c671aa87d0"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName=""/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Name>
+<![CDATA[Export_Excel]]></Name>
+</InnerWidget>
+<BoundsAttr x="1070" y="81" width="70" height="30"/>
+</Widget>
+<ShowBookmarks showBookmarks="false"/>
+<Sorted sorted="false"/>
+<MobileWidgetList>
+<Widget widgetName="P_START_DATE"/>
+<Widget widgetName="P_COMPANY"/>
+<Widget widgetName="P_SECURITY"/>
+<Widget widgetName="P_ACCOUNT"/>
+<Widget widgetName="P_END_DATE"/>
+<Widget widgetName="BTN_EXPORT"/>
+<Widget widgetName="BTN_SEARCH"/>
+</MobileWidgetList>
+<FrozenWidgets/>
+<MobileBookMarkStyle class="com.fr.form.ui.mobile.impl.DefaultMobileBookMarkStyle"/>
+<Display display="true"/>
+<DelayDisplayContent delay="false"/>
+<UseParamsTemplate use="false"/>
+<paramFireStopEdit fireEvent="false"/>
+<Position position="0"/>
+<Design_Width design_width="1250"/>
+<NameTagModified>
+<TagModified tag="BTN_SEARCH" modified="true"/>
+<TagModified tag="BTN_EXPORT" modified="true"/>
+</NameTagModified>
+<WidgetNameTagMap>
+<NameTag name="BTN_SEARCH" tag="=i18n(&quot;title&quot;)"/>
+<NameTag name="BTN_EXPORT" tag="利潤率計算彙整"/>
+</WidgetNameTagMap>
+<ParamAttr class="com.fr.report.mobile.DefaultMobileParamStyle"/>
+<ParamStyle class="com.fr.form.ui.mobile.impl.DefaultMobileParameterStyle"/>
+<FollowingTheme background="true"/>
+</Layout>
+<DesignAttr width="1250" height="150"/>
+</ParameterUI>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1317147" hor="-1" ver="-1"/>
+</color>
+</Background>
+</ReportParameterAttr>
+<StyleList>
+<Style style_name="預設" full="true" border_source="-1" imageLayout="1">
+<FRFont name="PMingLiU" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border/>
+</Style>
+<Style imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="1" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border/>
+</Style>
+<Style imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="WenQuanYi Micro Hei" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border/>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Right style="2">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Right style="2">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Right style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Right style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Left style="2">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Left>
+<Right style="2">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Left style="2">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Left>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#,##0]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#,##0]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#,##0.00]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#,##0]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Right style="1">
+<color>
+<FineColor color="-592138" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#,##0.00]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#,##0]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84" underline="1">
+<foreground>
+<FineColor color="-16776961" hor="-1" ver="-1"/>
+</foreground>
+</FRFont>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Bottom style="1">
+<color>
+<FineColor color="-2171170" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+</StyleList>
+<DesensitizationList/>
+<DesignerVersion DesignerVersion="LAA"/>
+<PreviewType PreviewType="1"/>
+<I18NMap class="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark" pluginID="com.fr.plugin.i18n.bundle.v11" plugin-version="2.1.6">
+<Attributes languageType="0" default="" backup="en_US"/>
+<I18N key="add" description="本期增加">
+<zh_TW>
+<![CDATA[本期增加]]></zh_TW>
+<en_US>
+<![CDATA[Add]]></en_US>
+</I18N>
+<I18N key="date" description="日期">
+<zh_TW>
+<![CDATA[日期]]></zh_TW>
+<en_US>
+<![CDATA[Date]]></en_US>
+</I18N>
+<I18N key="year" description="年度">
+<zh_TW>
+<![CDATA[年度]]></zh_TW>
+<en_US>
+<![CDATA[Year]]></en_US>
+</I18N>
+<I18N key="beginning_balance" description="期初餘額">
+<zh_TW>
+<![CDATA[期初餘額]]></zh_TW>
+<en_US>
+<![CDATA[Beginning balance]]></en_US>
+</I18N>
+<I18N key="less" description="本期減少">
+<zh_TW>
+<![CDATA[本期減少]]></zh_TW>
+<en_US>
+<![CDATA[Less]]></en_US>
+</I18N>
+<I18N key="inv_category" description="投資類型">
+<zh_TW>
+<![CDATA[投資類型]]></zh_TW>
+<en_US>
+<![CDATA[Investment category]]></en_US>
+</I18N>
+<I18N key="share_qty" description="股數">
+<zh_TW>
+<![CDATA[股數]]></zh_TW>
+<en_US>
+<![CDATA[Number of shares]]></en_US>
+</I18N>
+<I18N key="search" description="搜尋">
+<zh_CN>
+<![CDATA[搜寻]]></zh_CN>
+<zh_TW>
+<![CDATA[搜尋]]></zh_TW>
+<en_US>
+<![CDATA[Search]]></en_US>
+</I18N>
+<I18N key="security" description="有價證券名稱">
+<zh_TW>
+<![CDATA[有價證券名稱]]></zh_TW>
+<en_US>
+<![CDATA[Securities name]]></en_US>
+</I18N>
+<I18N key="inv_adjitem" description="類型">
+<zh_TW>
+<![CDATA[類型]]></zh_TW>
+<en_US>
+<![CDATA[Investment adjust]]></en_US>
+</I18N>
+<I18N key="account_name" description="會計科目">
+<zh_TW>
+<![CDATA[會計科目]]></zh_TW>
+<en_US>
+<![CDATA[Account name]]></en_US>
+</I18N>
+<I18N key="company_name" description="公司名稱">
+<zh_TW>
+<![CDATA[公司名稱]]></zh_TW>
+<en_US>
+<![CDATA[Company name]]></en_US>
+</I18N>
+<I18N key="cost_origin_curr" description="原幣成本">
+<zh_TW>
+<![CDATA[原幣成本]]></zh_TW>
+<en_US>
+<![CDATA[Original currency cost]]></en_US>
+</I18N>
+<I18N key="cost_ntd" description="台幣成本">
+<zh_TW>
+<![CDATA[台幣成本]]></zh_TW>
+<en_US>
+<![CDATA[Cost (NTD)]]></en_US>
+</I18N>
+<I18N key="investment_cal" description="稅上投資成本計算表">
+<zh_TW>
+<![CDATA[稅上投資成本計算表]]></zh_TW>
+<en_US>
+<![CDATA[Tax Investment Cost Calculation Table]]></en_US>
+</I18N>
+<I18N key="currency" description="幣別">
+<zh_TW>
+<![CDATA[幣別]]></zh_TW>
+<en_US>
+<![CDATA[Currency]]></en_US>
+</I18N>
+<I18N key="company_code" description="公司代碼">
+<zh_TW>
+<![CDATA[公司代碼]]></zh_TW>
+<en_US>
+<![CDATA[Company code]]></en_US>
+</I18N>
+<I18N key="interval" description="期間迄日">
+<zh_TW>
+<![CDATA[期間迄日]]></zh_TW>
+<en_US>
+<![CDATA[Date interval]]></en_US>
+</I18N>
+<I18N key="cost" description="成本">
+<zh_TW>
+<![CDATA[成本]]></zh_TW>
+<en_US>
+<![CDATA[Cost]]></en_US>
+</I18N>
+<I18N key="item_note" description="子項目">
+<zh_TW>
+<![CDATA[子項目]]></zh_TW>
+<en_US>
+<![CDATA[Sub-item]]></en_US>
+</I18N>
+<I18N key="net_change" description="當期淨變動股數">
+<zh_TW>
+<![CDATA[當期淨變動股數]]></zh_TW>
+<en_US>
+<![CDATA[Net change in shares for the period]]></en_US>
+</I18N>
+<I18N key="corr_account" description="帳列科目">
+<zh_TW>
+<![CDATA[帳列科目]]></zh_TW>
+<en_US>
+<![CDATA[Account name]]></en_US>
+</I18N>
+<I18N key="sale_price_ntd" description="出售價款 (台幣)">
+<zh_TW>
+<![CDATA[出售價款 (台幣)]]></zh_TW>
+<en_US>
+<![CDATA[Sale price (NTD)]]></en_US>
+</I18N>
+<I18N key="cfc_amount" description="CFC 影響數">
+<zh_TW>
+<![CDATA[CFC 影響數]]></zh_TW>
+<en_US>
+<![CDATA[CFC amount]]></en_US>
+</I18N>
+<I18N key="trade_tax" description="證交稅">
+<zh_TW>
+<![CDATA[證交稅]]></zh_TW>
+<en_US>
+<![CDATA[Trade tax]]></en_US>
+</I18N>
+<I18N key="trade_fee" description="證交手續費">
+<zh_TW>
+<![CDATA[證交手續費]]></zh_TW>
+<en_US>
+<![CDATA[Trade fees]]></en_US>
+</I18N>
+<I18N key="disposal_profit" description="處分利益(損失)">
+<zh_TW>
+<![CDATA[處分利益(損失)]]></zh_TW>
+<en_US>
+<![CDATA[Disposal gain (loss)]]></en_US>
+</I18N>
+<I18N key="note" description="備註">
+<zh_TW>
+<![CDATA[備註]]></zh_TW>
+<en_US>
+<![CDATA[Note]]></en_US>
+</I18N>
+<I18N key="attachment" description="附件">
+<zh_TW>
+<![CDATA[附件]]></zh_TW>
+<en_US>
+<![CDATA[Attachment]]></en_US>
+</I18N>
+<I18N key="detail" description="明細">
+<zh_TW>
+<![CDATA[明細]]></zh_TW>
+<en_US>
+<![CDATA[Detail]]></en_US>
+</I18N>
+<I18N key="ending_balance" description="期末餘額">
+<zh_TW>
+<![CDATA[期末餘額]]></zh_TW>
+<en_US>
+<![CDATA[Ending balance]]></en_US>
+</I18N>
+<I18N key="ending_weighted_cost" description="">
+<zh_TW>
+<![CDATA[期末加權平均成本]]></zh_TW>
+<en_US>
+<![CDATA[Ending weighted average cost]]></en_US>
+</I18N>
+<I18N key="origin_curr" description="原幣">
+<zh_TW>
+<![CDATA[原幣]]></zh_TW>
+<en_US>
+<![CDATA[Original currency]]></en_US>
+</I18N>
+<I18N key="ntd" description="台幣">
+<zh_TW>
+<![CDATA[台幣]]></zh_TW>
+<en_US>
+<![CDATA[NTD]]></en_US>
+</I18N>
+<I18N key="end_date" description="結束日">
+<zh_TW>
+<![CDATA[結束日]]></zh_TW>
+<en_US>
+<![CDATA[End Date]]></en_US>
+</I18N>
+</I18NMap>
+<TemplateThemeAttrMark class="com.fr.base.iofile.attr.TemplateThemeAttrMark">
+<TemplateThemeAttrMark name="相容主題" dark="false"/>
+</TemplateThemeAttrMark>
+<FileAttrErrorMarker-SCOptionAttrMark class="com.fr.base.io.FileAttrErrorMarker" pluginID="com.fr.plugin.assistant" plugin-version="1.2.25" oriClass="com.fr.plugin.attr.mark.SCOptionAttrMark">
+<SCOptionAttrMark skipTasks="" skipAutoTask="true"/>
+</FileAttrErrorMarker-SCOptionAttrMark>
+<StrategyConfigsAttr class="com.fr.esd.core.strategy.persistence.StrategyConfigsAttr">
+<StrategyConfigs>
+<StrategyConfig dsName="DIC_ADJITEM" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="DIC_COMPANY_FILTER" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="REP_TABLE" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="REP_CFC_DISPOSAL" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="DIC_SECURITY_FILTER" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="DIC_ADD_LESS" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="DIC_ACCOUNT_FILTER" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+</StrategyConfigs>
+</StrategyConfigsAttr>
+<TemplateCloudInfoAttrMark class="com.fr.plugin.cloud.analytics.attr.TemplateInfoAttrMark" pluginID="com.fr.plugin.cloud.analytics.v11" plugin-version="3.26.0.20240327">
+<TemplateCloudInfoAttrMark createTime="1649658680068"/>
+</TemplateCloudInfoAttrMark>
+<TemplateIdAttMark class="com.fr.base.iofile.attr.TemplateIdAttrMark">
+<TemplateIdAttMark TemplateId="bf325aef-0528-4f42-927c-3513cbad5431"/>
+</TemplateIdAttMark>
+</WorkBook>
