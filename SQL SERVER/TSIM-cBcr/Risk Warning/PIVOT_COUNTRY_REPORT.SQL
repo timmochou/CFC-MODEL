@@ -1,0 +1,63 @@
+DECLARE @Query NVARCHAR(MAX),
+        @Columns NVARCHAR(MAX)
+
+SET @Columns = STUFF(
+(
+    SELECT DISTINCT ',' + QUOTENAME(DATA_NAME) AS DATA_NAME 
+    FROM (
+        SELECT 
+        PERIOD,
+        ENTITY_ID,
+        DATA_NAME,
+        CASE 
+            WHEN ISNUMERIC(VALUE) = 1 THEN CAST(VALUE AS DECIMAL(18,2))
+            ELSE NULL 
+        END AS VALUE
+        FROM TRS_FACT_COUNTRY_REPORT
+    ) AS T1
+    FOR XML PATH(''), TYPE
+).value('.','NVARCHAR(MAX)'), 1, 1, '')
+
+SET @Query = 
+N'WITH PivotData AS (
+    SELECT 
+    Period,
+    ENTITY_ID,
+    ' + @Columns + '
+FROM
+(
+    SELECT
+        PERIOD,
+        ENTITY_ID,
+        DATA_NAME,
+        CASE 
+            WHEN ISNUMERIC(VALUE) = 1 THEN CAST(VALUE AS DECIMAL(18,2))
+            ELSE NULL 
+        END AS VALUE
+    FROM TRS_FACT_COUNTRY_REPORT ) AS D
+PIVOT
+(
+    MAX(VALUE)
+    FOR [DATA_NAME] IN (' + @Columns + ')
+) AS PVT
+)
+SELECT 
+T2.current_code,
+T3.ENTITY_NAME,
+T3.COUNTRY_ID,
+T5.COUNTRY_NAME,
+T4.IS_LOWTAX,
+T4.TAX_RATE,
+T1.*
+FROM PivotData T1
+LEFT JOIN
+        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
+    LEFT JOIN 
+        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID 
+    LEFT JOIN
+        TRS_FACT_COUNTRY_TAX T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE AND T3.FR_LOCALE=''zh_TW''
+    LEFT JOIN 
+        V_TRS_DIM_COUNTRY T5 ON T4.COUNTRY_CODE = T5.COUNTRY_ID;'
+
+EXEC sp_executesql @Query
+

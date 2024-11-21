@@ -1,0 +1,41 @@
+WITH TRS_FACT_COUNTRY_REPORT AS (SELECT 
+ID,
+PERIOD,
+ENTITY_ID,
+DATA_NAME,
+CASE 
+    WHEN ISNUMERIC(VALUE) = 1 THEN CAST(VALUE AS DECIMAL(18,2))
+    ELSE NULL 
+END AS VALUE,
+REPORT_NAME
+FROM TRS_FACT_COUNTRY_REPORT)
+SELECT 
+        T1.ID,
+        T1.PERIOD,
+        T2.current_code,
+        T3.ENTITY_NAME,
+        T3.COUNTRY_ID,
+        T5.COUNTRY_NAME,
+        T1.DATA_NAME,
+        T4.IS_LOWTAX,
+        T4.TAX_RATE,
+        CASE WHEN IS_LOWTAX = 'true' AND T1.VALUE != '0' THEN '1' 
+        ELSE '0'
+        END AS VALUE_NEW,
+        CASE WHEN DATA_NAME = 'col_income_non_rel' THEN '低稅地區有非關係人收入'
+        ELSE '低稅地區有有形資產'
+        END AS TYPE
+    FROM 
+        TRS_FACT_COUNTRY_REPORT T1
+    LEFT JOIN
+        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
+    LEFT JOIN 
+        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID
+    LEFT JOIN
+        TRS_FACT_COUNTRY_TAX T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE
+    LEFT JOIN 
+        V_TRS_DIM_COUNTRY T5 ON T4.COUNTRY_CODE = T5.COUNTRY_ID AND T5.FR_LOCALE='zh_TW'
+    WHERE 
+        T1.REPORT_NAME = 'report1'
+        AND T3.FR_LOCALE='zh_TW'
+        AND DATA_NAME IN ('col_income_non_rel', 'col_tangible_asset')

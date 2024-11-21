@@ -1,261 +1,110 @@
-WITH Low_Tax_Unrelated_Income_TangibleAssets AS (
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T2.current_code,
-        T3.ENTITY_NAME,
-        T3.COUNTRY_ID,
-        T5.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T4.IS_LOWTAX,
-        T4.TAX_RATE,
-        CASE WHEN IS_LOWTAX = 'true' AND T1.VALUE != '0' THEN '1' 
-        ELSE '0'
-        END AS VALUE_NEW,
-        CASE WHEN DATA_NAME = 'col_income_non_rel' THEN '低稅地區有非關係人收入'
-        ELSE '低稅地區有有形資產'
-        END AS TYPE
-    FROM 
-        [dbo].[TRS_FACT_COUNTRY_REPORT] T1
-    LEFT JOIN
-        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
-    LEFT JOIN 
-        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID
-    LEFT JOIN
-        TRS_FACT_COUNTRY_TAX T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE
-    LEFT JOIN 
-        V_TRS_DIM_COUNTRY T5 ON T4.COUNTRY_CODE = T5.COUNTRY_ID AND T5.FR_LOCALE='zh_TW'
-    WHERE 
-        T1.REPORT_NAME = 'report1'
-        AND T3.FR_LOCALE='zh_TW'
-        AND DATA_NAME IN ('col_income_non_rel', 'col_tangible_asset')
-),
-NonHoldingFunctionsLowTax AS (
-    --低稅地區具有『控股』以外功能
-    --位於台灣國稅局公布低稅區名單及法定稅率低於15%之國家地區，且國別報告表二的持有股份或其他權益工具以外功能有勾選
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T2.current_code,
-        T3.ENTITY_NAME,
-        T3.COUNTRY_ID,
-        T5.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T4.IS_LOWTAX,
-        T4.TAX_RATE,
-        CASE 
-            WHEN IS_LOWTAX = 'true' AND (
-                (DATA_NAME = 'col_res_and_dev' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_hold_int_property' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_purchase' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_manufacture' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_sales_mkt_distrbn' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_admin_mgnt_sup' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_provide_serv_to_nrp' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_int_grp_fin' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_regu_fin_serv' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_insurance' AND T1.VALUE != '0') OR
-                (DATA_NAME = 'col_others' AND T1.VALUE != '0')
-            ) THEN '1' 
-            ELSE '0'
-        END AS VALUE_NEW,
-         '低稅地區具有『控股』以外功能' AS TYPE
-    FROM 
-        [dbo].[TRS_FACT_COUNTRY_REPORT] T1
-    LEFT JOIN
-        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
-    LEFT JOIN 
-        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID
-    LEFT JOIN
-        TRS_FACT_COUNTRY_TAX T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE
-    LEFT JOIN 
-        V_TRS_DIM_COUNTRY T5 ON T4.COUNTRY_CODE = T5.COUNTRY_ID AND T5.FR_LOCALE='zh_TW'
-    WHERE 
-        T1.REPORT_NAME = 'report2'
-        AND T3.FR_LOCALE='zh_TW'),
-    IS_MAN AS (
-    --國別報告表二之製造功能、銷售行銷或配銷、對非關係人提供服務、行政、研究發展、收入有勾選
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T2.current_code,
-        T3.ENTITY_NAME,
-        T3.COUNTRY_ID,
-        T5.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T4.IS_LOWTAX,
-        T4.TAX_RATE,
-        T1.VALUE AS VALUE_MAN
-    FROM 
-        [dbo].[TRS_FACT_COUNTRY_REPORT] T1
-    LEFT JOIN
-        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
-    LEFT JOIN 
-        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID
-    LEFT JOIN
-        TRS_FACT_COUNTRY_TAX T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE
-    LEFT JOIN 
-        V_TRS_DIM_COUNTRY T5 ON T4.COUNTRY_CODE = T5.COUNTRY_ID AND T5.FR_LOCALE='zh_TW'
-    WHERE 
-        T1.REPORT_NAME = 'report2'
-        AND T3.FR_LOCALE='zh_TW'
-        AND DATA_NAME IN ('col_manufacture','col_sales_mkt_distrbn','col_provide_serv_to_nrp','col_admin_mgnt_sup','col_res_and_dev','col_income_non_rel'))
-    ,IS_EMPLOYEE AS (
-    -- 判斷國別報告1的員工人數是否為0
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T2.current_code,
-        T3.ENTITY_NAME,
-        T3.COUNTRY_ID,
-        T5.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T4.IS_LOWTAX,
-        T4.TAX_RATE,
-        T1.VALUE AS VALUE_NUM
-    FROM 
-        [dbo].[TRS_FACT_COUNTRY_REPORT] T1
-    LEFT JOIN
-        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
-    LEFT JOIN 
-        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID
-    LEFT JOIN
-        TRS_FACT_COUNTRY_TAX T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE
-    LEFT JOIN 
-        V_TRS_DIM_COUNTRY T5 ON T4.COUNTRY_CODE = T5.COUNTRY_ID AND T5.FR_LOCALE='zh_TW'
-    WHERE 
-        T1.REPORT_NAME = 'report1'
-        AND T3.FR_LOCALE='zh_TW'
-        AND DATA_NAME = 'col_num_of_emp'
-        ), Manufacture_NoEmployees AS (
-    --有『製造功能』但無員工人數
-    --國別報告表二之製造功能有勾選，且國別報告表一的員工人數等於零
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T1.current_code,
-        T1.ENTITY_NAME,
-        T1.COUNTRY_ID,
-        T1.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T1.IS_LOWTAX,
-        T1.TAX_RATE,
-        CASE WHEN T1.VALUE_MAN = '1' AND ( T2.VALUE_NUM = '0' OR  T2.VALUE_NUM IS NULL ) THEN '1' ELSE '0'
-        END AS VALUE_NEWA,
-        '有『製造功能』但無員工人數' AS TYPE
-    FROM IS_MAN T1
-    LEFT JOIN IS_EMPLOYEE T2 ON T1.current_code = T2.current_code AND T1.PERIOD = T2.PERIOD
-    WHERE T1.DATA_NAME = 'col_manufacture')
-    , SALES_MKT_NoEmployees AS (      
-    --有『行銷、銷售或配銷功能』但無員工人數
-    --國別報告表二之銷售、行銷或配銷有勾選，且國別報告表一的員工人數等於零
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T1.current_code,
-        T1.ENTITY_NAME,
-        T1.COUNTRY_ID,
-        T1.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T1.IS_LOWTAX,
-        T1.TAX_RATE,
-        CASE WHEN T1.VALUE_MAN = '1' AND ( T2.VALUE_NUM = '0' OR  T2.VALUE_NUM IS NULL ) THEN '1' ELSE '0'
-        END AS VALUE_NEWA,
-        '有『行銷、銷售或配銷功能』但無員工人數' AS TYPE
-    FROM IS_MAN T1
-    LEFT JOIN IS_EMPLOYEE T2 ON T1.current_code = T2.current_code AND T1.PERIOD = T2.PERIOD
-    WHERE T1.DATA_NAME = 'col_sales_mkt_distrbn'),
-    PROVIDE_SERV_NoEmployees AS (      
-    --有『對外提供服務功能』但無員工人數
-    --國別報告表二之對非關係人提供服務有勾選，且國別報告表一的員工人數等於零
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T1.current_code,
-        T1.ENTITY_NAME,
-        T1.COUNTRY_ID,
-        T1.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T1.IS_LOWTAX,
-        T1.TAX_RATE,
-        CASE WHEN T1.VALUE_MAN = '1' AND ( T2.VALUE_NUM = '0' OR  T2.VALUE_NUM IS NULL ) THEN '1' ELSE '0'
-        END AS VALUE_NEWA,
-        '對非關係人提供服務' AS TYPE
-    FROM IS_MAN T1
-    LEFT JOIN IS_EMPLOYEE T2 ON T1.current_code = T2.current_code AND T1.PERIOD = T2.PERIOD
-    WHERE T1.DATA_NAME = 'col_provide_serv_to_nrp'
-),
-    ADMIN_MGNT_NoEmployees AS (      
-    --有『行政、管理或支援功能』但無員工人數 
-    --國別報告表二之對行政、管理或支援服務有勾選，且國別報告表一的員工人數等於零
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T1.current_code,
-        T1.ENTITY_NAME,
-        T1.COUNTRY_ID,
-        T1.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T1.IS_LOWTAX,
-        T1.TAX_RATE,
-        CASE WHEN T1.VALUE_MAN = '1' AND ( T2.VALUE_NUM = '0' OR  T2.VALUE_NUM IS NULL ) THEN '1' ELSE '0'
-        END AS VALUE_NEWA,
-        '有『行政、管理或支援功能』但無員工人數' AS TYPE
-    FROM IS_MAN T1
-    LEFT JOIN IS_EMPLOYEE T2 ON T1.current_code = T2.current_code AND T1.PERIOD = T2.PERIOD
-    WHERE T1.DATA_NAME = 'col_admin_mgnt_sup'
-), RESEARCH_NoEmployees AS (      
-    --有『研發功能』但無員工人數
-    --國別報告表二之對研究與發展有勾選，且國別報告表一的員工人數等於零
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T1.current_code,
-        T1.ENTITY_NAME,
-        T1.COUNTRY_ID,
-        T1.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T1.IS_LOWTAX,
-        T1.TAX_RATE,
-        CASE WHEN T1.VALUE_MAN = '1' AND ( T2.VALUE_NUM = '0' OR  T2.VALUE_NUM IS NULL ) THEN '1' ELSE '0'
-        END AS VALUE_NEWA,
-        '有『研發功能』但無員工人數' AS TYPE
-    FROM IS_MAN T1
-    LEFT JOIN IS_EMPLOYEE T2 ON T1.current_code = T2.current_code AND T1.PERIOD = T2.PERIOD
-    WHERE T1.DATA_NAME = 'col_res_and_dev'
-), INCOME_NoEmployees AS (      
-    --有『收入-非關係人』但無員工人數
-    --國別報告表二之對收入非關係人有勾選，且國別報告表一的員工人數等於零
-    SELECT 
-        T1.ID,
-        T1.PERIOD,
-        T1.current_code,
-        T1.ENTITY_NAME,
-        T1.COUNTRY_ID,
-        T1.COUNTRY_NAME,
-        T1.DATA_NAME,
-        T1.IS_LOWTAX,
-        T1.TAX_RATE,
-        CASE WHEN T1.VALUE_MAN = '1' AND ( T2.VALUE_NUM = '0' OR  T2.VALUE_NUM IS NULL ) THEN '1' ELSE '0'
-        END AS VALUE_NEWA,
-        '有『收入-非關係人』但無員工人數' AS TYPE
-    FROM IS_MAN T1
-    LEFT JOIN IS_EMPLOYEE T2 ON T1.current_code = T2.current_code AND T1.PERIOD = T2.PERIOD
-    WHERE T1.DATA_NAME = 'col_income_non_rel'
-)
-SELECT * FROM Low_Tax_Unrelated_Income_TangibleAssets
-UNION ALL
-SELECT * FROM NonHoldingFunctionsLowTax
-UNION ALL 
-SELECT * FROM Manufacture_NoEmployees
-UNION ALL
-SELECT * FROM SALES_MKT_NoEmployees
-UNION ALL 
-SELECT * FROM PROVIDE_SERV_NoEmployees
-UNION ALL 
-SELECT * FROM ADMIN_MGNT_NoEmployees
-UNION ALL
-SELECT * FROM RESEARCH_NoEmployees
-UNION ALL 
-SELECT * FROM INCOME_NoEmployees
+DECLARE @Query NVARCHAR(MAX),
+        @Columns NVARCHAR(MAX)
 
+SET @Columns = STUFF(
+(
+    SELECT DISTINCT ',' + QUOTENAME(DATA_NAME) AS DATA_NAME 
+    FROM (
+        SELECT 
+        PERIOD,
+        ENTITY_ID,
+        DATA_NAME,
+        CASE 
+            WHEN ISNUMERIC(VALUE) = 1 THEN CAST(VALUE AS DECIMAL(18,2))
+            ELSE NULL 
+        END AS VALUE
+        FROM TRS_FACT_COUNTRY_REPORT
+    ) AS T1
+    FOR XML PATH(''), TYPE
+).value('.','NVARCHAR(MAX)'), 1, 1, '')
+
+SET @Query = 
+N'WITH PivotData AS (
+    SELECT 
+    Period,
+    ENTITY_ID,
+    ' + @Columns + '
+FROM
+(
+    SELECT
+        PERIOD,
+        ENTITY_ID,
+        DATA_NAME,
+        CASE 
+            WHEN ISNUMERIC(VALUE) = 1 THEN CAST(VALUE AS DECIMAL(18,2))
+            ELSE NULL 
+        END AS VALUE
+    FROM TRS_FACT_COUNTRY_REPORT
+	WHERE PERIOD = ''${P_PERIOD}'' ) AS D
+PIVOT
+(
+    MAX(VALUE)
+    FOR [DATA_NAME] IN (' + @Columns + ')
+) AS PVT
+), RiskWarning AS (
+SELECT 
+T2.current_code,
+T3.ENTITY_NAME,
+T3.COUNTRY_ID,
+T4.COUNTRY_NAME,
+T5.IS_LOWTAX,
+T5.TAX_RATE,
+T1.*,
+CASE WHEN IS_LOWTAX = ''true'' AND col_income_non_rel != 0 THEN ''a''
+	 WHEN IS_LOWTAX = ''true'' AND col_tangible_asset != 0 THEN ''b''
+	 WHEN IS_LOWTAX = ''true'' AND COALESCE(col_res_and_dev, col_hold_int_property, col_purchase, col_manufacture, col_sales_mkt_distrbn, col_admin_mgnt_sup, col_provide_serv_to_nrp, col_int_grp_fin, col_regu_fin_serv, col_insurance, col_others,0) != 0 THEN ''c''
+	 --有『製造功能』但無員工人數
+	 WHEN col_manufacture != 0 AND col_num_of_emp = 0 THEN ''d''
+     --有『行銷、銷售或配銷功能』但無員工人數
+	 WHEN col_sales_mkt_distrbn != 0 AND col_num_of_emp = 0 THEN ''e''
+	 --有『對外提供服務功能』但無員工人數
+	 WHEN col_provide_serv_to_nrp != 0 AND col_num_of_emp = 0 THEN ''f''
+     --有『行政、管理或支援功能』但無員工人數
+	 WHEN col_admin_mgnt_sup != 0 AND col_num_of_emp = 0 THEN ''g''
+     --有『研發功能』但無員工人數
+	 WHEN col_res_and_dev != 0 AND col_num_of_emp = 0 THEN ''h''
+	 --有『收入-非關係人』但無員工人數
+	 WHEN col_income_non_rel != 0 AND col_num_of_emp = 0 THEN ''i''
+     --稅前損益和所得稅應計情形不匹配，正負方向不一致
+	 WHEN (col_pre_tax_income > 0  AND col_curr_tax_payable < 0) OR (col_pre_tax_income < 0  AND col_curr_tax_payable > 0) THEN ''j''
+	 --CbCR有效稅率低於法定稅率
+	 WHEN ISNULL(col_curr_tax_payable / NULLIF(col_pre_tax_income, 0), 0)  < TAX_RATE THEN ''k''
+     --Pillar 2過渡性避風港收入高於1,000萬歐元，或稅前淨利高於100萬歐元，可能不符合豁免
+     WHEN col_p2_income > 10000000 OR col_p2_pre_tax_income > 1000000 THEN ''l''
+     --Pillar 2過渡性避風港有效稅率低於最低稅率*15%(2023與2024)、16%(2025)與17%(2026)可能不符合豁免
+     WHEN LEFT(T1.Period,4)=''2023'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.15 THEN ''m''
+     WHEN LEFT(T1.Period,4)=''2024'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.15 THEN ''m''
+     WHEN LEFT(T1.Period,4)=''2025'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.16 THEN ''m''
+     WHEN LEFT(T1.Period,4)=''2026'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.17 THEN ''m''
+     --Pillar 2過渡性避風港有稅前淨利且有員工人數或有有形資產，建議執行詳細計算
+     WHEN col_p2_pre_tax_income != 0 AND col_num_of_emp !=0 THEN ''n''
+     WHEN col_p2_pre_tax_income != 0 AND col_tangible_asset !=0 THEN ''n''
+ELSE ''''
+END AS TYPE
+FROM PivotData T1
+LEFT JOIN
+        TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
+    LEFT JOIN 
+        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID 
+	LEFT JOIN 
+        V_TRS_DIM_COUNTRY T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE AND T4.FR_LOCALE=''zh_TW''
+    LEFT JOIN
+        TRS_FACT_COUNTRY_TAX T5 ON T4.COUNTRY_ID = T5.COUNTRY_CODE
+WHERE 
+1=1 
+${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN (''" + P_COUNTRY + "'')")}
+
+),COUNT_TYPE AS(
+SELECT 
+    TYPE,
+    COUNT(*) as TypeCount
+FROM RiskWarning
+GROUP BY TYPE)
+SELECT T1.*,
+T2.TypeCount
+FROM RiskWarning T1 LEFT JOIN COUNT_TYPE T2
+ON T1.TYPE = T2.TYPE
+;'
+   
+
+EXEC sp_executesql @Query
