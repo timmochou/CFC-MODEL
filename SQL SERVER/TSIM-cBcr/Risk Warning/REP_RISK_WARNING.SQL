@@ -38,6 +38,7 @@ FROM
     WHERE 1=1 
     AND PERIOD = ''${P_PERIOD}''
     ${if(len(P_COMPANY) == 0,"","and ENTITY_ID IN (''" + P_COMPANY + "'')")}
+  
 	 ) AS D
 PIVOT
 (
@@ -74,7 +75,8 @@ STUFF((
             (LEFT(T1.Period,4)=''2025'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.16) OR
             (LEFT(T1.Period,4)=''2026'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.17)
         UNION ALL SELECT ''n'' WHERE (col_p2_pre_tax_income - ((col_p2_payroll * 0.1)+ (col_p2_tangible_asset * 0.08)) >= 0)
-    ) x
+     ) x
+        WHERE 1=1 ${if(len(P_CATEGORY) == 0,"","and risk_type IN (''" + P_CATEGORY + "'')")}
     FOR XML PATH('''')
 ), 1, 1, '''') AS TYPE
 FROM PivotData T1
@@ -88,13 +90,14 @@ LEFT JOIN
         TRS_FACT_COUNTRY_TAX T5 ON T4.COUNTRY_ID = T5.COUNTRY_CODE
 WHERE 
 1=1 
-${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN (''" + P_COUNTRY + "'')")}
+AND T3.COUNTRY_ID IN (''${P_COUNTRY}'')
+${if(len(P_COUNTRY_) == 0,"","and T3.COUNTRY_ID IN (''" + P_COUNTRY_ + "'')")}
 
 
 ),COUNT_TYPE AS(
 SELECT 
     TYPE,
-    COUNT(*) as TypeCount
+    LEN(REPLACE(TYPE,'','','''')) as TypeCount
 FROM RiskWarning
 GROUP BY TYPE)
 SELECT T1.*,

@@ -28,4 +28,4 @@ SELECT '14' AS ID, 'n' AS TYPE)
 SELECT * FROM T1
 WHERE
 1=1
-${if(len(P_CATEGORY) == 0,"","and TYPE IN ('" + P_CATEGORY + "')")}
+${if(len(P_CATEGORY) == 0,"","and Type IN ('" + REPLACE(P_CATEGORY, "''", "'") + "')")}

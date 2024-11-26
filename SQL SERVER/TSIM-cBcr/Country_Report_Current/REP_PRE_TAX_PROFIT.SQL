@@ -15,8 +15,13 @@ WITH TB1 AS (
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    WHERE T1.REPORT_NAME = 'report1'
     AND T3.FR_LOCALE='${fr_locale}'
+    WHERE 
+    1=1
+    AND
+    T1.REPORT_NAME = 'report1'
+    ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
+    ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
 ),T2 AS (
 SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID,
     ISNULL([col_income_non_rel], 0) as [col_income_non_rel],
@@ -38,7 +43,18 @@ PIVOT (
         [col_paid_up_capital], [col_accu_surplus], [col_num_of_emp], 
         [col_tangible_asset]
     )
-) AS PivotTable)
+) AS PivotTable),
+TOTAL AS (
+    SELECT 
+    PERIOD,
+    ENTITY_NAME
+    COUNTRY_ID,
+    SUM([col_income]) AS [col_income],
+    SUM([col_pre_tax_income]) AS [col_pre_tax_incomee]
+    FROM T2
+    GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
+)
+
 SELECT 
 PERIOD,
 ENTITY_ID,
