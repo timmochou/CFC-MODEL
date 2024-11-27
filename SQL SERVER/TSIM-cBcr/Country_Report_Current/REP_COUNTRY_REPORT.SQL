@@ -63,3 +63,5 @@ SUM(col_num_of_emp) AS col_num_of_emp,
 SUM(col_tangible_asset) AS col_tangible_asset
 FROM FINAL
 GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
+--新增排序
+ORDER BY ENTITY_NAME ASC

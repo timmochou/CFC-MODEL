@@ -23,7 +23,8 @@ T1.REPORT_NAME = 'report1'
 AND T3.FR_LOCALE='${fr_locale}'
 AND T1.DATA_NAME = '${P_CATEGORY1}'
 AND T1.PERIOD = '${P_PERIOD}'
-${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}), COMPANY AS (
+${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
+), COMPANY AS (
     SELECT 
     T1.ID,
     T1.PERIOD,
@@ -46,9 +47,9 @@ AND
 T1.REPORT_NAME = 'report1'
 AND T1.DATA_NAME = '${P_CATEGORY1}'
 AND T1.PERIOD = '${P_PERIOD}'
+--AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
 ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID IN ('" + P_COMPANY + "')")}
 ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
---AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
 )
 SELECT 
 ID,
@@ -58,4 +59,6 @@ NAME,
 DATA_NAME,
 VALUE
 FROM
-${(IF(BTN_TYPE=='1', "COMPANY", "COUNTRY"))}
+-- 因應鑽取圓餅圖，來看跑到第幾層，來決定從哪個選，1 代表公司層級，2 代表 進入公司層級 又再點單獨公司 , 其他則返回最初始狀態）
+${if(BTN_TYPE == '1' , "COMPANY",if(BTN_TYPE == '2',"COMPANY" ,"COUNTRY"))}
+ORDER BY NAME
