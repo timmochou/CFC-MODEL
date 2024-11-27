@@ -104,6 +104,7 @@ SELECT T1.*,
 T2.TypeCount
 FROM RiskWarning T1 LEFT JOIN COUNT_TYPE T2
 ON T1.TYPE = T2.TYPE
+ORDER BY T2.TypeCount Desc
 ;'
    
 

@@ -18,6 +18,7 @@ WITH TB1 AS (
     AND T3.FR_LOCALE='${fr_locale}'
     WHERE 
     1=1
+    AND T1.PERIOD = '${P_PERIOD}'
     AND
     T1.REPORT_NAME = 'report1'
     ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
@@ -43,28 +44,13 @@ PIVOT (
         [col_paid_up_capital], [col_accu_surplus], [col_num_of_emp], 
         [col_tangible_asset]
     )
-) AS PivotTable),
-TOTAL AS (
-    SELECT 
-    PERIOD,
-    ENTITY_NAME
-    COUNTRY_ID,
-    SUM([col_income]) AS [col_income],
-    SUM([col_pre_tax_income]) AS [col_pre_tax_incomee]
-    FROM T2
-    GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
-)
-
+) AS PivotTable)
 SELECT 
 PERIOD,
 ENTITY_ID,
 ENTITY_NAME,
 COUNTRY_ID,
 SUM([col_income]) AS [col_income],
-SUM([col_pre_tax_income]) AS [col_pre_tax_incomee],
-CASE 
-    WHEN SUM([col_income]) = 0 THEN NULL 
-    ELSE SUM([col_pre_tax_income])/ SUM([col_income]) 
-END AS PROFIT_RATE
+SUM([col_pre_tax_income]) AS [col_pre_tax_incomee]
 FROM T2
 GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID

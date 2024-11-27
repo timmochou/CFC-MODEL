@@ -18,10 +18,12 @@ LEFT JOIN
 ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='${fr_locale}'
 WHERE
 1=1
-AND T1.REPORT_NAME = 'report1'
-${if(len(P_CATEGORY1) == 0,"","and T1.DATA_NAME IN (''" + P_CATEGORY1 + "'')")}
+AND
+T1.REPORT_NAME = 'report1'
+AND T3.FR_LOCALE='${fr_locale}'
+AND T1.DATA_NAME = '${P_CATEGORY1}'
 AND T1.PERIOD = '${P_PERIOD}'
-${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN (''" + P_COUNTRY + "'')")}), COMPANY AS (
+${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}), COMPANY AS (
     SELECT 
     T1.ID,
     T1.PERIOD,
@@ -37,14 +39,16 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
 ON T1.ENTITY_ID = T3.ENTITY_ID
-WHERE
---1=1 
-T1.REPORT_NAME = 'report1'
 AND T3.FR_LOCALE='${fr_locale}'
-${if(len(P_CATEGORY1) == 0,"","and T1.DATA_NAME IN (''" + P_CATEGORY1 + "'')")}
+WHERE
+1=1 
+AND 
+T1.REPORT_NAME = 'report1'
+AND T1.DATA_NAME = '${P_CATEGORY1}'
 AND T1.PERIOD = '${P_PERIOD}'
-${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID IN (''" + P_COMPANY + "'')")}
-${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN (''" + P_COUNTRY + "'')")}
+${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID IN ('" + P_COMPANY + "')")}
+${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
+--AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
 )
 SELECT 
 ID,

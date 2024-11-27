@@ -2,7 +2,7 @@ WITH TB1 AS (
     SELECT 
     T1.ID,
     T1.PERIOD,
-    T2.current_code,
+    T1.ENTITY_ID,
     T3.ENTITY_NAME,
     T3.COUNTRY_ID,
     T1.DATA_NAME,
@@ -15,10 +15,16 @@ WITH TB1 AS (
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    WHERE T1.REPORT_NAME = 'report1'
     AND T3.FR_LOCALE='${fr_locale}'
+    WHERE 
+    1=1
+    AND T1.PERIOD = '${P_PERIOD}'
+    AND
+    T1.REPORT_NAME = 'report1'
+    ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
+    ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
 ),T2 AS (
-SELECT PERIOD, T2.current_code, ENTITY_NAME,COUNTRY_ID,
+SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID,
     ISNULL([col_income_non_rel], 0) as [col_income_non_rel],
     ISNULL([col_income_rel], 0) as [col_income_rel],
     ISNULL([col_income], 0) as [col_income],
@@ -41,14 +47,10 @@ PIVOT (
 ) AS PivotTable)
 SELECT 
 PERIOD,
-T2.current_code,
+ENTITY_ID,
 ENTITY_NAME,
 COUNTRY_ID,
 SUM([col_curr_tax_payable]) AS [col_curr_tax_payable],
-SUM([col_pre_tax_income]) AS [col_pre_tax_income],
-CASE 
-    WHEN SUM([col_pre_tax_income]) = 0 THEN NULL
-    ELSE SUM([col_curr_tax_payable])/ NULLIF(SUM([col_pre_tax_income]), 0)
-END AS Effective_TAX
+SUM([col_pre_tax_income]) AS [col_pre_tax_income]
 FROM T2
 GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID

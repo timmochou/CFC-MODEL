@@ -2,7 +2,7 @@ WITH TB1 AS (
     SELECT 
     T1.ID,
     T1.PERIOD,
-    T2.current_code,
+    T1.ENTITY_ID,
     T3.ENTITY_NAME,
     T3.COUNTRY_ID,
     T1.DATA_NAME,
@@ -15,11 +15,16 @@ WITH TB1 AS (
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    WHERE T1.REPORT_NAME = 'report1'
     AND T3.FR_LOCALE='${fr_locale}'
+    WHERE 
+    1=1
+    AND
+    T1.REPORT_NAME = 'report1'
     AND T1.PERIOD = '${P_PERIOD}'
-    
-)
+    --AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
+    ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
+    ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
+), FINAL AS (
 SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID,
     ISNULL([col_income_non_rel], 0) as [col_income_non_rel],
     ISNULL([col_income_rel], 0) as [col_income_rel],
@@ -32,10 +37,6 @@ SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID,
     ISNULL([col_num_of_emp], 0) as [col_num_of_emp],
     ISNULL([col_tangible_asset], 0) as [col_tangible_asset]
 FROM TB1  
-WHERE 
-${(IF(BTN_TYPE=='1', "COMPANY", "COUNTRY"))}
-AND T1.ENTITY_ID = '${P_COMPANY}'
-AND T3.COUNTRY_ID = '${P_COUNTRY}'
 PIVOT (
     SUM(VALUE)
     FOR DATA_NAME IN (
@@ -44,4 +45,21 @@ PIVOT (
         [col_paid_up_capital], [col_accu_surplus], [col_num_of_emp], 
         [col_tangible_asset]
     )
-) AS PivotTable
+) AS PivotTable)
+SELECT 
+PERIOD,
+ENTITY_ID,
+ENTITY_NAME,
+COUNTRY_ID,
+SUM(col_income_non_rel) AS col_income_non_rel,
+SUM(col_income_rel) AS col_income_rel,
+SUM(col_income) AS col_income,
+SUM(col_pre_tax_income) AS col_pre_tax_income,
+SUM(col_tax_paid) AS col_tax_paid,
+SUM(col_curr_tax_payable) AS col_curr_tax_payable,
+SUM(col_paid_up_capital) AS col_paid_up_capital,
+SUM(col_accu_surplus) AS col_accu_surplus,
+SUM(col_num_of_emp) AS col_num_of_emp,
+SUM(col_tangible_asset) AS col_tangible_asset
+FROM FINAL
+GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
