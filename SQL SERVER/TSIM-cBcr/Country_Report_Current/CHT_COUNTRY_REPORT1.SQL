@@ -59,6 +59,5 @@ NAME,
 DATA_NAME,
 VALUE
 FROM
--- 因應鑽取圓餅圖，來看跑到第幾層，來決定從哪個選，1 代表公司層級，2 代表 進入公司層級 又再點單獨公司 , 其他則返回最初始狀態）
 ${if(BTN_TYPE == '1' , "COMPANY",if(BTN_TYPE == '2',"COMPANY" ,"COUNTRY"))}
 ORDER BY NAME
