@@ -5,8 +5,9 @@ WITH TB1 AS (
     T1.ENTITY_ID,
     T3.ENTITY_NAME,
     T3.COUNTRY_ID,
+    T4.COUNTRY_NAME,
     T1.DATA_NAME,
-    TRY_CAST(T1.VALUE AS DECIMAL(38,2)) AS VALUE
+    TRY_CAST(T1.VALUE AS DECIMAL(38,0)) AS VALUE
     FROM 
     [dbo].[TRS_FACT_COUNTRY_REPORT] T1
     LEFT JOIN
@@ -16,16 +17,19 @@ WITH TB1 AS (
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
     AND T3.FR_LOCALE='${fr_locale}'
+    LEFT JOIN 
+    V_TRS_DIM_COUNTRY T4 
+    ON T3.COUNTRY_ID = T4.COUNTRY_CODE 
+    AND T4.FR_LOCALE='${fr_locale}'
     WHERE 
     1=1
     AND
     T1.REPORT_NAME = 'report1'
     AND T1.PERIOD = '${P_PERIOD}'
-    --AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
     ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
     ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
 ), FINAL AS (
-SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID,
+SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID, COUNTRY_NAME,
     ISNULL([col_income_non_rel], 0) as [col_income_non_rel],
     ISNULL([col_income_rel], 0) as [col_income_rel],
     ISNULL([col_income], 0) as [col_income],
@@ -51,6 +55,7 @@ PERIOD,
 ENTITY_ID,
 ENTITY_NAME,
 COUNTRY_ID,
+COUNTRY_NAME,
 SUM(col_income_non_rel) AS col_income_non_rel,
 SUM(col_income_rel) AS col_income_rel,
 SUM(col_income) AS col_income,
@@ -62,6 +67,5 @@ SUM(col_accu_surplus) AS col_accu_surplus,
 SUM(col_num_of_emp) AS col_num_of_emp,
 SUM(col_tangible_asset) AS col_tangible_asset
 FROM FINAL
-GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
---新增排序
-ORDER BY ENTITY_NAME ASC
+GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID, COUNTRY_NAME
+ORDER BY COUNTRY_ID, ENTITY_NAME ASC

@@ -59,24 +59,24 @@ T1.*,
 STUFF((
     SELECT '','' + x.risk_type
     FROM (
-        SELECT ''a'' as risk_type WHERE IS_LOWTAX = ''true'' AND col_income_non_rel != 0
-        UNION ALL SELECT ''b'' WHERE IS_LOWTAX = ''true'' AND col_tangible_asset != 0
-        UNION ALL SELECT ''c'' WHERE IS_LOWTAX = ''true'' AND COALESCE(col_res_and_dev, col_hold_int_property, col_purchase, col_manufacture, col_sales_mkt_distrbn, col_admin_mgnt_sup, col_provide_serv_to_nrp, col_int_grp_fin, col_regu_fin_serv, col_insurance, col_others,0) != 0
-        UNION ALL SELECT ''d'' WHERE col_manufacture != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT ''e'' WHERE col_sales_mkt_distrbn != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT ''f'' WHERE col_provide_serv_to_nrp != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT ''g'' WHERE col_admin_mgnt_sup != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT ''h'' WHERE col_res_and_dev != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT ''i'' WHERE col_income_non_rel != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT ''j'' WHERE (col_pre_tax_income > 0 AND col_curr_tax_payable < 0) OR (col_pre_tax_income < 0 AND col_curr_tax_payable > 0)
-        UNION ALL SELECT ''k'' WHERE ISNULL(col_curr_tax_payable / NULLIF(col_pre_tax_income, 0), 0) < TAX_RATE
-        UNION ALL SELECT ''l'' WHERE col_p2_income > (10000000 * col_p2_eur_to_twd_exch) OR col_p2_pre_tax_income > ( 1000000 * col_p2_eur_to_twd_exch ) 
-        UNION ALL SELECT ''m'' WHERE 
+        SELECT ''col_lowtax_income_non_rel'' as risk_type WHERE IS_LOWTAX = ''true'' AND col_income_non_rel != 0
+        UNION ALL SELECT ''col_lowtax_tangible_asset'' WHERE IS_LOWTAX = ''true'' AND col_tangible_asset != 0
+        UNION ALL SELECT ''col_lowtax_hold'' WHERE IS_LOWTAX = ''true'' AND COALESCE(col_res_and_dev, col_hold_int_property, col_purchase, col_manufacture, col_sales_mkt_distrbn, col_admin_mgnt_sup, col_provide_serv_to_nrp, col_int_grp_fin, col_regu_fin_serv, col_insurance, col_others,0) != 0
+        UNION ALL SELECT ''col_emp_manufacture'' WHERE col_manufacture != 0 AND col_num_of_emp = 0
+        UNION ALL SELECT ''col_emp_sales_mkt_distrbn'' WHERE col_sales_mkt_distrbn != 0 AND col_num_of_emp = 0
+        UNION ALL SELECT ''col_emp_provide_serv_to_nrp'' WHERE col_provide_serv_to_nrp != 0 AND col_num_of_emp = 0
+        UNION ALL SELECT ''col_emp_admin_mgnt_sup'' WHERE col_admin_mgnt_sup != 0 AND col_num_of_emp = 0
+        UNION ALL SELECT ''col_emp_res_and_dev'' WHERE col_res_and_dev != 0 AND col_num_of_emp = 0
+        UNION ALL SELECT ''col_emp_income_non_rel'' WHERE col_income_non_rel != 0 AND col_num_of_emp = 0
+        UNION ALL SELECT ''col_unmatch'' WHERE (col_pre_tax_income > 0 AND col_curr_tax_payable < 0) OR (col_pre_tax_income < 0 AND col_curr_tax_payable > 0)
+        UNION ALL SELECT ''col_low_etr'' WHERE ISNULL(col_curr_tax_payable / NULLIF(col_pre_tax_income, 0), 0) < TAX_RATE
+        UNION ALL SELECT ''col_de_minimis'' WHERE col_p2_income > (10000000 * col_p2_eur_to_twd_exch) OR col_p2_pre_tax_income > ( 1000000 * col_p2_eur_to_twd_exch ) 
+        UNION ALL SELECT ''col_simplified_etr'' WHERE 
             (LEFT(T1.Period,4)=''2023'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.15) OR
             (LEFT(T1.Period,4)=''2024'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.15) OR
             (LEFT(T1.Period,4)=''2025'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.16) OR
             (LEFT(T1.Period,4)=''2026'' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.17)
-        UNION ALL SELECT ''n'' WHERE (col_p2_pre_tax_income - ((col_p2_payroll * 0.1)+ (col_p2_tangible_asset * 0.08)) >= 0)
+        UNION ALL SELECT ''col_routine_profits'' WHERE (col_p2_pre_tax_income - ((col_p2_payroll * 0.1)+ (col_p2_tangible_asset * 0.08)) >= 0)
      ) x
         WHERE 1=1 ${if(len(P_CATEGORY) == 0,"","and risk_type IN (''" + P_CATEGORY + "'')")}
     FOR XML PATH('''')
