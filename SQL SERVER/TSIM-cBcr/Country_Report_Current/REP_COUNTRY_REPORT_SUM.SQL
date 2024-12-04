@@ -1,0 +1,23 @@
+
+    SELECT 
+    T1.PERIOD,
+    T1.DATA_NAME,
+    SUM(TRY_CAST(T1.VALUE AS DECIMAL(38,0))) AS VALUE
+    FROM 
+    [dbo].[TRS_FACT_COUNTRY_REPORT] T1
+    LEFT JOIN
+    TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2
+    ON T1.ENTITY_ID = T2.ENTITY_CODE 
+    LEFT JOIN 
+    V_TRS_DIM_ENTITY T3
+    ON T1.ENTITY_ID = T3.ENTITY_ID
+    AND T3.FR_LOCALE='${fr_locale}'
+    WHERE 
+    1=1
+    AND
+    T1.REPORT_NAME = 'report1'
+    AND T1.PERIOD = '${P_PERIOD}'
+    --AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
+    ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
+    ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
+    GROUP BY T1.PERIOD, T1.DATA_NAME
