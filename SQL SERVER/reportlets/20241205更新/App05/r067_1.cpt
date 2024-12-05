@@ -1,0 +1,510 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20211223" releaseVersion="11.0.0">
+<TableDataMap>
+<TableData name="REP_DETAIL" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters>
+<Parameter>
+<Attributes name="P_DATE"/>
+<O>
+<![CDATA[2024-07]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_FISCAL_YEAR"/>
+<O>
+<![CDATA[2016-12]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_CFC"/>
+<O>
+<![CDATA[P00013_BVI]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_COMPANY"/>
+<O>
+<![CDATA[P00001_TW]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_VERSION"/>
+<O>
+<![CDATA[Per Audit]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 
+	t1.DEDUCTED_YEAR,
+	t1.DEDUCTION,
+	t1.CATEGORY
+FROM V_TRS_CFC_10Y_DEDUCTION_DETAIL t1
+WHERE FORMAT(t1.PERIOD, 'yyyy-MM') = '${P_DATE}'
+	AND YEAR(t1.FISCAL_YEAR) = '${YEAR(P_FISCAL_YEAR)}'
+	AND YEAR(t1.DEDUCTED_YEAR) != '${YEAR(P_DATE)}'
+	AND t1.ENTITY_CODE = '${P_COMPANY}'
+	AND t1.CFC_ENTITY_CODE = '${P_CFC}'
+	AND t1.SCENARIO = '${P_VERSION}']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<WebWriteContent>
+<Listener event="afterwrite">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[if(fr_submitinfo.success){
+alert("Submit Successed!")
+window.parent.FR.closeDialog();
+if(_g().parameterEl){
+window.parent._g().parameterCommit();
+}
+
+
+}
+else{
+alert("Submit Failed!")
+}
+return false;]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="afterload">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[$(document).bind("click", function(event) {
+if (event.target.className == "fr-core-panel-tool-over fr-core-panel-tool-close-down" || event.target.className == "fr-core-panel-tool-close") {
+
+_g().parameterCommit();
+
+}
+});
+
+FR_IntProj().Draw_Pipe()]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="startload">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[var toast = FR.Msg.toast;
+FR.Msg.toast = function(msg) {
+if (1 == 1) {
+return;
+} else {
+toast.call(FR.Msg, msg);
+}
+}]]></Content>
+</JavaScript>
+</Listener>
+<ToolBars/>
+<EditRowColor setColor="false"/>
+<WebWrite SheetPosition="3"/>
+<RptLocation isShowAtLeft="true"/>
+<UnloadCheck check="false"/>
+<ShowWidgets show="true"/>
+<OtherAttr autoStash="false"/>
+</WebWriteContent>
+<CSSImport>
+<![CDATA[css/template.css]]></CSSImport>
+</ReportWebAttr>
+<ElementCaseMobileAttr>
+<ElementCaseMobileAttrProvider horizontal="1" vertical="1" zoom="true" refresh="false" isUseHTML="false" isMobileCanvasSize="false" appearRefresh="false" allowFullScreen="false" allowDoubleClickOrZoom="true" functionalWhenUnactivated="false"/>
+</ElementCaseMobileAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR/>
+<FR/>
+<HC/>
+<FC/>
+<USE REPEAT="false" PAGE="false" WRITE="false"/>
+</ReportPageAttr>
+<ColumnPrivilegeControl/>
+<RowPrivilegeControl/>
+<RowHeight defaultValue="723900">
+<![CDATA[723900,1728000,1728000,1728000,723900,723900,723900,723900,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[1008000,4480560,4176000,4176000,4176000,722880,2743200,2743200,2743200,2743200,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0" s="0">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="1" s="1">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=I18N("FISCAL_YEAR")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="1" s="1">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=I18N("LOSS")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="1" s="1">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=I18N("DEDUCTION")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="1" s="1">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=I18N("SUBTOTAL")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="1" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[Conditional Formatting1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="7" r="1" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[Conditional Formatting1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="2" s="2">
+<O t="DSColumn">
+<Attributes dsName="REP_DETAIL" columnName="DEDUCTED_YEAR"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Parameters/>
+<cellSortAttr/>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="2" s="3">
+<O t="DSColumn">
+<Attributes dsName="REP_DETAIL" columnName="DEDUCTION"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[CATEGORY]]></CNAME>
+<Compare op="0">
+<O>
+<![CDATA[0]]></O>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0">
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="2" s="3">
+<O t="DSColumn">
+<Attributes dsName="REP_DETAIL" columnName="DEDUCTION"/>
+<Condition class="com.fr.data.condition.CommonCondition">
+<CNUMBER>
+<![CDATA[0]]></CNUMBER>
+<CNAME>
+<![CDATA[CATEGORY]]></CNAME>
+<Compare op="0">
+<O>
+<![CDATA[1]]></O>
+</Compare>
+</Condition>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper"/>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+<cellSortAttr>
+<sortExpressions/>
+</cellSortAttr>
+</O>
+<PrivilegeControl/>
+<Expand dir="0" leftParentDefault="false" left="B3">
+<cellSortAttr>
+<sortExpressions/>
+<sortHeader sortArea="D3"/>
+</cellSortAttr>
+</Expand>
+</C>
+<C c="4" r="2" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=C3 + D3]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="2" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="3" s="4">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=I18N("TOTAL")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="3" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=SUM(C3)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="3" r="3" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=SUM(D3)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="4" r="3" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=SUM(E3)]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<PaperSetting/>
+<FollowingTheme background="true"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+</ReportSettings>
+</ReportAttrSet>
+<PrivilegeControl/>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="true" windowPosition="1" align="0" useParamsTemplate="true" currentIndex="0"/>
+<PWTitle>
+<![CDATA[參數]]></PWTitle>
+</ReportParameterAttr>
+<StyleList>
+<Style style_name="預設" full="true" border_source="-1" imageLayout="1">
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
+<Background name="NullBackground"/>
+<Border/>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1513240" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-2500135" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-2500135" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+<Left style="1">
+<color>
+<FineColor color="-2500135" hor="-1" ver="-1"/>
+</color>
+</Left>
+<Right style="1">
+<color>
+<FineColor color="-2500135" hor="-1" ver="-1"/>
+</color>
+</Right>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.general.date.FineDateFormat">
+<![CDATA[yyyy]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-2500135" hor="-1" ver="-1"/>
+</color>
+</Top>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#0]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-2500135" hor="-1" ver="-1"/>
+</color>
+</Top>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#0]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+</StyleList>
+<DesensitizationList/>
+<DesignerVersion DesignerVersion="LAA"/>
+<PreviewType PreviewType="0"/>
+<I18NMap class="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark" pluginID="com.fr.plugin.i18n.bundle.v11" plugin-version="2.1.6">
+<Attributes languageType="0" default="" backup="en_US"/>
+<I18N key="LOSS" description="">
+<zh_TW>
+<![CDATA[虧損扣除餘額]]></zh_TW>
+<en_US>
+<![CDATA[Balance]]></en_US>
+</I18N>
+<I18N key="TOTAL" description="">
+<zh_TW>
+<![CDATA[總計]]></zh_TW>
+<en_US>
+<![CDATA[Total]]></en_US>
+</I18N>
+<I18N key="SUBTOTAL" description="">
+<zh_TW>
+<![CDATA[小計]]></zh_TW>
+<en_US>
+<![CDATA[Subtotal]]></en_US>
+</I18N>
+<I18N key="FISCAL_YEAR" description="">
+<zh_TW>
+<![CDATA[發生年度]]></zh_TW>
+<en_US>
+<![CDATA[Occurrence Year]]></en_US>
+</I18N>
+<I18N key="DEDUCTION" description="">
+<zh_TW>
+<![CDATA[減資虧損彌補]]></zh_TW>
+<en_US>
+<![CDATA[Loss Deducted]]></en_US>
+</I18N>
+</I18NMap>
+<TemplateThemeAttrMark class="com.fr.base.iofile.attr.TemplateThemeAttrMark">
+<TemplateThemeAttrMark name="經典淺灰" dark="false"/>
+</TemplateThemeAttrMark>
+<StrategyConfigsAttr class="com.fr.esd.core.strategy.persistence.StrategyConfigsAttr">
+<StrategyConfigs>
+<StrategyConfig dsName="REP_DETAIL" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+</StrategyConfigs>
+</StrategyConfigsAttr>
+<TemplateCloudInfoAttrMark class="com.fr.plugin.cloud.analytics.attr.TemplateInfoAttrMark" pluginID="com.fr.plugin.cloud.analytics.v11" plugin-version="3.31.0.20241014">
+<TemplateCloudInfoAttrMark createTime="1697441923908"/>
+</TemplateCloudInfoAttrMark>
+<TemplateIdAttMark class="com.fr.base.iofile.attr.TemplateIdAttrMark">
+<TemplateIdAttMark TemplateId="2684f53c-c278-42a9-bc01-675e1ee72086"/>
+</TemplateIdAttMark>
+</WorkBook>
