@@ -1,0 +1,2746 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WorkBook xmlVersion="20211223" releaseVersion="10.0.0">
+<TableDataMap>
+<TableData name="Search_Language" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 
+FR_LOCALE ,
+FR_LANG 
+FROM TRS_DIM_SYSTEM_LANG]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="Rep_RiskIndicator" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="ope"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_ID"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_Category"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_Frequency"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_RiskType"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 
+	t.RISK_INDICATOR_ID ,
+	t.ENTITY_TYPE_ID ,
+	t.TASK_FREQUENCY_ID ,
+	t.CREATED_BY ,
+	t.CREATED_TIME ,
+	t.UPDATED_BY ,
+	t.UPDATED_TIME ,
+	t.ID ,
+	t.RISK_INDICATOR_NAME ,
+	t."FUNCTION" ,
+	t.SCENARIO ,
+	t.RISK_INDICATOR_CATEGORY ,
+	t.DESCRIPTION ,
+	t.link,
+	t."LANGUAGE" ,
+    t.FR_LOCALE 
+FROM V_TRS_DIM_RISK_INDICATOR t
+WHERE t.FR_LOCALE='${fr_locale}'
+${if(LEN(P_Category)=0,"","AND t.ENTITY_TYPE_ID ='"+P_Category+"'")}
+${if(LEN(P_RiskType)=0,"","AND t.RISK_INDICATOR_CATEGORY ='"+P_RiskType+"'")}
+${if(LEN(P_Frequency)=0,"","AND t.TASK_FREQUENCY_ID ='"+P_Frequency+"'")}
+${if(ope="A1","AND t.LANGUAGE='' ","")}
+--upload 選出空資料
+${if(ope="A2","AND t.RISK_INDICATOR_ID IN ('"+replace(P_ID,",","','")+"')","")}]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="Dic_Status" class="com.fr.data.impl.DBTableData">
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT STATUS_ID ,
+STATUS_CODE 
+FROM TRS_DIM_STATUS]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="Dic_EntityType" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT ENTITY_TYPE_ID ,ENTITY_TYPE_NAME 
+FROM v_trs_dim_entity_type
+WHERE FR_LOCALE ='${fr_locale}']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="Dic_Frequency" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT DISTINCT
+FREQUENCY_CODE ,
+FREQUENCY_NAME 
+FROM V_TRS_DIM_TASK_FREQUENCY
+WHERE FR_LOCALE ='${fr_locale}']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="Dic_RiskType" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 
+RISK_INDICATOR_CATEGORY
+FROM V_TRS_DIM_RISK_INDICATOR  
+WHERE FR_LOCALE ='${fr_locale}']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="Dic_Indicator" class="com.fr.data.impl.DBTableData">
+<Parameters>
+<Parameter>
+<Attributes name="fr_locale"/>
+<O>
+<![CDATA[zh_TW]]></O>
+</Parameter>
+</Parameters>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 
+t.RISK_INDICATOR_ID ,
+t.RISK_INDICATOR_NAME 
+FROM TRSDB.V_TRS_DIM_RISK_INDICATOR t 
+WHERE FR_LOCALE ='${fr_locale}']]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+</TableDataMap>
+<ReportWebAttr>
+<ServerPrinter/>
+<Background name="ColorBackground" color="-1317147"/>
+<CSSImport>
+<![CDATA[css/template.css]]></CSSImport>
+</ReportWebAttr>
+<ElementCaseMobileAttr>
+<ElementCaseMobileAttrProvider horizontal="1" vertical="1" zoom="true" refresh="false" isUseHTML="false" isMobileCanvasSize="false" appearRefresh="false" allowFullScreen="false" allowDoubleClickOrZoom="true" functionalWhenUnactivated="false"/>
+</ElementCaseMobileAttr>
+<Report class="com.fr.report.worksheet.WorkSheet" name="sheet1">
+<ReportPageAttr>
+<HR F="2" T="5"/>
+<FR/>
+<HC/>
+<FC/>
+<UPFCR COLUMN="false" ROW="true"/>
+</ReportPageAttr>
+<ColumnPrivilegeControl/>
+<RowPrivilegeControl/>
+<RowHeight defaultValue="723900">
+<![CDATA[288000,288000,342900,883920,396240,1728000,1728000,576000,723900,723900,723900]]></RowHeight>
+<ColumnWidth defaultValue="2743200">
+<![CDATA[864000,579120,1463040,2286000,3840480,3840480,5676900,5181600,4152900,4038600,4114800,4000500,6057900,4000500,3840480,2926080,864000,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,2743200,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,3840480,2926080,864000,2743200]]></ColumnWidth>
+<CellElementList>
+<C c="0" r="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="1" cs="16">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_BOT]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsHTML="true"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+<C c="0" r="2">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="2" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="2" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="3" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="9" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="10" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="11" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="12" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="2" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="2" s="2">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="3">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[1 = 1]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.FRFontHighlightAction">
+<FRFont name="Dialog" style="0" size="48" foreground="-460552"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="3" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="3" s="1">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=COUNT(F7) + 7]]></Attributes>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[1 = 1]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.FRFontHighlightAction">
+<FRFont name="Arial" style="0" size="48" foreground="-1"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="3" r="3" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[1 = 1]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="4" r="3" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="5" r="3" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.report.web.button.write.AppendRowButton">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[插入列]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+<IconName>
+<![CDATA[1]]></IconName>
+<FixCell row="6" col="3"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="6" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="9" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="10" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="11" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="12" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="3" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="15" r="3" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="3" s="2">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="4">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="4" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="4" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope != "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="3" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="9" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="10" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="11" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="12" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="4" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="4" s="2">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="5">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="5" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="5" s="3">
+<O>
+<![CDATA[country_id]]></O>
+<PrivilegeControl/>
+<CellGUIAttr printBackground="false" printContent="false"/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=0]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A0"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.CheckBox">
+<Listener event="statechange" name="狀態改變1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[var flag = this.getValue();
+//獲取當前值
+var boxes = _g().getWidgetsByName("box");
+//獲取當前頁的CHECKBOX
+if (typeof(boxes[0]A) != "undefined") {
+	for (i = 0; i < boxes.length; i++) {
+		var cr = FR.cellStr2ColumnRow(boxes[i]A.options.location);
+		//獲取行列號對象
+		_g().setCellValue(0, cr.col, cr.row, flag);
+		//若控件大於1個，則全部賦值
+	}
+} else {
+	var cr = FR.cellStr2ColumnRow(boxes.options.location)
+	//獲取行列號對象
+	_g().setCellValue(0, cr.col, cr.row, flag);
+	//若控件只有1個，直接賦值
+
+}]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="boxes"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+<widgetValue>
+<O t="B">
+<![CDATA[false]]></O>
+</widgetValue>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="3" r="5" s="3">
+<O>
+<![CDATA[I18N_ID]]></O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("serial_number")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("id")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("indicator_category")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("indicator_name")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("risk_type")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="9" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("scenario")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="10" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("frequency")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="11" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("formula")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="12" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("desc")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("link")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="5" s="3">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("language")]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="5" s="1">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="5" s="2">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="6">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="6" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="6" s="4">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=0]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A0"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.CheckBox">
+<Listener event="statechange" name="全選">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[var isAllChecked = true;
+//設置標記狀態
+var boxes = _g().getWidgetsByName("box");
+//獲取CHECKBOX
+
+if (typeof(boxes[0]A) != "undefined") {
+	for (i = 0; i < boxes.length; i++) {
+		isAllChecked = boxes[i]A.getValue() == true ?
+			isAllChecked : false;
+		//只要有一個CHECKBOX沒被勾選，則全選框標記值改成false
+	}
+} else {
+	isAllChecked = boxes.getValue();
+	//若控件只有一個，則接獲取並傳給標記值
+}
+_g().setCellValue(0, 2, 5, isAllChecked);
+//標記值賦給C6儲存格]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="box"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+<widgetValue>
+<O t="B">
+<![CDATA[false]]></O>
+</widgetValue>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope!=0]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope != "A0"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand dir="0" leftParentDefault="false" left="D7"/>
+</C>
+<C c="3" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="ID"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[$ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ValueHighlightAction">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=UUID()]]></Attributes>
+</O>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<CellInsertPolicy>
+<InsertPolicy>
+<![CDATA[default]]></InsertPolicy>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=uuid()]]></Attributes>
+</O>
+</CellInsertPolicy>
+<Expand dir="0"/>
+</C>
+<C c="4" r="6" s="5">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=seq()]]></Attributes>
+</O>
+<PrivilegeControl/>
+<Expand dir="0" leftParentDefault="false" left="D7"/>
+</C>
+<C c="5" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="RISK_INDICATOR_ID"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<CellPageAttr/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[$ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<TextAttr allowBlank="false"/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<CellInsertPolicy/>
+<Expand dir="0" leftParentDefault="false" left="D7"/>
+</C>
+<C c="6" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="ENTITY_TYPE_ID"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="1">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.ComboBox">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ENTITY_TYPE_ID" viName="ENTITY_TYPE_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_EntityType]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ENTITY_TYPE_ID" viName="ENTITY_TYPE_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_EntityType]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+</Present>
+<Expand dir="0"/>
+</C>
+<C c="7" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="RISK_INDICATOR_NAME"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=2]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="8" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="RISK_INDICATOR_CATEGORY"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="1">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="9" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="SCENARIO"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=2]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="10" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="TASK_FREQUENCY_ID"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="1">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.ComboBox">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="FREQUENCY_CODE" viName="FREQUENCY_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_Frequency]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="FREQUENCY_CODE" viName="FREQUENCY_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_Frequency]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+</Present>
+<Expand dir="0"/>
+</C>
+<C c="11" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="FUNCTION"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=2]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="12" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="DESCRIPTION"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=2]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="13" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="LINK"/>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Result>
+<![CDATA[$$$]]></Result>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=2]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.form.ui.TextEditor">
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<TextAttr/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue/>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[link]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A0"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.HyperlinkHighlightAction">
+<NameJavaScriptGroup>
+<NameJavaScript name="JavaScript腳本1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters>
+<Parameter>
+<Attributes name="id"/>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=f6]]></Attributes>
+</O>
+</Parameter>
+<Parameter>
+<Attributes name="content"/>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$$$]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Content>
+<![CDATA[let stringUrl;
+if(content=='link'){
+	 stringUrl = `/App04/function/${id}.cpt`
+	 let url = "${servletURL}?reportlet="+stringUrl+"&op=write&ope=";
+	 window.parent.FS.tabPane.addItem({title:id,src:url});
+	 
+	
+}else{
+	 stringUrl =`/App04/function/${content}.cpt`
+	 let url = "${servletURL}?reportlet="+stringUrl+"&op=write&ope=";
+	 window.parent.FS.tabPane.addItem({title:content,src:url});
+	
+}
+
+
+
+
+]]></Content>
+</JavaScript>
+</NameJavaScript>
+</NameJavaScriptGroup>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性4]]></Name>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[len($$$) = 0]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A0"]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ValueHighlightAction">
+<O>
+<![CDATA[link]]></O>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand dir="0"/>
+</C>
+<C c="14" r="6" s="5">
+<O t="DSColumn">
+<Attributes dsName="Rep_RiskIndicator" columnName="FR_LOCALE"/>
+<Complex/>
+<RG class="com.fr.report.cell.cellattr.core.group.FunctionGrouper">
+<Attr divideMode="1"/>
+</RG>
+<Parameters/>
+</O>
+<PrivilegeControl/>
+<Present class="com.fr.base.present.DictPresent">
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="FR_LOCALE" viName="FR_LANG"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Search_Language]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+</Present>
+<Expand dir="0"/>
+</C>
+<C c="15" r="6" s="1">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.WidgetHighlightAction">
+<Widget class="com.fr.report.web.button.write.DeleteRowButton">
+<Listener event="afterinit" name="初始化後1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[//var n = this.options.tdDom.context.id
+//
+//$('#' + n + ' .fr-btn-up button.fr-btn-text').css({
+//	'color': '#fa8600'
+//
+//});
+//
+//$('#' + n + ' .fr-btn').css({
+//	'border-radius': '20px',
+//	'border-style': 'solid',
+//	'border-color': '#fa8600',
+//	'border-width': '1px'
+//});
+//
+//$('#' + n + ' .fr-btn-up').css({
+//	'background': 'transparent',
+//	'height': '25px'
+//
+//	
+//});]]></Content>
+</JavaScript>
+</Listener>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[刪除列]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+<IconName>
+<![CDATA[2]]></IconName>
+<FixCell row="6" col="4"/>
+</Widget>
+</HighlightAction>
+</Highlight>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[ope!=1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope != "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="16" r="6" s="2">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[$ope = "A1"]]></Formula>
+</Condition>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.ColWidthHighlightAction">
+<ColumnWidth i="432000"/>
+</HighlightAction>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
+<C c="1" r="7" s="6">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="2" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="3" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="5" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="6" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="9" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="10" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="11" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="12" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="7" s="7">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="7" s="8">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="1" r="8" cs="16">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_BORDER_SHADOW_TOP]]></Attributes>
+</O>
+<PrivilegeControl/>
+<CellGUIAttr showAsHTML="true"/>
+<CellPageAttr/>
+<Expand/>
+</C>
+</CellElementList>
+<ReportAttrSet>
+<ReportSettings headerHeight="0" footerHeight="0">
+<FrozenColumnRow columnrow="A7"/>
+<PaperSetting>
+<PaperSize width="144000000" height="42768000"/>
+<Margin top="986400" left="2743200" bottom="986400" right="2743200"/>
+</PaperSetting>
+<Background name="ColorBackground" color="-1317147"/>
+</ReportSettings>
+<Header reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Header>
+<Footer reportPageType="0">
+<Background name="NullBackground"/>
+<LeftList/>
+<CenterList/>
+<RightList/>
+</Footer>
+</ReportAttrSet>
+<ReportWriteAttr>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[Upload_Main]]></Name>
+<Attributes dsName="TRSDB"/>
+<DMLConfig class="com.fr.write.config.InsertConfig">
+<Table schema="" name="TRS_DIM_RISK_INDICATOR"/>
+<ColumnConfig name="RISK_INDICATOR_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="5" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="ENTITY_TYPE_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="6" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="TASK_FREQUENCY_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="10" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="CREATED_BY" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_USERNAME]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="CREATED_TIME" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=now()]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="LINK" isKey="false" skipUnmodified="false">
+<ColumnRow column="13" row="6"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+</DMLConfig>
+</SubmitVisitor>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[Upload_I18N]]></Name>
+<Attributes dsName="TRSDB"/>
+<DMLConfig class="com.fr.write.config.InsertConfig">
+<Table schema="" name="TRS_DIM_RISK_INDICATOR_I18N"/>
+<ColumnConfig name="ID" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=uuid()]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="RISK_INDICATOR_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="5" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="RISK_INDICATOR_NAME" isKey="false" skipUnmodified="false">
+<ColumnRow column="7" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="FUNCTION" isKey="false" skipUnmodified="false">
+<ColumnRow column="11" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="SCENARIO" isKey="false" skipUnmodified="false">
+<ColumnRow column="9" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="RISK_INDICATOR_CATEGORY" isKey="false" skipUnmodified="false">
+<ColumnRow column="8" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="DESCRIPTION" isKey="false" skipUnmodified="false">
+<ColumnRow column="12" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="LANGUAGE" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$fr_locale]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="CREATED_BY" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_USERNAME]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="CREATED_TIME" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=now()]]></Attributes>
+</O>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A1"]]></Formula>
+</Condition>
+</DMLConfig>
+</SubmitVisitor>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[Edit_Main]]></Name>
+<Attributes dsName="TRSDB"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="TRS_DIM_RISK_INDICATOR"/>
+<ColumnConfig name="RISK_INDICATOR_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="5" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="ENTITY_TYPE_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="6" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="TASK_FREQUENCY_ID" isKey="false" skipUnmodified="false">
+<ColumnRow column="10" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="UPDATED_BY" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_USERNAME]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="UPDATED_TIME" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=now()]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="LINK" isKey="false" skipUnmodified="false">
+<ColumnRow column="13" row="6"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+</DMLConfig>
+</SubmitVisitor>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[Edit_I18N]]></Name>
+<Attributes dsName="TRSDB"/>
+<DMLConfig class="com.fr.write.config.IntelliDMLConfig">
+<Table schema="" name="TRS_DIM_RISK_INDICATOR_I18N"/>
+<ColumnConfig name="RISK_INDICATOR_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="5" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="RISK_INDICATOR_NAME" isKey="false" skipUnmodified="false">
+<ColumnRow column="7" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="FUNCTION" isKey="false" skipUnmodified="false">
+<ColumnRow column="11" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="SCENARIO" isKey="false" skipUnmodified="false">
+<ColumnRow column="9" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="RISK_INDICATOR_CATEGORY" isKey="false" skipUnmodified="false">
+<ColumnRow column="8" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="DESCRIPTION" isKey="false" skipUnmodified="false">
+<ColumnRow column="12" row="6"/>
+</ColumnConfig>
+<ColumnConfig name="LANGUAGE" isKey="true" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$fr_locale]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="UPDATED_BY" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=$GP_USERNAME]]></Attributes>
+</O>
+</ColumnConfig>
+<ColumnConfig name="UPDATED_TIME" isKey="false" skipUnmodified="false">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=now()]]></Attributes>
+</O>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A2"]]></Formula>
+</Condition>
+</DMLConfig>
+</SubmitVisitor>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[Delete_Main]]></Name>
+<Attributes dsName="TRSDB"/>
+<DMLConfig class="com.fr.write.config.DeleteConfig">
+<Table schema="" name="TRS_DIM_RISK_INDICATOR"/>
+<ColumnConfig name="RISK_INDICATOR_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="5" row="6"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A0"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[C7 = true]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+</DMLConfig>
+</SubmitVisitor>
+<SubmitVisitor class="com.fr.report.write.BuiltInSQLSubmiter">
+<Name>
+<![CDATA[Delete_I18N]]></Name>
+<Attributes dsName="TRSDB"/>
+<DMLConfig class="com.fr.write.config.DeleteConfig">
+<Table schema="" name="TRS_DIM_RISK_INDICATOR_I18N"/>
+<ColumnConfig name="RISK_INDICATOR_ID" isKey="true" skipUnmodified="false">
+<ColumnRow column="5" row="6"/>
+</ColumnConfig>
+<Condition class="com.fr.data.condition.ListCondition">
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[ope = "A0"]]></Formula>
+</Condition>
+</JoinCondition>
+<JoinCondition join="0">
+<Condition class="com.fr.data.condition.FormulaCondition">
+<Formula>
+<![CDATA[C7 = true]]></Formula>
+</Condition>
+</JoinCondition>
+</Condition>
+</DMLConfig>
+</SubmitVisitor>
+<TopVerifier class="com.fr.report.write.ValueVerifier">
+<name>
+<![CDATA[內建校驗1]]></name>
+<VerifyItem class="com.fr.data.VerifyItem">
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=IF($ope = "A1", F7 != Dic_Indicator.select(id, id = F7), true)]]></Attributes>
+</O>
+<message>
+<![CDATA[="This code exists"]]></message>
+</VerifyItem>
+</TopVerifier>
+</ReportWriteAttr>
+<PrivilegeControl/>
+</Report>
+<ReportParameterAttr>
+<Attributes showWindow="true" delayPlaying="false" windowPosition="1" align="0" useParamsTemplate="false" currentIndex="6"/>
+<PWTitle>
+<![CDATA[參數]]></PWTitle>
+<ParameterUI class="com.fr.form.main.parameter.FormParameterUI">
+<Parameters/>
+<Layout class="com.fr.form.ui.container.WParameterLayout">
+<Listener event="afterinit" name="初始化後1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters>
+<Parameter>
+<Attributes name="ope"/>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=ope]]></Attributes>
+</O>
+</Parameter>
+</Parameters>
+<Content>
+<![CDATA[var search = this.options.form.getWidgetByName("BTN_SEARCH");
+var edit_record= this.options.form.getWidgetByName("BTN_EDIT_RECORD");
+var upload_data = this.options.form.getWidgetByName("BTN_UPLOAD_DATA");
+var delete_record = this.options.form.getWidgetByName("BTN_DELETE_RECORD");
+var submit = this.options.form.getWidgetByName("BTN_SUBMIT");
+var import_data = this.options.form.getWidgetByName("BTN_IMPORT");
+
+let category =this.options.form.getWidgetByName("P_Category");
+let categoryLabel =this.options.form.getWidgetByName("P_Category_label");
+let riskType =this.options.form.getWidgetByName("P_RiskType");
+let riskTypeLabel =this.options.form.getWidgetByName("P_RiskType_label");
+let frequency =this.options.form.getWidgetByName("P_Frequency");
+let frequencyLabel =this.options.form.getWidgetByName("P_Frequency_label");
+let download=this.options.form.getWidgetByName("download");
+
+
+//var country = this.options.form.getWidgetByName("P_COMPANY");
+//var country_l =this.options.form.getWidgetByName("LABEL_P_COMPANY");
+//var fr_locale =this.options.form.getWidgetByName("fr_locale");
+//var LABEL_LANGUAGE= this.options.form.getWidgetByName("LABEL_LANGUAGE");
+
+if(ope==="A0"){
+	search.setVisible(true);
+	upload_data.setVisible(true);
+	edit_record.setVisible(true);
+	delete_record.setVisible(true);
+
+	category.setVisible(true);
+	categoryLabel.setVisible(true);
+	riskType.setVisible(true);
+	riskTypeLabel.setVisible(true);
+	frequency.setVisible(true);
+	frequencyLabel.setVisible(true);
+	download.setVisible(true);
+	//country.setVisible(true);
+	//country_l.setVisible(true);
+	//LABEL_LANGUAGE.setVisible(true);
+	//fr_locale.setVisible(true);
+}else if(ope==="A1"){
+	submit.setVisible(true);
+	import_data.setVisible(true);
+	//LABEL_LANGUAGE.setVisible(true);
+	//fr_locale.setVisible(true);
+}else if(ope==="A2"){
+	submit.setVisible(true);
+	//LABEL_LANGUAGE.setVisible(true);
+	//fr_locale.setVisible(true);
+	
+}
+]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="para"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Margin top="0" left="0" bottom="0" right="0"/>
+<Border>
+<border style="0" color="-723724" borderRadius="0" type="0" borderStyle="0"/>
+<WidgetTitle>
+<O>
+<![CDATA[新增標題]]></O>
+<FRFont name="PMingLiU" style="0" size="72"/>
+<Position pos="0"/>
+</WidgetTitle>
+<Alpha alpha="1.0"/>
+</Border>
+<Background name="ColorBackground" color="-1317147"/>
+<LCAttr vgap="0" hgap="0" compInterval="0"/>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LAB_TITLE"/>
+<WidgetID widgetID="207cc681-6a13-4404-aa1d-fba72981ce88"/>
+<WidgetAttr aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("title")]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="2" autoline="true"/>
+<FRFont name="SimSun" style="1" size="96"/>
+<border style="0" color="-723724"/>
+</InnerWidget>
+<BoundsAttr x="30" y="15" width="130" height="40"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.NameWidget">
+<WidgetName name="BTN_IMPORT"/>
+<WidgetID widgetID="af0903a0-3318-40d1-8f95-ad61507054ae"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Name>
+<![CDATA[BTN_IMPORT]]></Name>
+</InnerWidget>
+<BoundsAttr x="1150" y="50" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.NameWidget">
+<WidgetName name="download"/>
+<WidgetID widgetID="551520d6-4e1a-4788-98e3-ee7ffc89e95f"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Name>
+<![CDATA[Export_Excel]]></Name>
+</InnerWidget>
+<BoundsAttr x="1150" y="10" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="P_Frequency"/>
+<LabelName name="=i18n(&quot;frequency&quot;) + &quot;: &quot;"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="FREQUENCY_CODE" viName="FREQUENCY_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_Frequency]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="560" y="10" width="100" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="P_Frequency_label"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("frequency") + ": "]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="4" autoline="true"/>
+<FRFont name="微軟正黑體" style="0" size="72"/>
+<border style="0" color="-723724"/>
+</InnerWidget>
+<BoundsAttr x="500" y="10" width="60" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="P_RiskType"/>
+<LabelName name="=i18n(&quot;risk_type&quot;) + &quot;: &quot;"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="RISK_INDICATOR_CATEGORY" viName="RISK_INDICATOR_CATEGORY"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_RiskType]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="400" y="10" width="100" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="P_RiskType_label"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("risk_type") + ": "]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="4" autoline="true"/>
+<FRFont name="微軟正黑體" style="0" size="72"/>
+<border style="0" color="-723724"/>
+</InnerWidget>
+<BoundsAttr x="340" y="10" width="60" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.TextEditor">
+<WidgetName name="ope"/>
+<LabelName name="=i18n(&quot;status_code&quot;) + &quot;: &quot;"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<allowBlank>
+<![CDATA[false]]></allowBlank>
+<TextAttr allowBlank="false"/>
+<Reg class="com.fr.form.ui.reg.NoneReg"/>
+<widgetValue>
+<O>
+<![CDATA[A0]]></O>
+</widgetValue>
+<MobileScanCodeAttr scanCode="true" textInputMode="0"/>
+</InnerWidget>
+<BoundsAttr x="506" y="41" width="104" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<Listener event="afteredit" name="編輯後1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[_g().parameterCommit();]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="fr_locale"/>
+<LabelName name="=i18n(&quot;language&quot;)+&quot;: &quot;"/>
+<WidgetID widgetID="7cda2116-3375-443e-b730-eaf06ae149f8"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="FR_LOCALE" viName="FR_LANG"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Search_Language]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="240" y="39" width="100" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="LABEL_LANGUAGE"/>
+<WidgetID widgetID="4bf5d2a3-ea0b-46b5-b8cf-66d04badf12c"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("language")+": "]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="4" autoline="true"/>
+<FRFont name="微軟正黑體" style="0" size="72"/>
+<border style="0" color="-723724"/>
+</InnerWidget>
+<BoundsAttr x="160" y="39" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboBox">
+<WidgetName name="P_Category"/>
+<LabelName name="=i18n(&quot;indicator_category&quot;) + &quot;: &quot;"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Dictionary class="com.fr.data.impl.TableDataDictionary">
+<FormulaDictAttr kiName="ENTITY_TYPE_ID" viName="ENTITY_TYPE_NAME"/>
+<TableDataDictAttr>
+<TableData class="com.fr.data.impl.NameTableData">
+<Name>
+<![CDATA[Dic_EntityType]]></Name>
+</TableData>
+</TableDataDictAttr>
+</Dictionary>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+</InnerWidget>
+<BoundsAttr x="240" y="10" width="100" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.Label">
+<WidgetName name="P_Category_label"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O t="XMLable" class="com.fr.base.Formula">
+<Attributes>
+<![CDATA[=i18n("indicator_category") + ": "]]></Attributes>
+</O>
+</widgetValue>
+<LabelAttr verticalcenter="true" textalign="4" autoline="true"/>
+<FRFont name="微軟正黑體" style="0" size="72"/>
+<border style="0" color="-723724"/>
+</InnerWidget>
+<BoundsAttr x="160" y="10" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.FreeButton">
+<Listener event="click" name="點擊1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[contentPane.verifyAndWriteReport();]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="BTN_SUBMIT"/>
+<LabelName name="=i18n(&quot;status_code&quot;) + &quot;: &quot;"/>
+<WidgetID widgetID="4eafb0ab-43a2-440f-96c2-b3fcef86c666"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[=i18n("submit_enter")]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="1060" y="10" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.FreeButton">
+<Listener event="click" name="點擊1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[var result = confirm("Want to Delete Selected Record(s)?");
+if(result == true){
+	/*alert("Record(s) Deleted.");//共用填報後事件  */
+	contentPane.verifyAndWriteReport();
+	_g().parameterCommit();
+}else{
+	_g().parameterCommit();
+}
+]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="BTN_DELETE_RECORD"/>
+<LabelName name="=i18n(&quot;language&quot;)+&quot;: &quot;"/>
+<WidgetID widgetID="24b13eb0-0d41-457f-ac4f-6f7d3d26cd42"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[=i18n("delete_record")]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="1060" y="10" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.ComboCheckBox">
+<WidgetName name="P_ID"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<widgetValue>
+<O>
+<![CDATA[]]></O>
+</widgetValue>
+<RAAttr/>
+</InnerWidget>
+<BoundsAttr x="626" y="41" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.FreeButton">
+<Listener event="click" name="點擊1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[var iframe = $("<iframe id='inp' name='inp' width='100%' height='100%' scrolling-'yes' frameborder='0'>");
+var locale = this.options.form.getWidgetByName("fr_locale").getValue()
+var P_ID = []A;
+
+
+
+for (var i = 7; i <= contentPane.curLGP.getCellValue("C4"); i++) {
+	if (contentPane.curLGP.getCellValue("F" + i).length = 0) {
+		
+		break
+		
+	}
+	if (contentPane.curLGP.getCellValue("C" + i) === true) {
+		P_ID.push(contentPane.curLGP.getCellValue("F" + i));
+	}
+}
+
+if(P_ID.length == 0){
+	alert("No record selected!")
+	return
+}
+
+var url = "${GP_RELATIVE_LINK}&op=write&ope=A2&fr_locale="+locale+"&P_ID=" + P_ID;
+iframe.attr("src", url);
+
+var o = {
+	title: "Edit Record",
+	width: 1350,
+	height: 600
+};
+
+FR.showDialog(o.title, o.width, o.height, iframe, o);
+$('.fr-core-window-header').css("background", "#D04A02")
+$(".fr-core-panel-tool-close").css("top","5px");
+//按鈕close，放css不生效]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="BTN_EDIT_RECORD"/>
+<WidgetID widgetID="24b13eb0-0d41-457f-ac4f-6f7d3d26cd42"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[=i18n("edit_record")]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="970" y="10" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.ui.FreeButton">
+<Listener event="click" name="點擊1">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[var iframe = $("<iframe id='inp' name='inp' width='100%' height='100%' scrolling-'yes' frameborder='0'>");
+var locale = this.options.form.getWidgetByName("fr_locale").getValue()
+var url ="${GP_RELATIVE_LINK}&op=write&ope=A1&fr_locale="+locale
+iframe.attr("src", url);
+
+var o = {
+	title: "Upload Data",
+	width: 1350,
+	height: 600
+};
+FR.showDialog(o.title, o.width, o.height, iframe, o);
+$('.fr-core-window-header').css("background", "#D04A02");
+$(".fr-core-panel-tool-close").css("top","5px");
+//按鈕close，放css不生效
+//$('.fr-core-panel-tool-close').css("background", "yellow");]]></Content>
+</JavaScript>
+</Listener>
+<WidgetName name="BTN_UPLOAD_DATA"/>
+<LabelName name="=i18n(&quot;status_code&quot;) + &quot;: &quot;"/>
+<WidgetID widgetID="24b13eb0-0d41-457f-ac4f-6f7d3d26cd42"/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[=i18n("upload_record")]]></Text>
+<Hotkeys>
+<![CDATA[]]></Hotkeys>
+</InnerWidget>
+<BoundsAttr x="880" y="10" width="80" height="21"/>
+</Widget>
+<Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
+<InnerWidget class="com.fr.form.parameter.FormSubmitButton">
+<WidgetName name="BTN_SEARCH"/>
+<LabelName name="運貨商: "/>
+<WidgetAttr invisible="true" aspectRatioLocked="false" aspectRatioBackup="-1.0" description="">
+<MobileBookMark useBookMark="false" bookMarkName="" frozen="false"/>
+<PrivilegeControl/>
+</WidgetAttr>
+<Text>
+<![CDATA[=i18n("search_enter")]]></Text>
+<Hotkeys>
+<![CDATA[enter]]></Hotkeys>
+<initial>
+<Background name="ColorBackground" color="-3126782"/>
+</initial>
+<over>
+<Background name="ColorBackground" color="-3126782"/>
+</over>
+<click>
+<Background name="ColorBackground" color="-3126782"/>
+</click>
+<FRFont name="Microsoft JhengHei UI" style="0" size="72" foreground="-1"/>
+<isCustomType isCustomType="true"/>
+</InnerWidget>
+<BoundsAttr x="670" y="10" width="100" height="21"/>
+</Widget>
+<ShowBookmarks showBookmarks="false"/>
+<Sorted sorted="false"/>
+<MobileWidgetList>
+<Widget widgetName="P_Category"/>
+<Widget widgetName="P_RiskType"/>
+<Widget widgetName="P_Frequency"/>
+<Widget widgetName="BTN_SEARCH"/>
+<Widget widgetName="BTN_UPLOAD_DATA"/>
+<Widget widgetName="BTN_EDIT_RECORD"/>
+<Widget widgetName="BTN_DELETE_RECORD"/>
+<Widget widgetName="download"/>
+<Widget widgetName="fr_locale"/>
+<Widget widgetName="ope"/>
+<Widget widgetName="P_ID"/>
+<Widget widgetName="BTN_IMPORT"/>
+</MobileWidgetList>
+<FrozenWidgets/>
+<MobileBookMarkStyle class="com.fr.form.ui.mobile.impl.DefaultMobileBookMarkStyle"/>
+<Display display="true"/>
+<DelayDisplayContent delay="false"/>
+<UseParamsTemplate use="false"/>
+<Position position="0"/>
+<Design_Width design_width="1250"/>
+<NameTagModified>
+<TagModified tag="P_Frequency" modified="true"/>
+<TagModified tag="ope" modified="true"/>
+<TagModified tag="BTN_SUBMIT" modified="true"/>
+<TagModified tag="P_Category" modified="true"/>
+<TagModified tag="P_RiskType" modified="true"/>
+<TagModified tag="BTN_DELETE_RECORD" modified="true"/>
+<TagModified tag="BTN_UPLOAD_DATA" modified="true"/>
+<TagModified tag="fr_locale" modified="true"/>
+</NameTagModified>
+<WidgetNameTagMap>
+<NameTag name="P_Frequency" tag="=i18n(&quot;frequency&quot;) + &quot;: &quot;"/>
+<NameTag name="ope" tag="=i18n(&quot;status_code&quot;) + &quot;: &quot;"/>
+<NameTag name="BTN_SUBMIT" tag="=i18n(&quot;status_code&quot;) + &quot;: &quot;"/>
+<NameTag name="P_Category" tag="=i18n(&quot;indicator_category&quot;) + &quot;: &quot;"/>
+<NameTag name="P_RiskType" tag="=i18n(&quot;risk_type&quot;) + &quot;: &quot;"/>
+<NameTag name="BTN_DELETE_RECORD" tag="=i18n(&quot;language&quot;)+&quot;: &quot;"/>
+<NameTag name="BTN_UPLOAD_DATA" tag="=i18n(&quot;status_code&quot;) + &quot;: &quot;"/>
+<NameTag name="fr_locale" tag="=i18n(&quot;language&quot;)+&quot;: &quot;"/>
+</WidgetNameTagMap>
+<ParamAttr class="com.fr.report.mobile.DefaultMobileParamStyle"/>
+<ParamStyle class="com.fr.form.ui.mobile.impl.DefaultMobileParameterStyle"/>
+</Layout>
+<DesignAttr width="1250" height="100"/>
+</ParameterUI>
+<Parameter>
+<Attributes name="ope"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_ID"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Parameter>
+<Attributes name="P_CARRIER"/>
+<O>
+<![CDATA[]]></O>
+</Parameter>
+<Background name="ColorBackground" color="-1317147"/>
+</ReportParameterAttr>
+<StyleList>
+<Style imageLayout="1">
+<FRFont name="PMingLiU" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Left style="1" color="-2172456"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="PMingLiU" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="PMingLiU" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Right style="1" color="-2172456"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="Microsoft JhengHei UI" style="1" size="72"/>
+<Background name="ColorBackground" color="-1513240"/>
+<Border>
+<Top style="1" color="-986896"/>
+<Bottom style="1" color="-986896"/>
+</Border>
+</Style>
+<Style horizontal_alignment="0" imageLayout="1">
+<FRFont name="Microsoft JhengHei UI" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Top style="1" color="-986896"/>
+<Bottom style="1" color="-986896"/>
+</Border>
+</Style>
+<Style horizontal_alignment="2" imageLayout="1" paddingLeft="6" paddingRight="6">
+<FRFont name="Microsoft JhengHei UI" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Top style="1" color="-986896"/>
+<Bottom style="1" color="-986896"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="Microsoft JhengHei" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Left style="1" color="-2172456"/>
+</Border>
+</Style>
+<Style imageLayout="1">
+<FRFont name="Microsoft JhengHei" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border/>
+</Style>
+<Style imageLayout="1">
+<FRFont name="Microsoft JhengHei" style="0" size="72"/>
+<Background name="ColorBackground" color="-1"/>
+<Border>
+<Right style="1" color="-2172456"/>
+</Border>
+</Style>
+</StyleList>
+<DesignerVersion DesignerVersion="KAA"/>
+<PreviewType PreviewType="1"/>
+<I18NMap class="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark" pluginID="com.fr.plugin.i18n.bundle" plugin-version="1.7">
+<Attributes languageType="0" default="" backup="en_US"/>
+<I18N key="serial_number" description="">
+<zh_TW>
+<![CDATA[序號]]></zh_TW>
+<en_US>
+<![CDATA[Serial number]]></en_US>
+</I18N>
+<I18N key="indicator_category" description="">
+<zh_TW>
+<![CDATA[指標對象類別]]></zh_TW>
+<en_US>
+<![CDATA[Indicator category]]></en_US>
+</I18N>
+<I18N key="indicator_name" description="">
+<zh_TW>
+<![CDATA[指標名稱]]></zh_TW>
+<en_US>
+<![CDATA[Indicator name]]></en_US>
+</I18N>
+<I18N key="risk_type" description="">
+<zh_TW>
+<![CDATA[風險類型]]></zh_TW>
+<en_US>
+<![CDATA[Risk type]]></en_US>
+</I18N>
+<I18N key="scenario" description="">
+<zh_TW>
+<![CDATA[評估場景]]></zh_TW>
+<en_US>
+<![CDATA[Evaluation scenario]]></en_US>
+</I18N>
+<I18N key="frequency" description="">
+<zh_TW>
+<![CDATA[頻率]]></zh_TW>
+<en_US>
+<![CDATA[Frequency]]></en_US>
+</I18N>
+<I18N key="formula" description="">
+<zh_TW>
+<![CDATA[指標計算公式]]></zh_TW>
+<en_US>
+<![CDATA[Formula]]></en_US>
+</I18N>
+<I18N key="desc" description="">
+<zh_TW>
+<![CDATA[指標描述]]></zh_TW>
+<en_US>
+<![CDATA[Description]]></en_US>
+</I18N>
+<I18N key="automatic" description="">
+<zh_TW>
+<![CDATA[是否自動]]></zh_TW>
+<en_US>
+<![CDATA[Automatic]]></en_US>
+</I18N>
+<I18N key="download" description="">
+<zh_TW>
+<![CDATA[下載]]></zh_TW>
+<en_US>
+<![CDATA[Download]]></en_US>
+</I18N>
+<I18N key="id" description="">
+<zh_TW>
+<![CDATA[編號]]></zh_TW>
+<en_US>
+<![CDATA[ID]]></en_US>
+</I18N>
+<I18N key="export_excel" description="">
+<zh_TW>
+<![CDATA[下載]]></zh_TW>
+<en_US>
+<![CDATA[Export ]]></en_US>
+</I18N>
+<I18N key="registration_date" description="注冊時間">
+<zh_CN>
+<![CDATA[注册时间]]></zh_CN>
+<zh_TW>
+<![CDATA[注冊時間]]></zh_TW>
+<en_US>
+<![CDATA[Registration date]]></en_US>
+</I18N>
+<I18N key="company_name" description="公司名称">
+<zh_CN>
+<![CDATA[公司名称]]></zh_CN>
+<zh_TW>
+<![CDATA[公司名稱]]></zh_TW>
+<en_US>
+<![CDATA[Company name]]></en_US>
+</I18N>
+<I18N key="link" description="">
+<zh_TW>
+<![CDATA[連結]]></zh_TW>
+<en_US>
+<![CDATA[Link]]></en_US>
+</I18N>
+<I18N key="registration_address" description="注册地址">
+<zh_CN>
+<![CDATA[注册地址]]></zh_CN>
+<zh_TW>
+<![CDATA[注冊地址]]></zh_TW>
+<en_US>
+<![CDATA[Registration address]]></en_US>
+</I18N>
+<I18N key="language" description="語言">
+<zh_CN>
+<![CDATA[语言]]></zh_CN>
+<zh_TW>
+<![CDATA[語言]]></zh_TW>
+<en_US>
+<![CDATA[Language]]></en_US>
+</I18N>
+<I18N key="submit_enter" description="提交">
+<zh_CN>
+<![CDATA[提交]]></zh_CN>
+<zh_TW>
+<![CDATA[提交]]></zh_TW>
+<en_US>
+<![CDATA[Submit]]></en_US>
+</I18N>
+<I18N key="edit_record" description="編輯">
+<zh_CN>
+<![CDATA[编辑]]></zh_CN>
+<zh_TW>
+<![CDATA[編輯]]></zh_TW>
+<en_US>
+<![CDATA[Edit]]></en_US>
+</I18N>
+<I18N key="delete_record" description="删除记录">
+<zh_CN>
+<![CDATA[删除记录]]></zh_CN>
+<zh_TW>
+<![CDATA[刪除記錄]]></zh_TW>
+<en_US>
+<![CDATA[Delete]]></en_US>
+</I18N>
+<I18N key="upload_record" description="上傳資料">
+<zh_CN>
+<![CDATA[新增数据]]></zh_CN>
+<zh_TW>
+<![CDATA[新增資料]]></zh_TW>
+<en_US>
+<![CDATA[Upload]]></en_US>
+</I18N>
+<I18N key="search_enter" description="搜寻">
+<zh_CN>
+<![CDATA[搜寻]]></zh_CN>
+<zh_TW>
+<![CDATA[搜尋]]></zh_TW>
+<en_US>
+<![CDATA[Search]]></en_US>
+</I18N>
+<I18N key="import_excel" description="匯入Excel">
+<zh_CN>
+<![CDATA[导入Excel]]></zh_CN>
+<zh_TW>
+<![CDATA[匯入Excel]]></zh_TW>
+<en_US>
+<![CDATA[Import excel]]></en_US>
+</I18N>
+<I18N key="entity_code" description="主体代码">
+<zh_CN>
+<![CDATA[主体代码]]></zh_CN>
+<zh_TW>
+<![CDATA[主體代碼]]></zh_TW>
+<en_US>
+<![CDATA[Entity code]]></en_US>
+</I18N>
+<I18N key="entity_name" description="主體名稱">
+<zh_CN>
+<![CDATA[主体名称]]></zh_CN>
+<zh_TW>
+<![CDATA[主體名稱]]></zh_TW>
+<en_US>
+<![CDATA[Entity name]]></en_US>
+</I18N>
+<I18N key="entity_type" description="主體類型">
+<zh_CN>
+<![CDATA[主体类型]]></zh_CN>
+<zh_TW>
+<![CDATA[主體類型]]></zh_TW>
+<en_US>
+<![CDATA[Entity type]]></en_US>
+</I18N>
+<I18N key="country_name" description="国家名称">
+<zh_CN>
+<![CDATA[国家名称]]></zh_CN>
+<zh_TW>
+<![CDATA[國家名稱]]></zh_TW>
+<en_US>
+<![CDATA[Country name]]></en_US>
+</I18N>
+<I18N key="region" description="地區">
+<zh_CN>
+<![CDATA[地区]]></zh_CN>
+<zh_TW>
+<![CDATA[地區]]></zh_TW>
+<en_US>
+<![CDATA[Region]]></en_US>
+</I18N>
+<I18N key="status_description" description="狀態描述">
+<zh_CN>
+<![CDATA[状态描述]]></zh_CN>
+<zh_TW>
+<![CDATA[狀態描述]]></zh_TW>
+<en_US>
+<![CDATA[Status description]]></en_US>
+</I18N>
+<I18N key="sales_function" description="功能定位">
+<zh_CN>
+<![CDATA[功能定位]]></zh_CN>
+<zh_TW>
+<![CDATA[功能定位]]></zh_TW>
+<en_US>
+<![CDATA[Sales function]]></en_US>
+</I18N>
+<I18N key="module" description="用途">
+<zh_CN>
+<![CDATA[用途]]></zh_CN>
+<zh_TW>
+<![CDATA[用途]]></zh_TW>
+<en_US>
+<![CDATA[Module]]></en_US>
+</I18N>
+<I18N key="status_key" description="狀態鍵">
+<zh_CN>
+<![CDATA[状态键]]></zh_CN>
+<zh_TW>
+<![CDATA[狀態鍵]]></zh_TW>
+<en_US>
+<![CDATA[Status code]]></en_US>
+</I18N>
+<I18N key="status_name" description="状态名称">
+<zh_CN>
+<![CDATA[状态名称]]></zh_CN>
+<zh_TW>
+<![CDATA[狀態名稱]]></zh_TW>
+<en_US>
+<![CDATA[Status name]]></en_US>
+</I18N>
+<I18N key="status_code" description="状态代码">
+<zh_CN>
+<![CDATA[状态代码]]></zh_CN>
+<zh_TW>
+<![CDATA[狀態代碼]]></zh_TW>
+<en_US>
+<![CDATA[Status code]]></en_US>
+</I18N>
+</I18NMap>
+<TemplateIdAttMark class="com.fr.base.iofile.attr.TemplateIdAttrMark">
+<TemplateIdAttMark TemplateId="eb58ee6b-a4a6-4188-8de0-253557c27826"/>
+</TemplateIdAttMark>
+<TemplateCloudInfoAttrMark class="com.fr.plugin.cloud.analytics.attr.TemplateInfoAttrMark" pluginID="com.fr.plugin.cloud.analytics.v10" plugin-version="2.7.0.20220615">
+<TemplateCloudInfoAttrMark createTime="1645076805755"/>
+</TemplateCloudInfoAttrMark>
+</WorkBook>
