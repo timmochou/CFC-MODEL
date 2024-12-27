@@ -1,0 +1,55 @@
+-- 先刪除已存在的表（如果需要的話）
+IF OBJECT_ID('TEMP_CALCULATE_INV_CONTROL1', 'U') IS NOT NULL 
+    DROP TABLE TEMP_CALCULATE_INV_CONTROL1
+
+-- 創建新表
+CREATE TABLE TEMP_CALCULATE_INV_CONTROL1 (
+    ROUTES_ID VARCHAR(255) NOT NULL,
+    STARTING_ENTITY VARCHAR(255),
+    entity VARCHAR(255),
+    inv_entity VARCHAR(255),
+    ratio FLOAT,
+    LEVELS INT,
+    MAX_INV_LEVEL INT
+)
+
+-- 先刪除已存在的表（如果需要的話）
+IF OBJECT_ID('TEMP2', 'U') IS NOT NULL 
+    DROP TABLE TEMP1
+
+-- 創建新表
+CREATE TABLE TEMP2 (
+        ROUTES_ID       VARCHAR(255),
+        STARTING_ENTITY VARCHAR(50),
+        ENTITY          VARCHAR(50),
+        INV_ENTITY      VARCHAR(50),
+        RATIO           FLOAT,
+        MULTIPLIER      FLOAT,
+        ACC_RATIO       FLOAT,
+        LEVELS          INT,
+        MAX_INV_LEVEL   INT
+)
+
+CREATE TABLE TEMP_TRS_FACT_INV_CONTROL(
+	ID varchar(36) COLLATE Chinese_Taiwan_Stroke_CI_AS NOT NULL,
+	PERIOD date NULL,
+	ENTITY_CODE nvarchar(255) COLLATE Chinese_Taiwan_Stroke_CI_AS NULL,
+	INV_ENTITY_CODE nvarchar(255) COLLATE Chinese_Taiwan_Stroke_CI_AS NULL,
+	UPDATED_TIME datetime NULL,
+	RATIO_SUM decimal(24,5) NULL,
+	RATIO_DIRECT decimal(24,5) NULL,
+	RATIO_INDIRECT decimal(24,5) NULL,
+);
+
+
+-- 插入數據
+INSERT INTO TEMP1
+SELECT 
+ROUTES_ID,
+STARTING_ENTITY, 
+entity, 
+inv_entity, 
+ratio, 
+LEVELS,
+MAX_INV_LEVEL
+FROM T2_DEFER
