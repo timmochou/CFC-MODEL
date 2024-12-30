@@ -1,5 +1,4 @@
-CREATE PROCEDURE P_CALC_MAX_LEVEL
-AS
+CREATE PROCEDURE P_CALC_MAX_LEVEL @PARA VARCHAR(255), @P_DATE DATE AS
 BEGIN
 --先檢查這兩張表是否存在且有數據，有的話清空
     IF OBJECT_ID('TEMP_CALCULATE_INV_CONTROL1') IS NOT NULL 
@@ -19,7 +18,7 @@ WITH parent as(
         1 AS ratio FROM TRS_FACT_GROUP_INV_REL 
         WHERE RATIO_HOLD >=0.5
         --判斷是否為母公司
-        AND CAST('2023-12-31' AS DATE) BETWEEN START_DATE AND END_DATE
+        AND @P_DATE BETWEEN START_DATE AND END_DATE
         --日期在起訖日間
         )
         ,PARENT_ROUTE(ROUTES_ID,STARTING_ENTITY, entity, PARENT, ratio, LEVELS) AS (
@@ -31,7 +30,7 @@ WITH parent as(
         ratio,
         1 AS LEVELS
         FROM PARENT
-        WHERE ENTITY = 'WHL' --用參數控制
+        WHERE ENTITY = @PARA --用參數控制
         UNION ALL
         SELECT 
         CAST(ip.ROUTES_ID + '-' + i.PARENT AS VARCHAR(255)) AS ROUTES_ID ,
@@ -49,8 +48,8 @@ WITH parent as(
         INV_ENTITY_CODE AS RELATION,
         CAST(1 AS DECIMAL(24,7)) AS RATIO
         FROM TRS_FACT_REL_PARTY_INFO 
-        WHERE ENTITY_CODE = 'WHL' --用參數控制
-        AND PERIOD = YEAR(CAST('2023-12-31' AS DATE))
+        WHERE ENTITY_CODE = @PARA --用參數控制
+        AND PERIOD = YEAR(@P_DATE)
         --  判斷當年度是否為關係人
         ) --SELECT * FROM RELATIONS
         ,INVEST1 AS(
@@ -63,8 +62,8 @@ WITH parent as(
         LEFT JOIN PARENT_ROUTE t2 ON t1.ENTITY_CODE = t2.PARENT AND t1.INV_ENTITY_CODE = t2.ENTITY
         WHERE t2.ENTITY IS NULL
         AND INV_ENTITY_CODE NOT IN (SELECT PARENT FROM PARENT_ROUTE)
-        AND INV_ENTITY_CODE != 'WHL'
-        AND CAST('2023-12-31' AS DATE) BETWEEN START_DATE AND END_DATE
+        AND INV_ENTITY_CODE != @PARA
+        AND @P_DATE BETWEEN START_DATE AND END_DATE
         UNION ALL
         SELECT 
         ENTITY,
@@ -87,7 +86,7 @@ WITH parent as(
         ratio,
         1 AS LEVELS
         FROM INVEST1
-        WHERE  ENTITY = 'WHL' --用參數控制
+        WHERE  ENTITY = @PARA --用參數控制
         UNION ALL
         SELECT 
         CAST(ip.ROUTES_ID+'-'+i.inv_entity AS VARCHAR(255)) AS ROUTES_ID ,
@@ -167,10 +166,10 @@ WITH parent as(
     STARTING_ENTITY, 
     entity, 
     inv_entity, 
-    CAST(ratio AS FLOAT) AS RATIO,
+    RATIO,
     CASE WHEN ratio>=0.5 THEN 1
-    ELSE CAST(ratio AS FLOAT) END AS MULTIPLIER,
-    CAST(ratio AS FLOAT) AS ACC_RATIO,
+    ELSE ratio  END AS MULTIPLIER,
+    ratio AS  ACC_RATIO,
     LEVELS ,
     MAX_INV_LEVEL
     FROM TEMP_CALCULATE_INV_CONTROL1
@@ -204,8 +203,8 @@ WITH parent as(
             T1.INV_ENTITY,
             CASE 
                 WHEN T1.ENTITY = T1.INV_ENTITY 
-                     THEN CAST(T1.RATIO AS FLOAT)
-                ELSE CAST(T1.RATIO * T2.MULTIPLIER AS FLOAT)
+                     THEN T1.RATIO 
+                ELSE T1.RATIO * T2.MULTIPLIER
             END AS RATIO,
             CASE WHEN 
                 (
@@ -231,7 +230,7 @@ WITH parent as(
                              END
                            ) OVER (PARTITION BY T1.STARTING_ENTITY, T1.INV_ENTITY)
                        WHEN T1.LEVELS != T1.MAX_INV_LEVEL 
-                       THEN CAST(T1.RATIO AS FLOAT)
+                       THEN T1.RATIO 
                   END
                 )
             END AS MULTIPLIER,
@@ -241,9 +240,9 @@ WITH parent as(
                             THEN T1.RATIO 
                             ELSE T1.RATIO * T2.MULTIPLIER 
                        END
-                     ) OVER (PARTITION BY T1.STARTING_ENTITY, T1.INV_ENTITY)
+          ) OVER (PARTITION BY T1.STARTING_ENTITY, T1.INV_ENTITY)
                  WHEN T1.LEVELS != T1.MAX_INV_LEVEL 
-                 THEN CAST(T1.RATIO AS FLOAT)
+                 THEN T1.RATIO
             END AS ACC_RATIO,
             T1.LEVELS,
             T1.MAX_INV_LEVEL
@@ -280,8 +279,8 @@ WITH parent as(
         RATIO_HOLD AS ratio 
     FROM TRS_FACT_GROUP_INV_REL
     WHERE 
-        CAST('2023-12-31' AS DATE) BETWEEN START_DATE AND END_DATE
-        AND ENTITY_CODE = 'WHL'
+        @P_DATE BETWEEN START_DATE AND END_DATE
+        AND ENTITY_CODE = @PARA
     ), RES AS (
     SELECT DISTINCT  t1.STARTING_ENTITY, t1.inv_entity, t1.ACC_RATIO, t2.ratio AS DIRECT_RATIO 
     FROM TEMP_CALCULATE_INV_CONTROL2 t1
@@ -289,7 +288,10 @@ WITH parent as(
     WHERE LEVELS=MAX_INV_LEVEL
     )
 INSERT INTO TEMP_TRS_FACT_INV_CONTROL(ID, ENTITY_CODE, INV_ENTITY_CODE, RATIO_SUM, RATIO_DIRECT)
-SELECT NEWID(), STARTING_ENTITY, INV_ENTITY, ACC_RATIO, ROUND(DIRECT_RATIO,4,1) FROM RES
+SELECT NEWID(), STARTING_ENTITY, INV_ENTITY, ACC_RATIO, DIRECT_RATIO
+FROM RES
 TRUNCATE TABLE TEMP_CALCULATE_INV_CONTROL1;
 TRUNCATE TABLE TEMP_CALCULATE_INV_CONTROL2;
 END;
+
+
