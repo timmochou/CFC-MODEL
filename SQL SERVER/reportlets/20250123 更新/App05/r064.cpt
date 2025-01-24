@@ -44,9 +44,9 @@ LEFT JOIN TRS_FACT_COUNTRY_TAX t2 ON t3.COUNTRY_ID = t2.COUNTRY_CODE
 WHERE 
 	t1.ENTITY_CODE = '${P_CFC}'
 	AND t3.LANGUAGE = '${fr_locale}'
-	AND t1.START_DATE <= LAST_DAY(TO_TIMESTAMP('${P_DATE}' ,'YYYY-MM'))
-	AND t1.END_DATE >= LAST_DAY(TO_TIMESTAMP('${P_DATE}', 'YYYY-MM'))
-	AND COMPANY_ID NOT IN (SELECT CFC_INV_ENTITY_CODE FROM TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT WHERE CFC_ENTITY_CODE = '${P_CFC}' AND TO_CHAR(PERIOD, 'YYYY-MM') ='${P_DATE}' AND SCENARIO = '${P_VERSION}')
+	AND t1.START_DATE <= EOMONTH(CAST('${P_DATE}' + '-01' AS DATE))
+	AND t1.END_DATE >= EOMONTH(CAST('${P_DATE}' + '-01' AS DATE))
+	AND COMPANY_ID NOT IN (SELECT CFC_INV_ENTITY_CODE FROM TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT WHERE CFC_ENTITY_CODE = '${P_CFC}' AND FORMAT(PERIOD, 'yyyy-MM') ='${P_DATE}' AND SCENARIO = '${P_VERSION}')
 ORDER BY t1.INV_ENTITY_CODE]]></Query>
 <PageQuery>
 <![CDATA[]]></PageQuery>
@@ -88,8 +88,8 @@ LEFT JOIN V_TRS_DIM_ENTITY_CUR t4 ON t1.INV_ENTITY_CODE = t4.ENTITY_CODE
 LEFT JOIN V_TRS_DIM_ENTITY t3 ON t4.CURRENT_CODE = t3.ENTITY_ID
 LEFT JOIN TRS_FACT_COUNTRY_TAX t2 ON t3.COUNTRY_ID = t2.COUNTRY_CODE
 WHERE 
-	t1.START_DATE <= LAST_DAY(TO_TIMESTAMP('${P_DATE}' ,'YYYY-MM'))
-	AND t1.END_DATE >= LAST_DAY(TO_TIMESTAMP('${P_DATE}', 'YYYY-MM'))
+	t1.START_DATE <= EOMONTH(CAST('${P_DATE}' + '-01' AS DATE))
+	AND t1.END_DATE >= EOMONTH(CAST('${P_DATE}' + '-01' AS DATE))
 	AND LANGUAGE = '${fr_locale}'
 	AND t4.CURRENT_CODE = '${P_CFC}'
 ORDER BY t4.CURRENT_CODE]]></Query>
@@ -139,11 +139,11 @@ ORDER BY t4.CURRENT_CODE]]></Query>
 	RE_LESS_TOTAL * AVG_EXCHANGE_RATIO AS RE_LESS_TOTAL
 FROM TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT_TOTAL t1
 LEFT JOIN V_TRS_DIM_ENTITY_CUR t2 ON t1.CFC_ENTITY_CODE = t2.ENTITY_CODE
-LEFT JOIN V_TRS_FACT_EXCHANGE_BANKOFTW t3 ON t2.CURRENCY_ID = t3.CURRENCY_ID AND TO_CHAR(t1.PERIOD, 'YYYY-MM') = t3.PERIOD AND t1.SCENARIO = t3.SCENARIO AND TARGET_CURRENCY_ID = 'NTD'
+LEFT JOIN V_TRS_FACT_EXCHANGE_BANKOFTW t3 ON t2.CURRENCY_ID = t3.CURRENCY_ID AND FORMAT(t1.PERIOD, 'yyyy-MM') = t3.PERIOD AND t1.SCENARIO = t3.SCENARIO AND TARGET_CURRENCY_ID = 'NTD'
 WHERE 1 = 1
 	--AND t1.CFC_ENTITY_CODE = '${P_CFC}'
 	AND t2.CURRENT_CODE = '${P_CFC}'
-	AND TO_CHAR(t1.PERIOD, 'YYYY-MM') = '${P_DATE}'
+	AND FORMAT(t1.PERIOD, 'yyyy-MM') = '${P_DATE}'
 	AND t1.SCENARIO = '${P_VERSION}']]></Query>
 <PageQuery>
 <![CDATA[]]></PageQuery>
@@ -169,7 +169,7 @@ FROM TRS_DIM_CURRENCY]]></Query>
 <Parameter>
 <Attributes name="P_CFC"/>
 <O>
-<![CDATA[P00012_BVI]]></O>
+<![CDATA[WHSG]]></O>
 </Parameter>
 <Parameter>
 <Attributes name="P_DATE"/>
@@ -209,7 +209,7 @@ FROM V_TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT_DETAIL t1
 WHERE 1 = 1
 --	AND t2.CURRENT_CODE = '${P_CFC}'
 	AND BASE_ENTITY = '${P_CFC}'
-	AND TO_CHAR(t1.PERIOD, 'YYYY-MM') = '${P_DATE}'
+	AND FORMAT(t1.PERIOD, 'yyyy-MM') = '${P_DATE}'
 	AND t1.SCENARIO = '${P_VERSION}'
 --	AND t2.LANGUAGE = '${fr_locale}'
 ORDER BY BASE_ENTITY]]></Query>
@@ -237,11 +237,11 @@ ORDER BY BASE_ENTITY]]></Query>
 FROM V_TRS_DIM_COMPANY
 WHERE LANGUAGE = '${fr_locale}'
 --AND IS_ACTIVE = 'true'
-UNION ALL --權益法公司表
-SELECT
-	ENTITY_CODE,
-	ENTITY_NAME
-FROM TRS_DIM_EQUITY_INV_LIST]]></Query>
+UNION ALL
+	SELECT
+		ENTITY_CODE,
+		ENTITY_NAME
+	FROM TRS_DIM_EQUITY_INV_LIST]]></Query>
 <PageQuery>
 <![CDATA[]]></PageQuery>
 </TableData>
@@ -264,23 +264,18 @@ FROM TRS_DIM_COMPANY]]></Query>
 <ReportWebAttr>
 <ServerPrinter/>
 <WebWriteContent>
-<Listener event="afterwrite">
+<Listener event="startload">
 <JavaScript class="com.fr.js.JavaScriptImpl">
 <Parameters/>
 <Content>
-<![CDATA[if(fr_submitinfo.success){
-        alert("Submit Successed!")
-        window.parent.FR.closeDialog();
-        if(_g().parameterEl){
-        	window.parent._g().parameterCommit();
-        	}
-	
-
-}
-else{
-        alert("Submit Failed!")
-}
-return false;]]></Content>
+<![CDATA[var toast = FR.Msg.toast;
+FR.Msg.toast = function(msg) {
+	if (1 == 1) {
+		return;
+	} else {
+		toast.call(FR.Msg, msg);
+	}
+}]]></Content>
 </JavaScript>
 </Listener>
 <Listener event="afterload">
@@ -298,18 +293,49 @@ return false;]]></Content>
 FR_IntProj().Draw_Pipe()]]></Content>
 </JavaScript>
 </Listener>
-<Listener event="startload">
+<Listener event="afterwrite">
 <JavaScript class="com.fr.js.JavaScriptImpl">
 <Parameters/>
 <Content>
-<![CDATA[var toast = FR.Msg.toast;
-FR.Msg.toast = function(msg) {
-	if (1 == 1) {
-		return;
-	} else {
-		toast.call(FR.Msg, msg);
-	}
-}]]></Content>
+<![CDATA[if (fr_submitinfo.success) {
+	alert("Submit Successed!")
+	let url = 'http://192.168.5.22:8080/PwCA/decision/view/report?viewlet=App05/procedure/P_TRS_FACT_CFC_RECOGNIZED_AMOUNT.cpt'
+	let p_window = window.open(url, '_blank', 'width=1,height=1');
+	setTimeout(() => {
+		if (p_window) {
+			p_window.close();
+			window.parent.FR.closeDialog();
+			if (_g().parameterEl) {
+				window.parent._g().parameterCommit();
+			}
+		}
+	}, 1000);
+
+
+
+} else {
+	alert("Submit Failed!")
+}
+return false;]]></Content>
+</JavaScript>
+</Listener>
+<Listener event="afterwrite">
+<JavaScript class="com.fr.js.JavaScriptImpl">
+<Parameters/>
+<Content>
+<![CDATA[if(fr_submitinfo.success){
+alert("Submit Successed!")
+window.parent.FR.closeDialog();
+if(_g().parameterEl){
+window.parent._g().parameterCommit();
+}
+
+
+}
+else{
+alert("Submit Failed!")
+}
+return false;]]></Content>
 </JavaScript>
 </Listener>
 <ToolBars/>
@@ -342,7 +368,7 @@ FR.Msg.toast = function(msg) {
 <ColumnPrivilegeControl/>
 <RowPrivilegeControl/>
 <RowHeight defaultValue="723900">
-<![CDATA[723900,432000,1728000,1152000,1152000,1219200,1872000,723900,723900,723900,396000,1728000,396000,1152000,1728000,1728000,723900]]></RowHeight>
+<![CDATA[723900,432000,1728000,1152000,1152000,1219200,1872000,723900,723900,432000,396000,1728000,396000,1152000,1728000,1728000,723900]]></RowHeight>
 <ColumnWidth defaultValue="2743200">
 <![CDATA[748800,1440000,1008000,2743200,5120640,3168000,3168000,3168000,5904000,5904000,6644640,5394960,1440000,3276600,5753100,7650480,4511040,3931920,6480000,2926080,1440000,748800,2743200]]></ColumnWidth>
 <CellElementList>
@@ -360,8 +386,104 @@ FR.Msg.toast = function(msg) {
 <cellSortAttr/>
 </Expand>
 </C>
+<C c="1" r="0" s="0">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="2" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="3" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="4" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
 <C c="5" r="0" s="0">
 <PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="6" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="7" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="8" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="9" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="10" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="11" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="12" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="13" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="14" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="15" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="16" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="17" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="18" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="19" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="20" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="21" r="0" s="0">
+<PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="1" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
 <Expand>
 <cellSortAttr/>
 </Expand>
@@ -382,6 +504,18 @@ FR.Msg.toast = function(msg) {
 <Expand>
 <cellSortAttr/>
 </Expand>
+</C>
+<C c="0" r="2" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
 </C>
 <C c="1" r="2" s="1">
 <PrivilegeControl/>
@@ -431,6 +565,18 @@ FR.Msg.toast = function(msg) {
 <cellSortAttr/>
 </Expand>
 </C>
+<C c="0" r="3" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
 <C c="1" r="3" s="1">
 <PrivilegeControl/>
 <Expand/>
@@ -479,6 +625,18 @@ FR.Msg.toast = function(msg) {
 <PrivilegeControl/>
 <Expand/>
 </C>
+<C c="0" r="4" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand/>
+</C>
 <C c="1" r="4" s="1">
 <PrivilegeControl/>
 <Expand/>
@@ -515,6 +673,18 @@ FR.Msg.toast = function(msg) {
 </C>
 <C c="12" r="4" s="1">
 <PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="5" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
 <Expand/>
 </C>
 <C c="1" r="5" s="1">
@@ -561,6 +731,18 @@ FR.Msg.toast = function(msg) {
 </C>
 <C c="21" r="5" s="0">
 <PrivilegeControl/>
+<Expand/>
+</C>
+<C c="0" r="6" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
 <Expand/>
 </C>
 <C c="1" r="6" s="1">
@@ -846,16 +1028,44 @@ _g().setCellValue("G7", null)
 <PrivilegeControl/>
 <Expand/>
 </C>
+<C c="0" r="7" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
 <C c="1" r="7" s="1">
 <PrivilegeControl/>
 <Expand>
 <cellSortAttr/>
 </Expand>
 </C>
-<C c="2" r="7" cs="11" s="10">
+<C c="2" r="7" cs="11" s="1">
 <O>
 <![CDATA[＊註：若是填寫總額，則計算時不取下方之個別明細之所得稅]]></O>
 <PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="0" r="8" s="0">
+<PrivilegeControl/>
+<HighlightList>
+<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
+<Name>
+<![CDATA[條件屬性1]]></Name>
+<Condition class="com.fr.data.condition.ListCondition"/>
+<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
+</Highlight>
+</HighlightList>
 <Expand>
 <cellSortAttr/>
 </Expand>
@@ -873,16 +1083,6 @@ _g().setCellValue("G7", null)
 <Desensitizations desensitizeScope="0"/>
 </DesensitizationAttr>
 </CellOptionalAttrHolder>
-<HighlightList>
-<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
-<Name>
-<![CDATA[條件屬性1]]></Name>
-<Condition class="com.fr.data.condition.ListCondition"/>
-<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction">
-<RowHeight i="864000"/>
-</HighlightAction>
-</Highlight>
-</HighlightList>
 <Expand>
 <cellSortAttr/>
 </Expand>
@@ -897,17 +1097,27 @@ _g().setCellValue("G7", null)
 </C>
 <C c="18" r="8" s="0">
 <PrivilegeControl/>
-<Expand/>
+<Expand>
+<cellSortAttr/>
+</Expand>
 </C>
 <C c="19" r="8" s="0">
 <PrivilegeControl/>
-<Expand/>
+<Expand>
+<cellSortAttr/>
+</Expand>
 </C>
 <C c="20" r="8" s="0">
 <PrivilegeControl/>
 <Expand/>
 </C>
-<C c="1" r="9" cs="18" s="1">
+<C c="0" r="9" s="0">
+<PrivilegeControl/>
+<Expand>
+<cellSortAttr/>
+</Expand>
+</C>
+<C c="1" r="9" cs="20" s="0">
 <O t="XMLable" class="com.fr.base.Formula">
 <Attributes>
 <![CDATA[=$GP_BORDER_SHADOW_BOT]]></Attributes>
@@ -920,24 +1130,6 @@ _g().setCellValue("G7", null)
 <Desensitizations desensitizeScope="0"/>
 </DesensitizationAttr>
 </CellOptionalAttrHolder>
-<HighlightList>
-<Highlight class="com.fr.report.cell.cellattr.highlight.DefaultHighlight">
-<Name>
-<![CDATA[條件屬性1]]></Name>
-<Condition class="com.fr.data.condition.ListCondition"/>
-<HighlightAction class="com.fr.report.cell.cellattr.highlight.RowHeightHighlightAction"/>
-</Highlight>
-</HighlightList>
-<Expand>
-<cellSortAttr/>
-</Expand>
-</C>
-<C c="19" r="9" s="1">
-<PrivilegeControl/>
-<Expand/>
-</C>
-<C c="20" r="9" s="1">
-<PrivilegeControl/>
 <Expand>
 <cellSortAttr/>
 </Expand>
@@ -1043,7 +1235,9 @@ _g().setCellValue("G7", null)
 </C>
 <C c="18" r="10" s="1">
 <PrivilegeControl/>
-<Expand/>
+<Expand>
+<cellSortAttr/>
+</Expand>
 </C>
 <C c="19" r="10" s="1">
 <PrivilegeControl/>
@@ -1364,7 +1558,7 @@ _g().setCellValue("G7", null)
 <cellSortAttr/>
 </Expand>
 </C>
-<C c="2" r="14" s="11">
+<C c="2" r="14" s="10">
 <PrivilegeControl/>
 <CellGUIAttr printBackground="false" printContent="false" showAsDefault="true"/>
 <CellPageAttr/>
@@ -1655,7 +1849,7 @@ else {
 <cellSortAttr/>
 </Expand>
 </C>
-<C c="2" r="15" s="12">
+<C c="2" r="15" s="11">
 <PrivilegeControl/>
 <CellGUIAttr printBackground="false" printContent="false" showAsDefault="true"/>
 <CellPageAttr/>
@@ -1908,10 +2102,6 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <MobileBookMark useBookMark="false" bookMarkName="" frozen="false" index="-1" oldWidgetName=""/>
 <PrivilegeControl/>
 </WidgetAttr>
-<allowBlank>
-<![CDATA[false]]></allowBlank>
-<CustomData>
-<![CDATA[false]]></CustomData>
 <Dictionary class="com.fr.data.impl.TableDataDictionary">
 <FormulaDictAttr kiName="CURRENCY_ID" viName="CURRENCY_ID"/>
 <TableDataDictAttr>
@@ -2041,7 +2231,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <cellSortAttr/>
 </Expand>
 </C>
-<C c="11" r="15" cs="2" s="13">
+<C c="11" r="15" cs="2" s="12">
 <O t="DSColumn">
 <Attributes dsName="REP_INV_RECONIZED_AMOUNT" columnName="AVG_EXCHANGE_RATIO"/>
 <Complex/>
@@ -2054,7 +2244,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <cellSortAttr/>
 </Expand>
 </C>
-<C c="13" r="15" s="14">
+<C c="13" r="15" s="13">
 <O t="DSColumn">
 <Attributes dsName="REP_INV_RECONIZED_AMOUNT" columnName="RATIO"/>
 <Complex/>
@@ -2135,7 +2325,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <cellSortAttr/>
 </Expand>
 </C>
-<C c="17" r="15" s="8">
+<C c="17" r="15" s="14">
 <O t="DSColumn">
 <Attributes dsName="REP_INV_RECONIZED_AMOUNT" columnName="CFC_EXCHANGE_RATIO"/>
 <Complex/>
@@ -2232,7 +2422,9 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 </C>
 <C c="20" r="15" s="1">
 <PrivilegeControl/>
-<Expand/>
+<Expand>
+<cellSortAttr/>
+</Expand>
 </C>
 <C c="1" r="16" s="1">
 <PrivilegeControl/>
@@ -2396,7 +2588,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <![CDATA[CREATE]]></Name>
 <Attributes dsName="TRSDB"/>
 <DMLConfig class="com.fr.write.config.InsertConfig">
-<Table schema="TRSDB" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT"/>
+<Table schema="" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT"/>
 <ColumnConfig name="ID" isKey="false" skipUnmodified="false">
 <ColumnRow column="3" row="15"/>
 </ColumnConfig>
@@ -2466,7 +2658,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <![CDATA[UPDATE]]></Name>
 <Attributes dsName="TRSDB"/>
 <DMLConfig class="com.fr.write.config.IntelliDMLConfig">
-<Table schema="TRSDB" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT"/>
+<Table schema="" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT"/>
 <ColumnConfig name="ID" isKey="true" skipUnmodified="false">
 <ColumnRow column="3" row="15"/>
 </ColumnConfig>
@@ -2526,7 +2718,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <![CDATA[DELETE]]></Name>
 <Attributes dsName="TRSDB"/>
 <DMLConfig class="com.fr.write.config.DeleteConfig">
-<Table schema="TRSDB" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT"/>
+<Table schema="" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT"/>
 <ColumnConfig name="ID" isKey="true" skipUnmodified="false">
 <ColumnRow column="3" row="15"/>
 </ColumnConfig>
@@ -2551,7 +2743,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <![CDATA[CREATE_TOTAL]]></Name>
 <Attributes dsName="TRSDB"/>
 <DMLConfig class="com.fr.write.config.IntelliDMLConfig">
-<Table schema="TRSDB" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT_TOTAL"/>
+<Table schema="" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT_TOTAL"/>
 <ColumnConfig name="ID" isKey="true" skipUnmodified="false">
 <ColumnRow column="3" row="6"/>
 </ColumnConfig>
@@ -2602,7 +2794,7 @@ _g().setCellValue(0, 2, 14, isAllChecked);
 <![CDATA[UPDATE_TOTAL]]></Name>
 <Attributes dsName="TRSDB"/>
 <DMLConfig class="com.fr.write.config.IntelliDMLConfig">
-<Table schema="TRSDB" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT_TOTAL"/>
+<Table schema="" name="TRS_FACT_CFC_INV_RECOGNIZED_AMOUNT_TOTAL"/>
 <ColumnConfig name="ID" isKey="true" skipUnmodified="false">
 <ColumnRow column="3" row="6"/>
 </ColumnConfig>
@@ -2688,10 +2880,10 @@ delete_rec = this.options.form.getWidgetByName("BTN_DELETE");
 submit = this.options.form.getWidgetByName("BTN_SUBMIT");
 
 if (ope == 'A0') {
-	//	upload_rec.setVisible(true);
+//	upload_rec.setVisible(true);
 	edit_rec.setVisible(true);
 	export_excel.setVisible(true);
-	//	delete_rec.setVisible(true);
+//	delete_rec.setVisible(true);
 } else if (ope === "A1") {
 	setTimeout(function() {
 		_g().parameterCommit();
@@ -2704,12 +2896,20 @@ if (ope == 'A0') {
 	submit.setVisible(true);
 }
 if (P_LOCK == 'true') {
+
 	edit_rec.setEnable(false);
-}
-let reader = this.options.form.getWidgetByName("P_READER").getValue();
+
+	}
+
+	let reader = this.options.form.getWidgetByName("P_READER").getValue();
+
 if (reader != '0') {
+	//upload_rec.setEnable(false);
 	edit_rec.setEnable(false);
-}]]></Content>
+	//delete_rec.setEnable(false);
+	}
+
+]]></Content>
 </JavaScript>
 </Listener>
 <WidgetName name="para"/>
@@ -2758,7 +2958,7 @@ if (reader != '0') {
 <MobileScanCodeAttr scanCode="true" textInputMode="0" isSupportManual="true" isSupportScan="true" isSupportNFC="false" nfcContentType="0"/>
 <MobileTextEditAttr allowOneClickClear="true"/>
 </InnerWidget>
-<BoundsAttr x="1001" y="15" width="218" height="26"/>
+<BoundsAttr x="836" y="85" width="218" height="26"/>
 </Widget>
 <Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
 <InnerWidget class="com.fr.form.ui.ComboCheckBox">
@@ -2883,7 +3083,7 @@ if (reader != '0') {
 </Dictionary>
 <widgetValue>
 <O>
-<![CDATA[P00012_BVI]]></O>
+<![CDATA[WHSG]]></O>
 </widgetValue>
 </InnerWidget>
 <BoundsAttr x="36" y="81" width="180" height="30"/>
@@ -3152,7 +3352,6 @@ $(".fr-core-panel-tool-close").css("top","5px");
 <ShowBookmarks showBookmarks="false"/>
 <Sorted sorted="false"/>
 <MobileWidgetList>
-<Widget widgetName="P_READER"/>
 <Widget widgetName="fr_locale"/>
 <Widget widgetName="ope"/>
 <Widget widgetName="P_ID"/>
@@ -3163,6 +3362,7 @@ $(".fr-core-panel-tool-close").css("top","5px");
 <Widget widgetName="P_VERSION"/>
 <Widget widgetName="BTN_EDIT"/>
 <Widget widgetName="BTN_EXPORT"/>
+<Widget widgetName="P_READER"/>
 </MobileWidgetList>
 <FrozenWidgets/>
 <MobileBookMarkStyle class="com.fr.form.ui.mobile.impl.DefaultMobileBookMarkStyle"/>
@@ -3389,15 +3589,6 @@ $(".fr-core-panel-tool-close").css("top","5px");
 </Bottom>
 </Border>
 </Style>
-<Style imageLayout="1">
-<FRFont name="微軟正黑體" style="0" size="72"/>
-<Background name="ColorBackground">
-<color>
-<FineColor color="-1" hor="-1" ver="-1"/>
-</color>
-</Background>
-<Border/>
-</Style>
 <Style horizontal_alignment="0" imageLayout="1">
 <FRFont name="Microsoft JhengHei UI" style="0" size="72"/>
 <Background name="ColorBackground">
@@ -3458,6 +3649,28 @@ $(".fr-core-panel-tool-close").css("top","5px");
 <Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
 <Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
 <![CDATA[#0.00%]]></Format>
+<FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
+<Background name="ColorBackground">
+<color>
+<FineColor color="-1" hor="-1" ver="-1"/>
+</color>
+</Background>
+<Border>
+<Top style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Top>
+<Bottom style="1">
+<color>
+<FineColor color="-986896" hor="-1" ver="-1"/>
+</color>
+</Bottom>
+</Border>
+</Style>
+<Style horizontal_alignment="4" imageLayout="1" paddingLeft="6" paddingRight="6">
+<Format class="com.fr.base.CoreDecimalFormat" roundingMode="6">
+<![CDATA[#0.00000]]></Format>
 <FRFont name="Microsoft JhengHei UI" style="0" size="84"/>
 <Background name="ColorBackground">
 <color>
