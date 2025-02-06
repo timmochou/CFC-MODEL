@@ -37,7 +37,7 @@ FROM
     	   END AS VALUE
 FROM TRS_FACT_COUNTRY_REPORT
 WHERE 1=1
-AND PERIOD = '${P_PERIOD}'
+AND (PERIOD = '${P_PERIOD}' OR PERIOD = CAST(CAST(SUBSTRING('${P_PERIOD}', 1, 4) AS INT) - 1 AS VARCHAR) + SUBSTRING('${P_PERIOD}', 5, 3))
 ${if(len(P_COMPANY) == 0,"","and ENTITY_ID IN ('" + P_COMPANY + "')")}
 ) AS SourceTable
 PIVOT
@@ -81,42 +81,44 @@ T1.*,
 STUFF((
     SELECT ',' + x.risk_type
     FROM (
-        SELECT 'col_lowtax_income_non_rel' as risk_type WHERE IS_LOWTAX = 'true' AND col_income_non_rel != 0
-        UNION ALL SELECT 'col_lowtax_tangible_asset' WHERE IS_LOWTAX = 'true' AND col_tangible_asset != 0
+        SELECT 'col_lowtax_income_non_rel' as risk_type WHERE IS_LOWTAX = 'true' AND T1.col_income_non_rel != 0
+        UNION ALL SELECT 'col_lowtax_tangible_asset' WHERE IS_LOWTAX = 'true' AND T1.col_tangible_asset != 0
         UNION ALL SELECT 'col_lowtax_hold' WHERE IS_LOWTAX = 'true' AND (
-            ISNULL(col_res_and_dev,0) != 0 OR 
-            ISNULL(col_hold_int_property,0) != 0 OR 
-            ISNULL(col_purchase,0) != 0 OR 
-            ISNULL(col_manufacture,0) != 0 OR 
-            ISNULL(col_sales_mkt_distrbn,0) != 0 OR 
-            ISNULL(col_admin_mgnt_sup,0) != 0 OR 
-            ISNULL(col_provide_serv_to_nrp,0) != 0 OR 
-            ISNULL(col_int_grp_fin,0) != 0 OR 
-            ISNULL(col_regu_fin_serv,0) != 0 OR 
-            ISNULL(col_insurance,0) != 0 OR 
-            ISNULL(col_others,0) != 0
+            T1.col_res_and_dev = '1' OR 
+            T1.col_hold_int_property = '1' OR 
+            T1.col_purchase = '1' OR 
+            T1.col_manufacture = '1' OR 
+            T1.col_sales_mkt_distrbn = '1' OR 
+            T1.col_admin_mgnt_sup = '1' OR 
+            T1.col_provide_serv_to_nrp = '1' OR 
+            T1.col_int_grp_fin = '1' OR 
+            T1.col_regu_fin_serv = '1' OR 
+            T1.col_insurance = '1' OR 
+            T1.col_others = '1'
         )
-        UNION ALL SELECT 'col_emp_manufacture' WHERE col_manufacture != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT 'col_emp_sales_mkt_distrbn' WHERE col_sales_mkt_distrbn != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT 'col_emp_provide_serv_to_nrp' WHERE col_provide_serv_to_nrp != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT 'col_emp_admin_mgnt_sup' WHERE col_admin_mgnt_sup != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT 'col_emp_res_and_dev' WHERE col_res_and_dev != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT 'col_emp_income_non_rel' WHERE col_income_non_rel != 0 AND col_num_of_emp = 0
-        UNION ALL SELECT 'col_unmatch' WHERE (col_pre_tax_income > 0 AND col_curr_tax_payable < 0) OR (col_pre_tax_income < 0 AND col_curr_tax_payable > 0)
-        UNION ALL SELECT 'col_low_etr' WHERE ISNULL(col_curr_tax_payable / NULLIF(col_pre_tax_income, 0), 0) < TAX_RATE
-        UNION ALL SELECT 'col_de_minimis' WHERE col_p2_income > (10000000 * col_p2_eur_to_twd_exch) OR col_p2_pre_tax_income > ( 1000000 * col_p2_eur_to_twd_exch ) 
+        UNION ALL SELECT 'col_emp_manufacture' WHERE T1.col_manufacture != 0 AND T1.col_num_of_emp = 0
+        UNION ALL SELECT 'col_emp_sales_mkt_distrbn' WHERE T1.col_sales_mkt_distrbn != 0 AND T1.col_num_of_emp = 0
+        UNION ALL SELECT 'col_emp_provide_serv_to_nrp' WHERE T1.col_provide_serv_to_nrp != 0 AND T1.col_num_of_emp = 0
+        UNION ALL SELECT 'col_emp_admin_mgnt_sup' WHERE T1.col_admin_mgnt_sup != 0 AND T1.col_num_of_emp = 0
+        UNION ALL SELECT 'col_emp_res_and_dev' WHERE T1.col_res_and_dev != 0 AND T1.col_num_of_emp = 0
+        UNION ALL SELECT 'col_emp_income_non_rel' WHERE T1.col_income_non_rel != 0 AND T1.col_num_of_emp = 0
+        UNION ALL SELECT 'col_unmatch' WHERE (T1.col_pre_tax_income > 0 AND T1.col_curr_tax_payable < 0) OR (T1.col_pre_tax_income < 0 AND T1.col_curr_tax_payable > 0)
+        UNION ALL SELECT 'col_low_etr' WHERE ISNULL(T1.col_curr_tax_payable / NULLIF(T1.col_pre_tax_income, 0), 0) < T5.TAX_RATE
+        UNION ALL SELECT 'col_de_minimis' WHERE T1.col_p2_income > (10000000 * T1.col_p2_eur_to_twd_exch) OR T1.col_p2_pre_tax_income > ( 1000000 * T1.col_p2_eur_to_twd_exch ) 
         UNION ALL SELECT 'col_simplified_etr' WHERE 
-            (LEFT(T1.Period,4)='2023' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.15) OR
-            (LEFT(T1.Period,4)='2024' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.15) OR
-            (LEFT(T1.Period,4)='2025' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.16) OR
-            (LEFT(T1.Period,4)='2026' AND ISNULL(col_p2_tax_exp / NULLIF(col_p2_pre_tax_income, 0), 0)< 0.17)
-        UNION ALL SELECT 'col_routine_profits' WHERE (col_p2_pre_tax_income - ((col_p2_payroll * 0.1)+ (col_p2_tangible_asset * 0.08)) >= 0)
+            (LEFT(T1.Period,4)='2023' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.15) OR
+            (LEFT(T1.Period,4)='2024' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.15) OR
+            (LEFT(T1.Period,4)='2025' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.16) OR
+            (LEFT(T1.Period,4)='2026' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.17)
+        UNION ALL SELECT 'col_routine_profits' WHERE (T1.col_p2_pre_tax_income - (((T6.col_p2_payroll + T1.col_p2_payroll) * 0.05)+ ((T6.col_p2_tangible_asset + T1.col_p2_tangible_asset) * 0.04)) >= 0)
      ) x
         WHERE 1=1 
         ${if(len(P_CATEGORY) == 0,"","and risk_type IN ('" + P_CATEGORY + "')")}
     FOR XML PATH('')
 ), 1, 1, '') AS TYPE
 FROM PivotData T1
+LEFT JOIN PivotData T6 ON T1.ENTITY_ID = T6.ENTITY_ID 
+    AND T6.Period = CAST(CAST(SUBSTRING('${P_PERIOD}', 1, 4) AS INT) - 1 AS VARCHAR) + SUBSTRING('${P_PERIOD}', 5, 3)
 LEFT JOIN
         TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
     LEFT JOIN 
@@ -127,6 +129,7 @@ LEFT JOIN
         TRS_FACT_COUNTRY_TAX T5 ON T4.COUNTRY_ID = T5.COUNTRY_CODE
 WHERE 
 1=1 
+AND T1.Period = '${P_PERIOD}'
 ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
 ),COUNT_TYPE AS(
 SELECT 
