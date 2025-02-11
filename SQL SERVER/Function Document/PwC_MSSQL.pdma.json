@@ -1,15 +1,15 @@
 {
-  "name": "PwC_CFC_MODULE",
-  "describe": "PwC_CFC_MODULE",
+  "name": "PwC_MSSQL",
+  "describe": "PwC_MSSQL",
   "avatar": "",
   "version": "4.6.3",
-  "createdTime": "2025-1-10 10:14:13",
-  "updatedTime": "2025-1-10 10:22:41",
+  "createdTime": "2025-2-6 18:05:20",
+  "updatedTime": "2025-2-6 18:06:33",
   "dbConns": [],
   "profile": {
     "default": {
       "db": "29D1CE08-4C35-4D2D-AAA9-23D93305B52E",
-      "dbConn": "58606386-D69B-425E-965C-531E78A25CAF",
+      "dbConn": "B3D4D72B-08D2-4B68-920E-138CDA14CB97",
       "entityInitFields": [
         {
           "defKey": "TENANT_ID",
@@ -1089,14 +1089,14 @@
   ],
   "dbConn": [
     {
-      "defKey": "58606386-D69B-425E-965C-531E78A25CAF",
+      "defKey": "B3D4D72B-08D2-4B68-920E-138CDA14CB97",
       "defName": "TRSDB",
-      "type": "A4E23CB7-BB01-4BD1-9F71-F73F3E15A542",
+      "type": "BFC87171-C74F-494A-B7C2-76B9C55FACC9",
       "properties": {
-        "driver_class_name": "oracle.jdbc.driver.OracleDriver",
-        "url": "jdbc:oracle:thin:@//192.168.5.18:1521/ORCL",
+        "driver_class_name": "com.microsoft.sqlserver.jdbc.SQLServerDriver",
+        "url": "jdbc:sqlserver://192.168.5.26:1433;DatabaseName=TRSDB",
         "password": "Fr@83560859",
-        "username": "TRSDB"
+        "username": "sa"
       }
     }
   ]
