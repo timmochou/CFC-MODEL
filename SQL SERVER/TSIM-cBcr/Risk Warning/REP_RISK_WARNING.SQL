@@ -104,19 +104,23 @@ STUFF((
         UNION ALL SELECT 'col_emp_income_non_rel' WHERE T1.col_income_non_rel != 0 AND T1.col_num_of_emp = 0
         UNION ALL SELECT 'col_unmatch' WHERE (T1.col_pre_tax_income > 0 AND T1.col_curr_tax_payable < 0) OR (T1.col_pre_tax_income < 0 AND T1.col_curr_tax_payable > 0)
         UNION ALL SELECT 'col_low_etr' WHERE ISNULL(T1.col_curr_tax_payable / NULLIF(T1.col_pre_tax_income, 0), 0) < T5.TAX_RATE
+        --可能不符合Pillar 2過渡性避風港小型微利測試之豁免條件
         UNION ALL SELECT 'col_de_minimis' WHERE T1.col_p2_income > (10000000 * T1.col_p2_eur_to_twd_exch) OR T1.col_p2_pre_tax_income > ( 1000000 * T1.col_p2_eur_to_twd_exch ) 
+        --可能不符合Pillar 2過渡性避風港簡易版有效稅率測試之豁免條件
         UNION ALL SELECT 'col_simplified_etr' WHERE 
             (LEFT(T1.Period,4)='2023' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.15) OR
             (LEFT(T1.Period,4)='2024' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.15) OR
             (LEFT(T1.Period,4)='2025' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.16) OR
             (LEFT(T1.Period,4)='2026' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.17)
-        UNION ALL SELECT 'col_routine_profits' WHERE (T1.col_p2_pre_tax_income - (((T6.col_p2_payroll + T1.col_p2_payroll) * 0.05)+ ((T6.col_p2_tangible_asset + T1.col_p2_tangible_asset) * 0.04)) >= 0)
+        --可能不符合Pillar 2過渡性避風港例行利潤測試之豁免條件
+        UNION ALL SELECT 'col_routine_profits' WHERE (ISNULL(T1.col_p2_pre_tax_income,0) - (((ISNULL(T6.col_p2_payroll,0) + ISNULL(T1.col_p2_payroll,0)) * 0.05)+ ((ISNULL(T6.col_p2_tangible_asset,0) + ISNULL(T1.col_p2_tangible_asset,0)) * 0.04)) >=0)
      ) x
         WHERE 1=1 
         ${if(len(P_CATEGORY) == 0,"","and risk_type IN ('" + P_CATEGORY + "')")}
     FOR XML PATH('')
 ), 1, 1, '') AS TYPE
 FROM PivotData T1
+-- T6 為上期資料 
 LEFT JOIN PivotData T6 ON T1.ENTITY_ID = T6.ENTITY_ID 
     AND T6.Period = CAST(CAST(SUBSTRING('${P_PERIOD}', 1, 4) AS INT) - 1 AS VARCHAR) + SUBSTRING('${P_PERIOD}', 5, 3)
 LEFT JOIN
