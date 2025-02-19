@@ -1,5 +1,4 @@
-
-    SELECT 
+SELECT 
     T1.PERIOD,
     T1.DATA_NAME,
     SUM(TRY_CAST(T1.VALUE AS DECIMAL(38,0))) AS VALUE
@@ -11,7 +10,7 @@
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND
@@ -20,4 +19,5 @@
     --AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
     ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
     ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
+    AND T1.DATA_NAME = '${P_CATEGORY1}'
     GROUP BY T1.PERIOD, T1.DATA_NAME

@@ -69,12 +69,13 @@ PIVOT
     )
 ) AS PVT
 ),GroupExchangeRate AS (
-    -- 获取集团汇率（取第一条记录的汇率即可）
-    SELECT TOP 1 
+    SELECT 
         Period,
-        col_p2_eur_to_twd_exch AS GroupExchangeRate
-    FROM PivotData
+        VALUE AS GroupExchangeRate
+    FROM TRS_FACT_COUNTRY_REPORT
     WHERE Period = '${P_PERIOD}'
+    AND ENTITY_ID = 'group'
+    AND DATA_NAME = 'col_p2_eur_to_twd_exch'
 ), RiskWarning AS (
 SELECT 
 T2.current_code,
@@ -85,6 +86,7 @@ T4.COUNTRY_NAME,
 T5.IS_LOWTAX,
 T5.TAX_RATE,
 T1.*,
+GE.GroupExchangeRate,
 STUFF((
     SELECT ',' + x.risk_type
     FROM (
@@ -112,8 +114,7 @@ STUFF((
         UNION ALL SELECT 'col_unmatch' WHERE (T1.col_pre_tax_income > 0 AND T1.col_curr_tax_payable < 0) OR (T1.col_pre_tax_income < 0 AND T1.col_curr_tax_payable > 0)
         UNION ALL SELECT 'col_low_etr' WHERE ISNULL(T1.col_curr_tax_payable / NULLIF(T1.col_pre_tax_income, 0), 0) < T5.TAX_RATE
         --可能不符合Pillar 2過渡性避風港小型微利測試之豁免條件
-        UNION ALL SELECT 'col_de_minimis' FROM GroupExchangeRate g WHERE T1.col_p2_income > (10000000 * g.GroupExchangeRate) OR T1.col_p2_pre_tax_income > ( 1000000 * g.GroupExchangeRate ) 
-        --可能不符合Pillar 2過渡性避風港簡易版有效稅率測試之豁免條件
+        UNION ALL SELECT 'col_de_minimis' WHERE T1.col_p2_income > (10000000 * GE.GroupExchangeRate) OR T1.col_p2_pre_tax_income > (1000000 * GE.GroupExchangeRate)
         UNION ALL SELECT 'col_simplified_etr' WHERE 
             (LEFT(T1.Period,4)='2023' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.15) OR
             (LEFT(T1.Period,4)='2024' AND ISNULL(T1.col_p2_tax_exp / NULLIF(T1.col_p2_pre_tax_income, 0), 0)< 0.15) OR
@@ -133,11 +134,12 @@ LEFT JOIN PivotData T6 ON T1.ENTITY_ID = T6.ENTITY_ID
 LEFT JOIN
         TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
     LEFT JOIN 
-        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='${fr_locale}'
+        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='en_US'
 	LEFT JOIN 
         V_TRS_DIM_COUNTRY T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE AND T4.FR_LOCALE='${fr_locale}'
     LEFT JOIN
         TRS_FACT_COUNTRY_TAX T5 ON T4.COUNTRY_ID = T5.COUNTRY_CODE
+LEFT JOIN GroupExchangeRate GE ON T1.Period = GE.Period
 WHERE 
 1=1 
 AND T1.Period = '${P_PERIOD}'

@@ -6,24 +6,25 @@ WITH TB1 AS (
     T3.ENTITY_NAME,
     T3.COUNTRY_ID,
     T1.DATA_NAME,
-    TRY_CAST(T1.VALUE AS DECIMAL(38,2)) AS VALUE
+    TRY_CAST(T1.VALUE AS DECIMAL(38,0)) AS VALUE
     FROM 
     [dbo].[TRS_FACT_COUNTRY_REPORT] T1
     LEFT JOIN
     TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2
-    ON T1.ENTITY_ID = T2.ENTITY_CODE
+    ON T1.ENTITY_ID = T2.ENTITY_CODE 
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
     AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
-    AND T1.PERIOD = '${P_PERIOD}'
     AND
     T1.REPORT_NAME = 'report1'
+    AND T1.PERIOD = '${P_PERIOD}'
+    --AND T3.COUNTRY_ID IN ('${P_COUNTRY}')
     ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
     ${if(len(P_COMPANY) == 0,"","and T1.ENTITY_ID in ('" + P_COMPANY + "')")}
-),T2 AS (
+), FINAL AS (
 SELECT PERIOD, ENTITY_ID, ENTITY_NAME,COUNTRY_ID,
     ISNULL([col_income_non_rel], 0) as [col_income_non_rel],
     ISNULL([col_income_rel], 0) as [col_income_rel],
@@ -46,12 +47,14 @@ PIVOT (
     )
 ) AS PivotTable)
 SELECT 
-PERIOD,
-ENTITY_ID,
-ENTITY_NAME,
-COUNTRY_ID,
-SUM([col_curr_tax_payable]) AS [col_curr_tax_payable],
-SUM([col_pre_tax_income]) AS [col_pre_tax_income]
-FROM T2
-WHERE ENTITY_ID IS NOT NULL
-GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
+SUM(col_income_non_rel) AS col_income_non_rel,
+SUM(col_income_rel) AS col_income_rel,
+SUM(col_income) AS col_income,
+SUM(col_pre_tax_income) AS col_pre_tax_income,
+SUM(col_tax_paid) AS col_tax_paid,
+SUM(col_curr_tax_payable) AS col_curr_tax_payable,
+SUM(col_paid_up_capital) AS col_paid_up_capital,
+SUM(col_accu_surplus) AS col_accu_surplus,
+SUM(col_num_of_emp) AS col_num_of_emp,
+SUM(col_tangible_asset) AS col_tangible_asset
+FROM FINAL

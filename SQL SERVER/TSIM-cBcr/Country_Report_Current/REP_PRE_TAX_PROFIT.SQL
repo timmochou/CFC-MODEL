@@ -15,7 +15,7 @@ WITH TB1 AS (
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND T1.PERIOD = '${P_PERIOD}'
@@ -53,4 +53,5 @@ COUNTRY_ID,
 SUM([col_income]) AS [col_income],
 SUM([col_pre_tax_income]) AS [col_pre_tax_incomee]
 FROM T2
+WHERE ENTITY_ID IS NOT NULL
 GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID
