@@ -39,7 +39,7 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
 V_TRS_DIM_ENTITY T3
 ON T2.ENTITY_CODE = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
 V_TRS_DIM_COUNTRY T4
 ON T3.COUNTRY_ID = T4.COUNTRY_ID
@@ -81,7 +81,7 @@ ORDER BY PERIOD ASC]]></Query>
 <Parameter>
 <Attributes name="P_PERIOD_"/>
 <O>
-<![CDATA[]]></O>
+<![CDATA[2023-12]]></O>
 </Parameter>
 </Parameters>
 <Attributes maxMemRowCount="-1"/>
@@ -103,7 +103,7 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
 V_TRS_DIM_ENTITY T3
 ON T1.ENTITY_ID = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
 V_TRS_DIM_COUNTRY T4
 ON T3.COUNTRY_ID = T4.COUNTRY_ID 
@@ -189,7 +189,7 @@ ${if(len(P_CATEGORY) == 0,"","and Type IN ('" + REPLACE(P_CATEGORY, "''", "'") +
 <Parameter>
 <Attributes name="fr_locale"/>
 <O>
-<![CDATA[zh_TW]]></O>
+<![CDATA[]]></O>
 </Parameter>
 </Parameters>
 <Attributes maxMemRowCount="-1"/>
@@ -334,7 +334,7 @@ LEFT JOIN PivotData T6 ON T1.ENTITY_ID = T6.ENTITY_ID
 LEFT JOIN
         TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2 ON T1.ENTITY_ID = T2.ENTITY_CODE 
     LEFT JOIN 
-        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='${fr_locale}'
+        V_TRS_DIM_ENTITY T3 ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='en_US'
 	LEFT JOIN 
         V_TRS_DIM_COUNTRY T4 ON T3.COUNTRY_ID = T4.COUNTRY_CODE AND T4.FR_LOCALE='${fr_locale}'
     LEFT JOIN
@@ -415,6 +415,33 @@ DISTINCT
 MAX(PERIOD) AS PERIOD
 FROM 
 TRSDB.dbo.TRS_FACT_COUNTRY_REPORT]]></Query>
+<PageQuery>
+<![CDATA[]]></PageQuery>
+</TableData>
+<TableData name="DIC_COMPANY1" class="com.fr.data.impl.DBTableData">
+<Desensitizations desensitizeOpen="false"/>
+<Parameters/>
+<Attributes maxMemRowCount="-1"/>
+<Connection class="com.fr.data.impl.NameDatabaseConnection">
+<DatabaseName>
+<![CDATA[TRSDB]]></DatabaseName>
+</Connection>
+<Query>
+<![CDATA[SELECT 
+DISTINCT
+T1.PERIOD,
+T1.ENTITY_ID,
+T3.ENTITY_NAME
+FROM 
+[dbo]A.[TRS_FACT_COUNTRY_REPORT]A T1
+LEFT JOIN
+TRSDB.dbo.V_TRS_DIM_ENTITY_CUR T2
+ON T1.ENTITY_ID = T2.ENTITY_CODE
+LEFT JOIN 
+V_TRS_DIM_ENTITY T3
+ON T2.ENTITY_CODE = T3.ENTITY_ID
+AND T3.FR_LOCALE='en_US'
+ORDER BY ENTITY_NAME ASC]]></Query>
 <PageQuery>
 <![CDATA[]]></PageQuery>
 </TableData>
@@ -3011,7 +3038,7 @@ else if(TYPE == "1"){
 </VanMapDefinition>
 </ChartDefinition>
 </Chart>
-<UUID uuid="a48c5300-c88c-4de6-916c-84ab2dc1defd"/>
+<UUID uuid="9c37c838-6ef3-429b-b49c-4a3ee656b390"/>
 <tools hidden="true" sort="false" export="false" fullScreen="false"/>
 <VanChartZoom>
 <zoomAttr zoomVisible="false" zoomGesture="true" zoomResize="true" zoomType="xy" controlType="zoom" categoryNum="8" scaling="0.3"/>
@@ -3156,7 +3183,7 @@ else if(TYPE == "1"){
 </Widget>
 <ShowBookmarks showBookmarks="false"/>
 </InnerWidget>
-<BoundsAttr x="38" y="290" width="665" height="744"/>
+<BoundsAttr x="35" y="291" width="665" height="744"/>
 </Widget>
 <Widget class="com.fr.form.ui.container.WAbsoluteLayout$BoundsWidget">
 <InnerWidget class="com.fr.form.ui.container.WTitleLayout">
@@ -3675,7 +3702,7 @@ rN~
 <TableDataDictAttr>
 <TableData class="com.fr.data.impl.NameTableData">
 <Name>
-<![CDATA[DIC_COMPANY]]></Name>
+<![CDATA[DIC_COMPANY1]]></Name>
 </TableData>
 </TableDataDictAttr>
 </Dictionary>
@@ -5560,6 +5587,7 @@ A=2(,=hN1:5P*>Sc9@oRJJE`@'YE`@'YE`@'YE`@'YE`@'YE`@'YE`A3q+Z0)_]A*6o+EIo<!
 <StrategyConfig dsName="REP_WARNING" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
 <StrategyConfig dsName="REP_CATEGORY" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
 <StrategyConfig dsName="DIC_DATE_MAX" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
+<StrategyConfig dsName="DIC_COMPANY1" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
 </StrategyConfigs>
 </StrategyConfigsAttr>
 <NewFormMarkAttr class="com.fr.form.fit.NewFormMarkAttr">

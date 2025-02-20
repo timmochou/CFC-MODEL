@@ -5,11 +5,6 @@
 <Desensitizations desensitizeOpen="false"/>
 <Parameters>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_COUNTRY_"/>
 <O>
 <![CDATA[]]></O>
@@ -39,11 +34,11 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
 V_TRS_DIM_ENTITY T3
 ON T2.ENTITY_CODE = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
 V_TRS_DIM_COUNTRY T4
 ON T3.COUNTRY_ID = T4.COUNTRY_ID
-AND T4.FR_LOCALE='${fr_locale}'
+AND T4.FR_LOCALE='en_US'
 WHERE 
 1=1
 AND REPORT_NAME = 'report1'
@@ -106,7 +101,7 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
 V_TRS_DIM_ENTITY T3
 ON T1.ENTITY_ID = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
 V_TRS_DIM_COUNTRY T4
 ON T3.COUNTRY_ID = T4.COUNTRY_ID 
@@ -167,7 +162,7 @@ ORDER BY COUNTRY_ID ASC]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     LEFT JOIN 
     V_TRS_DIM_COUNTRY T4 
     ON T3.COUNTRY_ID = T4.COUNTRY_CODE 
@@ -247,11 +242,6 @@ ORDER BY COUNTRY_ID, ENTITY_NAME ASC]]></Query>
 <![CDATA[]]></O>
 </Parameter>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="BTN_TYPE"/>
 <O>
 <![CDATA[]]></O>
@@ -280,15 +270,15 @@ LEFT JOIN
 ON T1.ENTITY_ID = T2.ENTITY_CODE 
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
-ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='${fr_locale}'
+ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
     V_TRS_DIM_COUNTRY T4
-ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='${fr_locale}'
+ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='en_US'
 WHERE
 1=1
 AND
 T1.REPORT_NAME = 'report1'
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 AND T1.DATA_NAME = '${P_CATEGORY1}'
 AND T1.PERIOD = '${P_PERIOD}'
 ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
@@ -317,7 +307,7 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
 ON T1.ENTITY_ID = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 WHERE
 1=1 
 AND 
@@ -352,11 +342,6 @@ ORDER BY VALUE DESC]]></Query>
 <TableData name="REP_EFFECTIVE_TAX" class="com.fr.data.impl.DBTableData">
 <Desensitizations desensitizeOpen="false"/>
 <Parameters>
-<Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
 <Parameter>
 <Attributes name="P_COUNTRY"/>
 <O>
@@ -396,7 +381,7 @@ ORDER BY VALUE DESC]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND T1.PERIOD = '${P_PERIOD}'
@@ -443,11 +428,6 @@ GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID]]></Query>
 <Desensitizations desensitizeOpen="false"/>
 <Parameters>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_COUNTRY"/>
 <O>
 <![CDATA[]]></O>
@@ -486,7 +466,7 @@ GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND T1.PERIOD = '${P_PERIOD}'
@@ -533,11 +513,6 @@ GROUP BY PERIOD, ENTITY_ID, ENTITY_NAME, COUNTRY_ID]]></Query>
 <Desensitizations desensitizeOpen="false"/>
 <Parameters>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_CATEGORY2"/>
 <O>
 <![CDATA[col_income_non_rel]]></O>
@@ -582,15 +557,15 @@ LEFT JOIN
 ON T1.ENTITY_ID = T2.ENTITY_CODE 
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
-ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='${fr_locale}'
+ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
     V_TRS_DIM_COUNTRY T4
-ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='${fr_locale}'
+ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='en_US'
 WHERE
 1=1
 AND
 T1.REPORT_NAME = 'report1'
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 AND T1.DATA_NAME = '${P_CATEGORY2}'
 AND T1.PERIOD = '${P_PERIOD}'
 ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
@@ -615,7 +590,7 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
 ON T1.ENTITY_ID = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 WHERE
 1=1 
 AND 
@@ -650,11 +625,6 @@ ORDER BY VALUE DESC]]></Query>
 <TableData name="CHT_COUNTRY_REPORT3" class="com.fr.data.impl.DBTableData">
 <Desensitizations desensitizeOpen="false"/>
 <Parameters>
-<Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
 <Parameter>
 <Attributes name="P_COUNTRY"/>
 <O>
@@ -700,15 +670,15 @@ LEFT JOIN
 ON T1.ENTITY_ID = T2.ENTITY_CODE 
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
-ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='${fr_locale}'
+ON T1.ENTITY_ID = T3.ENTITY_ID AND T3.FR_LOCALE='en_US'
 LEFT JOIN 
     V_TRS_DIM_COUNTRY T4
-ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='${fr_locale}'
+ON T3.COUNTRY_ID = T4.COUNTRY_ID AND T4.FR_LOCALE='en_US'
 WHERE
 1=1
 AND
 T1.REPORT_NAME = 'report1'
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 AND T1.DATA_NAME = '${P_CATEGORY3}'
 AND T1.PERIOD = '${P_PERIOD}'
 ${if(len(P_COUNTRY) == 0,"","and T3.COUNTRY_ID IN ('" + P_COUNTRY + "')")}
@@ -733,7 +703,7 @@ ON T1.ENTITY_ID = T2.ENTITY_CODE
 LEFT JOIN 
     V_TRS_DIM_ENTITY T3
 ON T1.ENTITY_ID = T3.ENTITY_ID
-AND T3.FR_LOCALE='${fr_locale}'
+AND T3.FR_LOCALE='en_US'
 WHERE
 1=1 
 AND 
@@ -814,11 +784,6 @@ SELECT '10' AS ID, 'col_income_non_rel' AS TYPE]]></Query>
 <O>
 <![CDATA[]]></O>
 </Parameter>
-<Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
 </Parameters>
 <Attributes maxMemRowCount="-1"/>
 <Connection class="com.fr.data.impl.NameDatabaseConnection">
@@ -843,7 +808,7 @@ SELECT '10' AS ID, 'col_income_non_rel' AS TYPE]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND
@@ -908,11 +873,6 @@ FROM FINAL]]></Query>
 <![CDATA[]]></O>
 </Parameter>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_CATEGORY1"/>
 <O>
 <![CDATA[]]></O>
@@ -936,7 +896,7 @@ FROM FINAL]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND
@@ -969,11 +929,6 @@ FROM FINAL]]></Query>
 <![CDATA[]]></O>
 </Parameter>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_CATEGORY2"/>
 <O>
 <![CDATA[]]></O>
@@ -997,7 +952,7 @@ FROM FINAL]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND
@@ -1030,11 +985,6 @@ FROM FINAL]]></Query>
 <![CDATA[]]></O>
 </Parameter>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_CATEGORY3"/>
 <O>
 <![CDATA[]]></O>
@@ -1058,7 +1008,7 @@ FROM FINAL]]></Query>
     LEFT JOIN 
     V_TRS_DIM_ENTITY T3
     ON T1.ENTITY_ID = T3.ENTITY_ID
-    AND T3.FR_LOCALE='${fr_locale}'
+    AND T3.FR_LOCALE='en_US'
     WHERE 
     1=1
     AND
@@ -1208,7 +1158,7 @@ $('<link rel="stylesheet" type="text/css" href="${contextPath}/css/scroll.css"/>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -1253,7 +1203,7 @@ $('<link rel="stylesheet" type="text/css" href="${contextPath}/css/scroll.css"/>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -1552,7 +1502,7 @@ _g().getWidgetByName("P_PERIOD").setValue(P_PERIOD);]]></Content>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -1613,7 +1563,7 @@ _g().getWidgetByName("P_PERIOD").setValue(P_PERIOD);]]></Content>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -1667,7 +1617,7 @@ _g().getWidgetByName("P_PERIOD").setValue(P_PERIOD);]]></Content>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -1719,7 +1669,7 @@ _g().getWidgetByName("P_PERIOD").setValue(P_PERIOD);]]></Content>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -1799,7 +1749,7 @@ _g().getWidgetByName("P_PERIOD").setValue(P_PERIOD);]]></Content>
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -2574,7 +2524,7 @@ else{
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -2616,7 +2566,7 @@ else{
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -2669,7 +2619,7 @@ else{
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -2722,7 +2672,7 @@ else{
 <IconColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </IconColor>
-<FontStyle fontSize="12" name="宋体" bold="false" italic="false">
+<FontStyle fontSize="12" fontName="宋体" bold="false" italic="false">
 <fontColor>
 <FineColor color="-16179648" hor="-1" ver="-1"/>
 </fontColor>
@@ -2872,7 +2822,7 @@ else{
 <![CDATA[新增圖表標題]]></O>
 <TextAttr>
 <Attr alignText="0" themed="true">
-<FRFont name="simhei" style="1" size="120">
+<FRFont name="WenQuanYi Micro Hei" style="1" size="120">
 <foreground>
 <FineColor color="-13945534" hor="-1" ver="-1"/>
 </foreground>
@@ -2980,8 +2930,6 @@ else{
 <richText class="com.fr.plugin.chart.base.AttrTooltipRichText">
 <AttrTooltipRichText>
 <Attr content="&lt;p&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  class=&quot;rich-editor-param&quot; height=&quot;16px&quot; alt=&quot;系列名&quot; data-id=&quot;${SERIES}&quot; name=&quot;系列名&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:40px;height: 16px; max-width:40px;max-height: 16px; min-width:40px;min-height: 16px&quot; /&gt;:&lt;br&gt;&lt;/font&gt;&lt;/p&gt;&lt;p&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  alt=&quot;值&quot; data-id=&quot;${VALUE}&quot; class=&quot;rich-editor-param&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:16px;height: 16px; max-width:16px;max-height: 16px; min-width:16px;min-height: 16px&quot; name=&quot;%E5%80%BC&quot; /&gt;&lt;br&gt;&lt;/font&gt;&lt;/p&gt;&lt;p&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  alt=&quot;PERCENTAGE&quot; data-id=&quot;${PERCENTAGE_-436740454}&quot; class=&quot;rich-editor-param&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:85.791015625px;height: 16px; max-width:85.791015625px;max-height: 16px; min-width:85.791015625px;min-height: 16px&quot; name=&quot;PERCENTAGE&quot; /&gt;&lt;/font&gt;&lt;br&gt;&lt;/p&gt;" isAuto="false" initParamsContent="${SERIES}${VALUE}"/>
-<params>
-<![CDATA[{}]]></params>
 </AttrTooltipRichText>
 </richText>
 <richTextValue class="com.fr.plugin.chart.base.format.AttrTooltipValueFormat">
@@ -3162,7 +3110,7 @@ else{
 </AttrAlpha>
 </GI>
 <Attr isVisible="false" themed="true"/>
-<FRFont name="simhei" style="0" size="80">
+<FRFont name="WenQuanYi Micro Hei" style="0" size="80">
 <foreground>
 <FineColor color="-8747891" hor="-1" ver="-1"/>
 </foreground>
@@ -3298,7 +3246,7 @@ else if(TYPE == "2"){
 </OneValueCDDefinition>
 </ChartDefinition>
 </Chart>
-<UUID uuid="01452e4a-4bf9-4158-bf6c-5e0b36bea924"/>
+<UUID uuid="dcf28137-d9af-4cd9-a784-984a2ecb0c4f"/>
 <tools hidden="false" sort="false" export="false" fullScreen="false"/>
 <VanChartZoom>
 <zoomAttr zoomVisible="false" zoomGesture="true" zoomResize="true" zoomType="xy" controlType="zoom" categoryNum="8" scaling="0.3"/>
@@ -3321,8 +3269,6 @@ else if(TYPE == "2"){
 <richText class="com.fr.plugin.chart.base.AttrTooltipRichText">
 <AttrTooltipRichText>
 <Attr content="" isAuto="true" initParamsContent=""/>
-<params>
-<![CDATA[{}]]></params>
 </AttrTooltipRichText>
 </richText>
 <richTextValue class="com.fr.plugin.chart.base.format.AttrTooltipValueFormat">
@@ -3572,7 +3518,7 @@ else if(TYPE == "2"){
 <![CDATA[新增圖表標題]]></O>
 <TextAttr>
 <Attr alignText="0" themed="true">
-<FRFont name="simhei" style="1" size="120">
+<FRFont name="WenQuanYi Micro Hei" style="1" size="120">
 <foreground>
 <FineColor color="-13945534" hor="-1" ver="-1"/>
 </foreground>
@@ -3680,8 +3626,6 @@ else if(TYPE == "2"){
 <richText class="com.fr.plugin.chart.base.AttrTooltipRichText">
 <AttrTooltipRichText>
 <Attr content="&lt;p&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  class=&quot;rich-editor-param&quot; height=&quot;16px&quot; alt=&quot;系列名&quot; data-id=&quot;${SERIES}&quot; name=&quot;系列名&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:40px;height: 16px; max-width:40px;max-height: 16px; min-width:40px;min-height: 16px&quot; /&gt;:&lt;br&gt;&lt;/font&gt;&lt;/p&gt;&lt;p&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  alt=&quot;值&quot; data-id=&quot;${VALUE}&quot; class=&quot;rich-editor-param&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:16px;height: 16px; max-width:16px;max-height: 16px; min-width:16px;min-height: 16px&quot; name=&quot;%E5%80%BC&quot; /&gt;&lt;br&gt;&lt;/font&gt;&lt;/p&gt;&lt;p&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  alt=&quot;PERCENTAGE&quot; data-id=&quot;${PERCENTAGE_-436740454}&quot; class=&quot;rich-editor-param&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:85.791015625px;height: 16px; max-width:85.791015625px;max-height: 16px; min-width:85.791015625px;min-height: 16px&quot; name=&quot;PERCENTAGE&quot; /&gt;&lt;/font&gt;&lt;br&gt;&lt;/p&gt;" isAuto="false" initParamsContent="${SERIES}${VALUE}"/>
-<params>
-<![CDATA[{}]]></params>
 </AttrTooltipRichText>
 </richText>
 <richTextValue class="com.fr.plugin.chart.base.format.AttrTooltipValueFormat">
@@ -3862,7 +3806,7 @@ else if(TYPE == "2"){
 </AttrAlpha>
 </GI>
 <Attr isVisible="false" themed="true"/>
-<FRFont name="simhei" style="0" size="80">
+<FRFont name="WenQuanYi Micro Hei" style="0" size="80">
 <foreground>
 <FineColor color="-8747891" hor="-1" ver="-1"/>
 </foreground>
@@ -3998,7 +3942,7 @@ else if(TYPE == "2"){
 </OneValueCDDefinition>
 </ChartDefinition>
 </Chart>
-<UUID uuid="667404c5-8671-46e7-a273-692a766f7b60"/>
+<UUID uuid="9eed2cde-c599-4457-9a2c-12d9c940bac5"/>
 <tools hidden="false" sort="false" export="false" fullScreen="false"/>
 <VanChartZoom>
 <zoomAttr zoomVisible="false" zoomGesture="true" zoomResize="true" zoomType="xy" controlType="zoom" categoryNum="8" scaling="0.3"/>
@@ -4021,8 +3965,6 @@ else if(TYPE == "2"){
 <richText class="com.fr.plugin.chart.base.AttrTooltipRichText">
 <AttrTooltipRichText>
 <Attr content="" isAuto="true" initParamsContent=""/>
-<params>
-<![CDATA[{}]]></params>
 </AttrTooltipRichText>
 </richText>
 <richTextValue class="com.fr.plugin.chart.base.format.AttrTooltipValueFormat">
@@ -4272,7 +4214,7 @@ else if(TYPE == "2"){
 <![CDATA[新增圖表標題]]></O>
 <TextAttr>
 <Attr alignText="0" themed="true">
-<FRFont name="simhei" style="1" size="120">
+<FRFont name="WenQuanYi Micro Hei" style="1" size="120">
 <foreground>
 <FineColor color="-13945534" hor="-1" ver="-1"/>
 </foreground>
@@ -4380,8 +4322,6 @@ else if(TYPE == "2"){
 <richText class="com.fr.plugin.chart.base.AttrTooltipRichText">
 <AttrTooltipRichText>
 <Attr content="&lt;p style=&quot;text-align:left;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  class=&quot;rich-editor-param&quot; height=&quot;16px&quot; alt=&quot;系列名&quot; data-id=&quot;${SERIES}&quot; name=&quot;系列名&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:40px;height: 16px; max-width:40px;max-height: 16px; min-width:40px;min-height: 16px&quot; /&gt;:&lt;br&gt;&lt;/font&gt;&lt;/p&gt;&lt;p style=&quot;text-align:left;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  alt=&quot;值&quot; data-id=&quot;${VALUE}&quot; class=&quot;rich-editor-param&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:16px;height: 16px; max-width:16px;max-height: 16px; min-width:16px;min-height: 16px&quot; name=&quot;%E5%80%BC&quot; /&gt;&lt;/font&gt;&lt;/p&gt;&lt;p style=&quot;text-align:left;&quot;&gt;&lt;font style=&quot;font-size: 16px;&quot;&gt;&lt;img  alt=&quot;PERCENTAGE&quot; data-id=&quot;${PERCENTAGE_-436740454}&quot; class=&quot;rich-editor-param&quot; style=&quot;background-color: rgba(54, 133, 242, 0.1);vertical-align: middle; margin: 0 1px; width:85.791015625px;height: 16px; max-width:85.791015625px;max-height: 16px; min-width:85.791015625px;min-height: 16px&quot; name=&quot;PERCENTAGE&quot; /&gt;&lt;/font&gt;&lt;br&gt;&lt;/p&gt;" isAuto="false" initParamsContent="${SERIES}${VALUE}"/>
-<params>
-<![CDATA[{}]]></params>
 </AttrTooltipRichText>
 </richText>
 <richTextValue class="com.fr.plugin.chart.base.format.AttrTooltipValueFormat">
@@ -4562,7 +4502,7 @@ else if(TYPE == "2"){
 </AttrAlpha>
 </GI>
 <Attr isVisible="false" themed="true"/>
-<FRFont name="simhei" style="0" size="80">
+<FRFont name="WenQuanYi Micro Hei" style="0" size="80">
 <foreground>
 <FineColor color="-8747891" hor="-1" ver="-1"/>
 </foreground>
@@ -4703,7 +4643,7 @@ else if(TYPE == "2"){
 </OneValueCDDefinition>
 </ChartDefinition>
 </Chart>
-<UUID uuid="5b69ce23-7929-43df-a3e3-d0be3ca08ada"/>
+<UUID uuid="b56d16b9-12eb-4ae0-a76b-1f733cf1fb59"/>
 <tools hidden="false" sort="false" export="false" fullScreen="false"/>
 <VanChartZoom>
 <zoomAttr zoomVisible="false" zoomGesture="true" zoomResize="true" zoomType="xy" controlType="zoom" categoryNum="8" scaling="0.3"/>
@@ -4726,8 +4666,6 @@ else if(TYPE == "2"){
 <richText class="com.fr.plugin.chart.base.AttrTooltipRichText">
 <AttrTooltipRichText>
 <Attr content="" isAuto="true" initParamsContent=""/>
-<params>
-<![CDATA[{}]]></params>
 </AttrTooltipRichText>
 </richText>
 <richTextValue class="com.fr.plugin.chart.base.format.AttrTooltipValueFormat">
@@ -6540,7 +6478,7 @@ else if(TYPE == "2"){
 </FormElementCase>
 <StyleList>
 <Style style_name="預設" full="true" border_source="-1" imageLayout="1">
-<FRFont name="simhei" style="0" size="72"/>
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
 <Background name="NullBackground"/>
 <Border/>
 </Style>
@@ -7887,7 +7825,7 @@ PJ:EUht`m7Z46p%H-XHr]A=T<;XC5bckGtmIR7B3-+0M~
 <Border/>
 </Style>
 <Style style_name="預設" full="true" border_source="-1" imageLayout="1">
-<FRFont name="simhei" style="0" size="72"/>
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
 <Background name="NullBackground"/>
 <Border/>
 </Style>
@@ -8485,7 +8423,7 @@ $;WlX:)M5lGh$7"q05gu-n_#j=>4]A1<)g$1.*a?AU_Ko._@H4CG3]A]APk'P]A;Gf518'oDd:/s
 </FormElementCase>
 <StyleList>
 <Style style_name="預設" full="true" border_source="-1" imageLayout="1">
-<FRFont name="simhei" style="0" size="72"/>
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
 <Background name="NullBackground"/>
 <Border/>
 </Style>
@@ -9437,7 +9375,7 @@ ojn[P,%(d3@N!A7c&WEj^t#_M?EDd4C.njei>$5!<<~
 </FormElementCase>
 <StyleList>
 <Style style_name="預設" full="true" border_source="-1" imageLayout="1">
-<FRFont name="simhei" style="0" size="72"/>
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
 <Background name="NullBackground"/>
 <Border/>
 </Style>
@@ -9552,7 +9490,7 @@ ojn[P,%(d3@N!A7c&WEj^t#_M?EDd4C.njei>$5!<<~
 </FormElementCase>
 <StyleList>
 <Style style_name="預設" full="true" border_source="-1" imageLayout="1">
-<FRFont name="simhei" style="0" size="72"/>
+<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
 <Background name="NullBackground"/>
 <Border/>
 </Style>
@@ -9647,459 +9585,6 @@ ojn[P,%(d3@N!A7c&WEj^t#_M?EDd4C.njei>$5!<<~
 </Layout>
 <DesignerVersion DesignerVersion="LAA"/>
 <PreviewType PreviewType="5"/>
-<I18NMap class="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark" pluginID="com.fr.plugin.i18n.bundle.v11" plugin-version="2.0.8.4">
-<Attributes languageType="0" default="" backup="en_US"/>
-<I18N key="REC_DATE" description="">
-<zh_TW>
-<![CDATA[認列投收年度(起訖)]]></zh_TW>
-<en_US>
-<![CDATA[Recognition year of investment income (start and end)]]></en_US>
-</I18N>
-<I18N key="EXP_YEAR" description="">
-<zh_TW>
-<![CDATA[可抵繳稅額期限]]></zh_TW>
-<en_US>
-<![CDATA[Deductible tax expired year]]></en_US>
-</I18N>
-<I18N key="CN_PAID_TAX" description="">
-<zh_TW>
-<![CDATA[於大陸地區已繳納所得稅]]></zh_TW>
-<en_US>
-<![CDATA[Income tax paid in China]]></en_US>
-</I18N>
-<I18N key="CFC_COMPANY" description="">
-<zh_TW>
-<![CDATA[CFC公司]]></zh_TW>
-<en_US>
-<![CDATA[CFC company name]]></en_US>
-</I18N>
-<I18N key="REC_YEAR" description="">
-<zh_TW>
-<![CDATA[認列投資收益年度]]></zh_TW>
-<en_US>
-<![CDATA[Recognition year of investment income]]></en_US>
-</I18N>
-<I18N key="NY_CN_PAID_TAX" description="">
-<zh_TW>
-<![CDATA[年內過期之大陸地區已繳納所得稅]]></zh_TW>
-<en_US>
-<![CDATA[Income tax paid in China expired within 2 years]]></en_US>
-</I18N>
-<I18N key="COMPANY" description="">
-<zh_TW>
-<![CDATA[申報公司]]></zh_TW>
-<en_US>
-<![CDATA[Entity name]]></en_US>
-</I18N>
-<I18N key="BALANCE" description="">
-<zh_TW>
-<![CDATA[尚未獲配(或處分)餘額]]></zh_TW>
-<en_US>
-<![CDATA[Balance not yet distributed (or disposed)]]></en_US>
-</I18N>
-<I18N key="CN_TAX_NOT_OFFSET" description="">
-<zh_TW>
-<![CDATA[尚未抵繳]]></zh_TW>
-<en_US>
-<![CDATA[Tax not yet deducted ]]></en_US>
-</I18N>
-<I18N key="CN_TAX_PAID" description="">
-<zh_TW>
-<![CDATA[已繳納之所得稅]]></zh_TW>
-<en_US>
-<![CDATA[Income tax paid]]></en_US>
-</I18N>
-<I18N key="ACT_REA_DIV" description="">
-<zh_TW>
-<![CDATA[已認列投收]]></zh_TW>
-<en_US>
-<![CDATA[Recognized before]]></en_US>
-</I18N>
-<I18N key="ACT_TAX_DIV" description="">
-<zh_TW>
-<![CDATA[應計入課稅]]></zh_TW>
-<en_US>
-<![CDATA[Taxable]]></en_US>
-</I18N>
-<I18N key="REC_CFC_TOTAL_INV" description="">
-<zh_TW>
-<![CDATA[認列CFC投收總額]]></zh_TW>
-<en_US>
-<![CDATA[Total CFC investment income]]></en_US>
-</I18N>
-<I18N key="TITLE" description="">
-<zh_TW>
-<![CDATA[投資收益及可扣抵稅額總覽]]></zh_TW>
-<en_US>
-<![CDATA[Recognition of CFC Income and Tax Credits Overview]]></en_US>
-</I18N>
-<I18N key="SCENARIO" description="">
-<zh_TW>
-<![CDATA[版本]]></zh_TW>
-<en_US>
-<![CDATA[Scenario]]></en_US>
-</I18N>
-<I18N key="REC_INV" description="">
-<zh_TW>
-<![CDATA[依規定認列之投資收益]]></zh_TW>
-<en_US>
-<![CDATA[CFC investment income]]></en_US>
-</I18N>
-<I18N key="DUEDATE" description="">
-<zh_TW>
-<![CDATA[到期年門檻]]></zh_TW>
-<en_US>
-<![CDATA[Expiration year threshold]]></en_US>
-</I18N>
-<I18N key="REST_TOTAL" description="">
-<zh_TW>
-<![CDATA[尚未獲配(或處分)餘額]]></zh_TW>
-<en_US>
-<![CDATA[Balance not yet distributed (or disposed)]]></en_US>
-</I18N>
-<I18N key="AMOUNT_ALLOCATED_PRE" description="">
-<zh_TW>
-<![CDATA[截至上年度累積已獲配(或已處分)]]></zh_TW>
-<en_US>
-<![CDATA[Accumulated distributed (or disposed) as of the previous year]]></en_US>
-</I18N>
-<I18N key="CN_TAX_OFFSET" description="">
-<zh_TW>
-<![CDATA[已抵繳]]></zh_TW>
-<en_US>
-<![CDATA[Tax deducted ]]></en_US>
-</I18N>
-<I18N key="AMOUNT_DIS" description="">
-<zh_TW>
-<![CDATA[於申報年度實際處分]]></zh_TW>
-<en_US>
-<![CDATA[Disposal amount in filing year]]></en_US>
-</I18N>
-<I18N key="FISCAL_YEAR_ACTUAL_DIVIDEND" description="">
-<zh_TW>
-<![CDATA[於申報年度實際獲配]]></zh_TW>
-<en_US>
-<![CDATA[Distribute amount in filing year]]></en_US>
-</I18N>
-<I18N key="CN_PAID" description="">
-<zh_TW>
-<![CDATA[於大陸地區已納所得稅抵繳情形 ]]></zh_TW>
-<en_US>
-<![CDATA[The status of Income tax paid in China]]></en_US>
-</I18N>
-<I18N key="SUBMIT" description="">
-<zh_TW>
-<![CDATA[查詢]]></zh_TW>
-<en_US>
-<![CDATA[Search]]></en_US>
-</I18N>
-<I18N key="TOTAL" description="">
-<zh_TW>
-<![CDATA[總計]]></zh_TW>
-<en_US>
-<![CDATA[Total]]></en_US>
-</I18N>
-<I18N key="TITLE_COUNTRY_REPORT" description="">
-<zh_TW>
-<![CDATA[國別報告當期總覽]]></zh_TW>
-<en_US>
-<![CDATA[Country Report Overview]]></en_US>
-</I18N>
-<I18N key="UNIT" description="">
-<zh_TW>
-<![CDATA[單位]]></zh_TW>
-<en_US>
-<![CDATA[UNIT]]></en_US>
-</I18N>
-<I18N key="PERIOD1" description="">
-<zh_TW>
-<![CDATA[期間]]></zh_TW>
-<en_US>
-<![CDATA[Period]]></en_US>
-</I18N>
-<I18N key="COUNTRY_LOCATION" description="">
-<zh_TW>
-<![CDATA[國家地區]]></zh_TW>
-<en_US>
-<![CDATA[Country Location]]></en_US>
-</I18N>
-<I18N key="ENTITY_NAME" description="">
-<zh_TW>
-<![CDATA[報告成員]]></zh_TW>
-<en_US>
-<![CDATA[Report Members]]></en_US>
-</I18N>
-<I18N key="col_income_non_rel" description="">
-<zh_TW>
-<![CDATA[收入_非關係人]]></zh_TW>
-<en_US>
-<![CDATA[Revenues-Unrelated Party]]></en_US>
-</I18N>
-<I18N key="col_income_rel" description="">
-<zh_TW>
-<![CDATA[收入_關係人]]></zh_TW>
-<en_US>
-<![CDATA[Revenues-Related Party]]></en_US>
-</I18N>
-<I18N key="col_income" description="">
-<zh_TW>
-<![CDATA[收入]]></zh_TW>
-<en_US>
-<![CDATA[Revenues]]></en_US>
-</I18N>
-<I18N key="col_pre_tax_income" description="">
-<zh_TW>
-<![CDATA[所得稅前損益]]></zh_TW>
-<en_US>
-<![CDATA[Profit (Loss) before Income Tax]]></en_US>
-</I18N>
-<I18N key="col_tax_paid" description="">
-<zh_TW>
-<![CDATA[已納所得稅(現金收付制)]]></zh_TW>
-<en_US>
-<![CDATA[Income Tax Paid (on Cash Basis)]]></en_US>
-</I18N>
-<I18N key="col_curr_tax_payable" description="">
-<zh_TW>
-<![CDATA[當期應付所得稅]]></zh_TW>
-<en_US>
-<![CDATA[Income Tax Accrued-Current Year]]></en_US>
-</I18N>
-<I18N key="col_paid_up_capital" description="">
-<zh_TW>
-<![CDATA[實收資本額]]></zh_TW>
-<en_US>
-<![CDATA[Stated Capital]]></en_US>
-</I18N>
-<I18N key="col_accu_surplus" description="">
-<zh_TW>
-<![CDATA[累積盈餘]]></zh_TW>
-<en_US>
-<![CDATA[Accumulated Earnings]]></en_US>
-</I18N>
-<I18N key="col_num_of_emp" description="">
-<zh_TW>
-<![CDATA[員工人數]]></zh_TW>
-<en_US>
-<![CDATA[Number of Employees]]></en_US>
-</I18N>
-<I18N key="col_tangible_asset" description="">
-<zh_TW>
-<![CDATA[有形資產(現金及約當現金除外) ]]></zh_TW>
-<en_US>
-<![CDATA[Tangible Assets other than Cash and Cash Equivalents]]></en_US>
-</I18N>
-<I18N key="EFFECTIVE_TAX_RATE" description="">
-<zh_TW>
-<![CDATA[有效稅率]]></zh_TW>
-<en_US>
-<![CDATA[Effective Tax Rate]]></en_US>
-</I18N>
-<I18N key="PRE_TAX_PROFIT_MARGIN" description="">
-<zh_TW>
-<![CDATA[稅前淨利率]]></zh_TW>
-<en_US>
-<![CDATA[Pre-Tax Profit Margin]]></en_US>
-</I18N>
-<I18N key="report2" description="">
-<zh_TW>
-<![CDATA[國別報告表二]]></zh_TW>
-<en_US>
-<![CDATA[Cbcr Report Table 2]]></en_US>
-</I18N>
-<I18N key="report3" description="">
-<zh_TW>
-<![CDATA[國別報告表三]]></zh_TW>
-<en_US>
-<![CDATA[Cbcr Report Table 3]]></en_US>
-</I18N>
-<I18N key="country_id" description="國家地區">
-<zh_TW>
-<![CDATA[國家地區]]></zh_TW>
-<en_US>
-<![CDATA[Country]]></en_US>
-</I18N>
-<I18N key="col_hold_share_or_other_eqty" description="國別報告表二">
-<zh_TW>
-<![CDATA[持有股份或其他權益工具]]></zh_TW>
-<en_US>
-<![CDATA[Holding Shares or Other Equity Instruments]]></en_US>
-</I18N>
-<I18N key="report1" description="">
-<zh_TW>
-<![CDATA[國別報告表一]]></zh_TW>
-<en_US>
-<![CDATA[Cbcr Report Table 1]]></en_US>
-</I18N>
-<I18N key="col_int_grp_fin" description="國別報告表二">
-<zh_TW>
-<![CDATA[集團內部融資]]></zh_TW>
-<en_US>
-<![CDATA[Internal Group Finance]]></en_US>
-</I18N>
-<I18N key="entity_id" description="">
-<zh_TW>
-<![CDATA[報告成員]]></zh_TW>
-<en_US>
-<![CDATA[Entity]]></en_US>
-</I18N>
-<I18N key="col_purchase" description="國別報告表二">
-<zh_TW>
-<![CDATA[採購]]></zh_TW>
-<en_US>
-<![CDATA[Purchasing or Procurement]]></en_US>
-</I18N>
-<I18N key="upload_record" description="上傳資料">
-<zh_CN>
-<![CDATA[新增数据]]></zh_CN>
-<zh_TW>
-<![CDATA[新增]]></zh_TW>
-<en_US>
-<![CDATA[Add]]></en_US>
-</I18N>
-<I18N key="col_out_of_business" description="國別報告表二">
-<zh_TW>
-<![CDATA[停業]]></zh_TW>
-<en_US>
-<![CDATA[Dormant]]></en_US>
-</I18N>
-<I18N key="language" description="語言">
-<zh_CN>
-<![CDATA[语言]]></zh_CN>
-<zh_TW>
-<![CDATA[語言]]></zh_TW>
-<en_US>
-<![CDATA[Language]]></en_US>
-</I18N>
-<I18N key="title" description="">
-<zh_TW>
-<![CDATA[國別報告表]]></zh_TW>
-<en_US>
-<![CDATA[Cbcr data import]]></en_US>
-</I18N>
-<I18N key="submit_enter" description="提交">
-<zh_CN>
-<![CDATA[提交]]></zh_CN>
-<zh_TW>
-<![CDATA[提交]]></zh_TW>
-<en_US>
-<![CDATA[Submit]]></en_US>
-</I18N>
-<I18N key="search_enter" description="搜尋">
-<zh_CN>
-<![CDATA[搜寻]]></zh_CN>
-<zh_TW>
-<![CDATA[搜尋]]></zh_TW>
-<en_US>
-<![CDATA[Search]]></en_US>
-</I18N>
-<I18N key="col_insurance" description="國別報告表二">
-<zh_TW>
-<![CDATA[保險]]></zh_TW>
-<en_US>
-<![CDATA[Insurance]]></en_US>
-</I18N>
-<I18N key="col_admin_mgnt_sup" description="國別報告表二">
-<zh_TW>
-<![CDATA[行政、管理或支援服務]]></zh_TW>
-<en_US>
-<![CDATA[Administrative, Management or Support Services]]></en_US>
-</I18N>
-<I18N key="edit_record" description="編輯">
-<zh_CN>
-<![CDATA[编辑]]></zh_CN>
-<zh_TW>
-<![CDATA[編輯]]></zh_TW>
-<en_US>
-<![CDATA[Edit]]></en_US>
-</I18N>
-<I18N key="col_provide_serv_to_nrp" description="國別報告表二">
-<zh_TW>
-<![CDATA[對非關係人提供服務]]></zh_TW>
-<en_US>
-<![CDATA[Provision of Services to Unrelated Parties]]></en_US>
-</I18N>
-<I18N key="col_hold_int_property" description="國別報告表二">
-<zh_TW>
-<![CDATA[持有或管理智慧財產權 ]]></zh_TW>
-<en_US>
-<![CDATA[Holding or Managing Intellectual Property]]></en_US>
-</I18N>
-<I18N key="period" description="">
-<zh_TW>
-<![CDATA[期間]]></zh_TW>
-<en_US>
-<![CDATA[Period]]></en_US>
-</I18N>
-<I18N key="col_main_ope_ther_ifmn" description="國別報告表二">
-<zh_TW>
-<![CDATA[主要營運活動_其他資訊]]></zh_TW>
-<en_US>
-<![CDATA[Additional Information]]></en_US>
-</I18N>
-<I18N key="entity_name_en" description="">
-<zh_TW>
-<![CDATA[報告成員英文名稱]]></zh_TW>
-</I18N>
-<I18N key="col_manufacture" description="國別報告表二">
-<zh_TW>
-<![CDATA[製造或生產]]></zh_TW>
-<en_US>
-<![CDATA[Manufacturing or Production]]></en_US>
-</I18N>
-<I18N key="col_regu_fin_serv" description="國別報告表二">
-<zh_TW>
-<![CDATA[受規範金融服務 ]]></zh_TW>
-<en_US>
-<![CDATA[Regulated Financial Services]]></en_US>
-</I18N>
-<I18N key="delete_record" description="刪除">
-<zh_CN>
-<![CDATA[删除]]></zh_CN>
-<zh_TW>
-<![CDATA[刪除]]></zh_TW>
-<en_US>
-<![CDATA[Delete]]></en_US>
-</I18N>
-<I18N key="entity_name_zh" description="">
-<zh_TW>
-<![CDATA[報告成員中文名稱]]></zh_TW>
-</I18N>
-<I18N key="col_sales_mkt_distrbn" description="國別報告表二">
-<zh_TW>
-<![CDATA[銷售、行銷或配銷 ]]></zh_TW>
-<en_US>
-<![CDATA[Sales, Marketing or Distribution]]></en_US>
-</I18N>
-<I18N key="PLACE_HOLDER" description="">
-<zh_TW>
-<![CDATA[請提供任何必要或有助於了解國別報告應揭露資訊之簡要說明]]></zh_TW>
-</I18N>
-<I18N key="col_res_and_dev" description="國別報告表二">
-<zh_TW>
-<![CDATA[研究與發展]]></zh_TW>
-<en_US>
-<![CDATA[Research and Development]]></en_US>
-</I18N>
-<I18N key="report_name" description="">
-<zh_TW>
-<![CDATA[國別報告表]]></zh_TW>
-<en_US>
-<![CDATA[Cbcr Report]]></en_US>
-</I18N>
-<I18N key="col_others" description="國別報告表二">
-<zh_TW>
-<![CDATA[其他]]></zh_TW>
-<en_US>
-<![CDATA[Main business activity(ies)-Other]]></en_US>
-</I18N>
-<I18N key="cbcr_overview" description="">
-<zh_TW>
-<![CDATA[國別報告當期總覽]]></zh_TW>
-<en_US>
-<![CDATA[CbCR Overview]]></en_US>
-</I18N>
-</I18NMap>
 <TemplateThemeAttrMark class="com.fr.base.iofile.attr.TemplateThemeAttrMark">
 <TemplateThemeAttrMark name="經典穩重" dark="false"/>
 </TemplateThemeAttrMark>
@@ -10115,6 +9600,459 @@ ojn[P,%(d3@N!A7c&WEj^t#_M?EDd4C.njei>$5!<<~
 <TemplateLayoutIdAttrMark class="com.fr.base.iofile.attr.TemplateLayoutIdAttrMark">
 <TemplateLayoutIdAttrMark LayoutId="9ebf6aff-ad53-45a9-a175-9633f4162a3a"/>
 </TemplateLayoutIdAttrMark>
+<FileAttrErrorMarker-I18NMap class="com.fr.base.io.FileAttrErrorMarker" plugin-version="2.0.8.4" oriClass="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark" pluginID="com.fr.plugin.i18n.bundle.v11">
+<Attributes default="" backup="en_US" languageType="0"/>
+<I18N description="" key="REC_DATE">
+<zh_TW>
+<![CDATA[認列投收年度(起訖)]]></zh_TW>
+<en_US>
+<![CDATA[Recognition year of investment income (start and end)]]></en_US>
+</I18N>
+<I18N description="" key="EXP_YEAR">
+<zh_TW>
+<![CDATA[可抵繳稅額期限]]></zh_TW>
+<en_US>
+<![CDATA[Deductible tax expired year]]></en_US>
+</I18N>
+<I18N description="" key="CN_PAID_TAX">
+<zh_TW>
+<![CDATA[於大陸地區已繳納所得稅]]></zh_TW>
+<en_US>
+<![CDATA[Income tax paid in China]]></en_US>
+</I18N>
+<I18N description="" key="CFC_COMPANY">
+<zh_TW>
+<![CDATA[CFC公司]]></zh_TW>
+<en_US>
+<![CDATA[CFC company name]]></en_US>
+</I18N>
+<I18N description="" key="REC_YEAR">
+<zh_TW>
+<![CDATA[認列投資收益年度]]></zh_TW>
+<en_US>
+<![CDATA[Recognition year of investment income]]></en_US>
+</I18N>
+<I18N description="" key="NY_CN_PAID_TAX">
+<zh_TW>
+<![CDATA[年內過期之大陸地區已繳納所得稅]]></zh_TW>
+<en_US>
+<![CDATA[Income tax paid in China expired within 2 years]]></en_US>
+</I18N>
+<I18N description="" key="COMPANY">
+<zh_TW>
+<![CDATA[申報公司]]></zh_TW>
+<en_US>
+<![CDATA[Entity name]]></en_US>
+</I18N>
+<I18N description="" key="BALANCE">
+<zh_TW>
+<![CDATA[尚未獲配(或處分)餘額]]></zh_TW>
+<en_US>
+<![CDATA[Balance not yet distributed (or disposed)]]></en_US>
+</I18N>
+<I18N description="" key="CN_TAX_NOT_OFFSET">
+<zh_TW>
+<![CDATA[尚未抵繳]]></zh_TW>
+<en_US>
+<![CDATA[Tax not yet deducted ]]></en_US>
+</I18N>
+<I18N description="" key="CN_TAX_PAID">
+<zh_TW>
+<![CDATA[已繳納之所得稅]]></zh_TW>
+<en_US>
+<![CDATA[Income tax paid]]></en_US>
+</I18N>
+<I18N description="" key="ACT_REA_DIV">
+<zh_TW>
+<![CDATA[已認列投收]]></zh_TW>
+<en_US>
+<![CDATA[Recognized before]]></en_US>
+</I18N>
+<I18N description="" key="ACT_TAX_DIV">
+<zh_TW>
+<![CDATA[應計入課稅]]></zh_TW>
+<en_US>
+<![CDATA[Taxable]]></en_US>
+</I18N>
+<I18N description="" key="REC_CFC_TOTAL_INV">
+<zh_TW>
+<![CDATA[認列CFC投收總額]]></zh_TW>
+<en_US>
+<![CDATA[Total CFC investment income]]></en_US>
+</I18N>
+<I18N description="" key="TITLE">
+<zh_TW>
+<![CDATA[投資收益及可扣抵稅額總覽]]></zh_TW>
+<en_US>
+<![CDATA[Recognition of CFC Income and Tax Credits Overview]]></en_US>
+</I18N>
+<I18N description="" key="SCENARIO">
+<zh_TW>
+<![CDATA[版本]]></zh_TW>
+<en_US>
+<![CDATA[Scenario]]></en_US>
+</I18N>
+<I18N description="" key="REC_INV">
+<zh_TW>
+<![CDATA[依規定認列之投資收益]]></zh_TW>
+<en_US>
+<![CDATA[CFC investment income]]></en_US>
+</I18N>
+<I18N description="" key="DUEDATE">
+<zh_TW>
+<![CDATA[到期年門檻]]></zh_TW>
+<en_US>
+<![CDATA[Expiration year threshold]]></en_US>
+</I18N>
+<I18N description="" key="REST_TOTAL">
+<zh_TW>
+<![CDATA[尚未獲配(或處分)餘額]]></zh_TW>
+<en_US>
+<![CDATA[Balance not yet distributed (or disposed)]]></en_US>
+</I18N>
+<I18N description="" key="AMOUNT_ALLOCATED_PRE">
+<zh_TW>
+<![CDATA[截至上年度累積已獲配(或已處分)]]></zh_TW>
+<en_US>
+<![CDATA[Accumulated distributed (or disposed) as of the previous year]]></en_US>
+</I18N>
+<I18N description="" key="CN_TAX_OFFSET">
+<zh_TW>
+<![CDATA[已抵繳]]></zh_TW>
+<en_US>
+<![CDATA[Tax deducted ]]></en_US>
+</I18N>
+<I18N description="" key="AMOUNT_DIS">
+<zh_TW>
+<![CDATA[於申報年度實際處分]]></zh_TW>
+<en_US>
+<![CDATA[Disposal amount in filing year]]></en_US>
+</I18N>
+<I18N description="" key="FISCAL_YEAR_ACTUAL_DIVIDEND">
+<zh_TW>
+<![CDATA[於申報年度實際獲配]]></zh_TW>
+<en_US>
+<![CDATA[Distribute amount in filing year]]></en_US>
+</I18N>
+<I18N description="" key="CN_PAID">
+<zh_TW>
+<![CDATA[於大陸地區已納所得稅抵繳情形 ]]></zh_TW>
+<en_US>
+<![CDATA[The status of Income tax paid in China]]></en_US>
+</I18N>
+<I18N description="" key="SUBMIT">
+<zh_TW>
+<![CDATA[查詢]]></zh_TW>
+<en_US>
+<![CDATA[Search]]></en_US>
+</I18N>
+<I18N description="" key="TOTAL">
+<zh_TW>
+<![CDATA[總計]]></zh_TW>
+<en_US>
+<![CDATA[Total]]></en_US>
+</I18N>
+<I18N description="" key="TITLE_COUNTRY_REPORT">
+<zh_TW>
+<![CDATA[國別報告當期總覽]]></zh_TW>
+<en_US>
+<![CDATA[Country Report Overview]]></en_US>
+</I18N>
+<I18N description="" key="UNIT">
+<zh_TW>
+<![CDATA[單位]]></zh_TW>
+<en_US>
+<![CDATA[UNIT]]></en_US>
+</I18N>
+<I18N description="" key="PERIOD1">
+<zh_TW>
+<![CDATA[期間]]></zh_TW>
+<en_US>
+<![CDATA[Period]]></en_US>
+</I18N>
+<I18N description="" key="COUNTRY_LOCATION">
+<zh_TW>
+<![CDATA[國家地區]]></zh_TW>
+<en_US>
+<![CDATA[Country Location]]></en_US>
+</I18N>
+<I18N description="" key="ENTITY_NAME">
+<zh_TW>
+<![CDATA[報告成員]]></zh_TW>
+<en_US>
+<![CDATA[Report Members]]></en_US>
+</I18N>
+<I18N description="" key="col_income_non_rel">
+<zh_TW>
+<![CDATA[收入_非關係人]]></zh_TW>
+<en_US>
+<![CDATA[Revenues-Unrelated Party]]></en_US>
+</I18N>
+<I18N description="" key="col_income_rel">
+<zh_TW>
+<![CDATA[收入_關係人]]></zh_TW>
+<en_US>
+<![CDATA[Revenues-Related Party]]></en_US>
+</I18N>
+<I18N description="" key="col_income">
+<zh_TW>
+<![CDATA[收入]]></zh_TW>
+<en_US>
+<![CDATA[Revenues]]></en_US>
+</I18N>
+<I18N description="" key="col_pre_tax_income">
+<zh_TW>
+<![CDATA[所得稅前損益]]></zh_TW>
+<en_US>
+<![CDATA[Profit (Loss) before Income Tax]]></en_US>
+</I18N>
+<I18N description="" key="col_tax_paid">
+<zh_TW>
+<![CDATA[已納所得稅(現金收付制)]]></zh_TW>
+<en_US>
+<![CDATA[Income Tax Paid (on Cash Basis)]]></en_US>
+</I18N>
+<I18N description="" key="col_curr_tax_payable">
+<zh_TW>
+<![CDATA[當期應付所得稅]]></zh_TW>
+<en_US>
+<![CDATA[Income Tax Accrued-Current Year]]></en_US>
+</I18N>
+<I18N description="" key="col_paid_up_capital">
+<zh_TW>
+<![CDATA[實收資本額]]></zh_TW>
+<en_US>
+<![CDATA[Stated Capital]]></en_US>
+</I18N>
+<I18N description="" key="col_accu_surplus">
+<zh_TW>
+<![CDATA[累積盈餘]]></zh_TW>
+<en_US>
+<![CDATA[Accumulated Earnings]]></en_US>
+</I18N>
+<I18N description="" key="col_num_of_emp">
+<zh_TW>
+<![CDATA[員工人數]]></zh_TW>
+<en_US>
+<![CDATA[Number of Employees]]></en_US>
+</I18N>
+<I18N description="" key="col_tangible_asset">
+<zh_TW>
+<![CDATA[有形資產(現金及約當現金除外) ]]></zh_TW>
+<en_US>
+<![CDATA[Tangible Assets other than Cash and Cash Equivalents]]></en_US>
+</I18N>
+<I18N description="" key="EFFECTIVE_TAX_RATE">
+<zh_TW>
+<![CDATA[有效稅率]]></zh_TW>
+<en_US>
+<![CDATA[Effective Tax Rate]]></en_US>
+</I18N>
+<I18N description="" key="PRE_TAX_PROFIT_MARGIN">
+<zh_TW>
+<![CDATA[稅前淨利率]]></zh_TW>
+<en_US>
+<![CDATA[Pre-Tax Profit Margin]]></en_US>
+</I18N>
+<I18N description="" key="report2">
+<zh_TW>
+<![CDATA[國別報告表二]]></zh_TW>
+<en_US>
+<![CDATA[Cbcr Report Table 2]]></en_US>
+</I18N>
+<I18N description="" key="report3">
+<zh_TW>
+<![CDATA[國別報告表三]]></zh_TW>
+<en_US>
+<![CDATA[Cbcr Report Table 3]]></en_US>
+</I18N>
+<I18N description="國家地區" key="country_id">
+<zh_TW>
+<![CDATA[國家地區]]></zh_TW>
+<en_US>
+<![CDATA[Country]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_hold_share_or_other_eqty">
+<zh_TW>
+<![CDATA[持有股份或其他權益工具]]></zh_TW>
+<en_US>
+<![CDATA[Holding Shares or Other Equity Instruments]]></en_US>
+</I18N>
+<I18N description="" key="report1">
+<zh_TW>
+<![CDATA[國別報告表一]]></zh_TW>
+<en_US>
+<![CDATA[Cbcr Report Table 1]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_int_grp_fin">
+<zh_TW>
+<![CDATA[集團內部融資]]></zh_TW>
+<en_US>
+<![CDATA[Internal Group Finance]]></en_US>
+</I18N>
+<I18N description="" key="entity_id">
+<zh_TW>
+<![CDATA[報告成員]]></zh_TW>
+<en_US>
+<![CDATA[Entity]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_purchase">
+<zh_TW>
+<![CDATA[採購]]></zh_TW>
+<en_US>
+<![CDATA[Purchasing or Procurement]]></en_US>
+</I18N>
+<I18N description="上傳資料" key="upload_record">
+<zh_CN>
+<![CDATA[新增数据]]></zh_CN>
+<zh_TW>
+<![CDATA[新增]]></zh_TW>
+<en_US>
+<![CDATA[Add]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_out_of_business">
+<zh_TW>
+<![CDATA[停業]]></zh_TW>
+<en_US>
+<![CDATA[Dormant]]></en_US>
+</I18N>
+<I18N description="語言" key="language">
+<zh_CN>
+<![CDATA[语言]]></zh_CN>
+<zh_TW>
+<![CDATA[語言]]></zh_TW>
+<en_US>
+<![CDATA[Language]]></en_US>
+</I18N>
+<I18N description="" key="title">
+<zh_TW>
+<![CDATA[國別報告表]]></zh_TW>
+<en_US>
+<![CDATA[Cbcr data import]]></en_US>
+</I18N>
+<I18N description="提交" key="submit_enter">
+<zh_CN>
+<![CDATA[提交]]></zh_CN>
+<zh_TW>
+<![CDATA[提交]]></zh_TW>
+<en_US>
+<![CDATA[Submit]]></en_US>
+</I18N>
+<I18N description="搜尋" key="search_enter">
+<zh_CN>
+<![CDATA[搜寻]]></zh_CN>
+<zh_TW>
+<![CDATA[搜尋]]></zh_TW>
+<en_US>
+<![CDATA[Search]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_insurance">
+<zh_TW>
+<![CDATA[保險]]></zh_TW>
+<en_US>
+<![CDATA[Insurance]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_admin_mgnt_sup">
+<zh_TW>
+<![CDATA[行政、管理或支援服務]]></zh_TW>
+<en_US>
+<![CDATA[Administrative, Management or Support Services]]></en_US>
+</I18N>
+<I18N description="編輯" key="edit_record">
+<zh_CN>
+<![CDATA[编辑]]></zh_CN>
+<zh_TW>
+<![CDATA[編輯]]></zh_TW>
+<en_US>
+<![CDATA[Edit]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_provide_serv_to_nrp">
+<zh_TW>
+<![CDATA[對非關係人提供服務]]></zh_TW>
+<en_US>
+<![CDATA[Provision of Services to Unrelated Parties]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_hold_int_property">
+<zh_TW>
+<![CDATA[持有或管理智慧財產權 ]]></zh_TW>
+<en_US>
+<![CDATA[Holding or Managing Intellectual Property]]></en_US>
+</I18N>
+<I18N description="" key="period">
+<zh_TW>
+<![CDATA[期間]]></zh_TW>
+<en_US>
+<![CDATA[Period]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_main_ope_ther_ifmn">
+<zh_TW>
+<![CDATA[主要營運活動_其他資訊]]></zh_TW>
+<en_US>
+<![CDATA[Additional Information]]></en_US>
+</I18N>
+<I18N description="" key="entity_name_en">
+<zh_TW>
+<![CDATA[報告成員英文名稱]]></zh_TW>
+</I18N>
+<I18N description="國別報告表二" key="col_manufacture">
+<zh_TW>
+<![CDATA[製造或生產]]></zh_TW>
+<en_US>
+<![CDATA[Manufacturing or Production]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_regu_fin_serv">
+<zh_TW>
+<![CDATA[受規範金融服務 ]]></zh_TW>
+<en_US>
+<![CDATA[Regulated Financial Services]]></en_US>
+</I18N>
+<I18N description="刪除" key="delete_record">
+<zh_CN>
+<![CDATA[删除]]></zh_CN>
+<zh_TW>
+<![CDATA[刪除]]></zh_TW>
+<en_US>
+<![CDATA[Delete]]></en_US>
+</I18N>
+<I18N description="" key="entity_name_zh">
+<zh_TW>
+<![CDATA[報告成員中文名稱]]></zh_TW>
+</I18N>
+<I18N description="國別報告表二" key="col_sales_mkt_distrbn">
+<zh_TW>
+<![CDATA[銷售、行銷或配銷 ]]></zh_TW>
+<en_US>
+<![CDATA[Sales, Marketing or Distribution]]></en_US>
+</I18N>
+<I18N description="" key="PLACE_HOLDER">
+<zh_TW>
+<![CDATA[請提供任何必要或有助於了解國別報告應揭露資訊之簡要說明]]></zh_TW>
+</I18N>
+<I18N description="國別報告表二" key="col_res_and_dev">
+<zh_TW>
+<![CDATA[研究與發展]]></zh_TW>
+<en_US>
+<![CDATA[Research and Development]]></en_US>
+</I18N>
+<I18N description="" key="report_name">
+<zh_TW>
+<![CDATA[國別報告表]]></zh_TW>
+<en_US>
+<![CDATA[Cbcr Report]]></en_US>
+</I18N>
+<I18N description="國別報告表二" key="col_others">
+<zh_TW>
+<![CDATA[其他]]></zh_TW>
+<en_US>
+<![CDATA[Main business activity(ies)-Other]]></en_US>
+</I18N>
+<I18N description="" key="cbcr_overview">
+<zh_TW>
+<![CDATA[國別報告當期總覽]]></zh_TW>
+<en_US>
+<![CDATA[CbCR Overview]]></en_US>
+</I18N>
+</FileAttrErrorMarker-I18NMap>
 <StrategyConfigsAttr class="com.fr.esd.core.strategy.persistence.StrategyConfigsAttr">
 <StrategyConfigs>
 <StrategyConfig dsName="DIC_COMPANY" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
@@ -10137,6 +10075,9 @@ ojn[P,%(d3@N!A7c&WEj^t#_M?EDd4C.njei>$5!<<~
 <NewFormMarkAttr class="com.fr.form.fit.NewFormMarkAttr">
 <NewFormMarkAttr type="0" tabPreload="true" fontScaleFrontAdjust="true" supportColRowAutoAdjust="true" supportExportTransparency="false" supportFrontEndDataCache="false"/>
 </NewFormMarkAttr>
+<ForkIdAttrMark class="com.fr.base.iofile.attr.ForkIdAttrMark">
+<ForkIdAttrMark forkId="67239230-bd06-4f31-b687-3ee1c3a2f206"/>
+</ForkIdAttrMark>
 <TemplateCloudInfoAttrMark class="com.fr.plugin.cloud.analytics.attr.TemplateInfoAttrMark" pluginID="com.fr.plugin.cloud.analytics.v11" plugin-version="3.32.0.20241202">
 <TemplateCloudInfoAttrMark createTime="1711940947019"/>
 </TemplateCloudInfoAttrMark>

@@ -42,11 +42,6 @@ nptfeX7;S:TK>\hI%[XPt;Lf50=%q`h\RM*QmDg=c2-Dn@bcNS+D+:LcQm2JWR6X=RYRW53T
 <![CDATA[]]></O>
 </Parameter>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_COLUMNS2"/>
 <O>
 <![CDATA[col_accu_surplus]]></O>
@@ -80,7 +75,7 @@ t2.country_id
 FROM TRS_FACT_COUNTRY_REPORT t1
 JOIN v_trs_dim_entity t2 ON t2.entity_id = t1.entity_id 
 WHERE 1=1
-AND t2.language ='${fr_locale}'
+AND t2.language ='en_US'
 --AND t1.data_name IN ('${P_COLUMNS}')
 AND t1.report_name = '${P_REPORTNAME}'
 ${if(LEN(P_COUNTRY)=0,"","AND t2.COUNTRY_ID IN ('"+P_COUNTRY+"')")}
@@ -141,11 +136,6 @@ ${if(LEN(P_PERIOD)=0,"","AND period IN ('"+P_PERIOD+"')")}]]></Query>
 <Desensitizations desensitizeOpen="false"/>
 <Parameters>
 <Parameter>
-<Attributes name="fr_locale"/>
-<O>
-<![CDATA[zh_TW]]></O>
-</Parameter>
-<Parameter>
 <Attributes name="P_COUNTRY"/>
 <O>
 <![CDATA[]]></O>
@@ -161,7 +151,7 @@ ${if(LEN(P_PERIOD)=0,"","AND period IN ('"+P_PERIOD+"')")}]]></Query>
 t1.ENTITY_ID ,t1.ENTITY_NAME,t1.ENTITY_TYPE_ID 
 FROM V_TRS_DIM_ENTITY t1
 WHERE 1=1
-AND t1.language ='${fr_locale}'
+AND t1.language ='en_US'
 AND t1.is_active = 'true'
 AND ENTITY_TYPE_ID IN ('002')
 ${if(LEN(P_COUNTRY)=0,"","AND t1.COUNTRY_ID IN ('"+P_COUNTRY+"')")}
@@ -2787,7 +2777,7 @@ if (result == true) {
 </Border>
 </Style>
 <Style style_name="預設" full="true" border_source="-1" imageLayout="1">
-<FRFont name="WenQuanYi Micro Hei" style="0" size="72"/>
+<FRFont name="PMingLiU" style="0" size="72"/>
 <Background name="NullBackground"/>
 <Border/>
 </Style>
@@ -2877,9 +2867,12 @@ if (result == true) {
 <DesensitizationList/>
 <DesignerVersion DesignerVersion="LAA"/>
 <PreviewType PreviewType="1"/>
-<I18NMap class="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark" pluginID="com.fr.plugin.i18n.bundle.v11" plugin-version="2.1.6">
-<Attributes languageType="0" default="" backup="en_US"/>
-<I18N key="language" description="語言">
+<TemplateThemeAttrMark class="com.fr.base.iofile.attr.TemplateThemeAttrMark">
+<TemplateThemeAttrMark name="相容主題" dark="false"/>
+</TemplateThemeAttrMark>
+<FileAttrErrorMarker-I18NMap class="com.fr.base.io.FileAttrErrorMarker" pluginID="com.fr.plugin.i18n.bundle.v11" plugin-version="2.1.6" oriClass="com.fr.plugin.i18n.bundle.configurator.data.I18NAttrMark">
+<Attributes default="" backup="en_US" languageType="0"/>
+<I18N description="語言" key="language">
 <zh_CN>
 <![CDATA[语言]]></zh_CN>
 <zh_TW>
@@ -2887,7 +2880,7 @@ if (result == true) {
 <en_US>
 <![CDATA[Language]]></en_US>
 </I18N>
-<I18N key="delete_record" description="刪除">
+<I18N description="刪除" key="delete_record">
 <zh_CN>
 <![CDATA[删除]]></zh_CN>
 <zh_TW>
@@ -2895,7 +2888,7 @@ if (result == true) {
 <en_US>
 <![CDATA[Delete]]></en_US>
 </I18N>
-<I18N key="edit_record" description="編輯">
+<I18N description="編輯" key="edit_record">
 <zh_CN>
 <![CDATA[编辑]]></zh_CN>
 <zh_TW>
@@ -2903,7 +2896,7 @@ if (result == true) {
 <en_US>
 <![CDATA[Edit]]></en_US>
 </I18N>
-<I18N key="upload_record" description="上傳資料">
+<I18N description="上傳資料" key="upload_record">
 <zh_CN>
 <![CDATA[新增数据]]></zh_CN>
 <zh_TW>
@@ -2911,7 +2904,7 @@ if (result == true) {
 <en_US>
 <![CDATA[Add]]></en_US>
 </I18N>
-<I18N key="search_enter" description="搜尋">
+<I18N description="搜尋" key="search_enter">
 <zh_CN>
 <![CDATA[搜寻]]></zh_CN>
 <zh_TW>
@@ -2919,7 +2912,7 @@ if (result == true) {
 <en_US>
 <![CDATA[Search]]></en_US>
 </I18N>
-<I18N key="submit_enter" description="提交">
+<I18N description="提交" key="submit_enter">
 <zh_CN>
 <![CDATA[提交]]></zh_CN>
 <zh_TW>
@@ -2927,218 +2920,215 @@ if (result == true) {
 <en_US>
 <![CDATA[Submit]]></en_US>
 </I18N>
-<I18N key="col_pre_tax_income" description="國別報告表一">
+<I18N description="國別報告表一" key="col_pre_tax_income">
 <zh_TW>
 <![CDATA[所得稅前損益]]></zh_TW>
 <en_US>
 <![CDATA[Profit (Loss) before Income Tax]]></en_US>
 </I18N>
-<I18N key="col_int_grp_fin" description="國別報告表二">
+<I18N description="國別報告表二" key="col_int_grp_fin">
 <zh_TW>
 <![CDATA[集團內部融資]]></zh_TW>
 <en_US>
 <![CDATA[Internal Group Finance]]></en_US>
 </I18N>
-<I18N key="entity_name" description="">
+<I18N description="" key="entity_name">
 <zh_TW>
 <![CDATA[報告成員]]></zh_TW>
 <en_US>
 <![CDATA[Entity Name]]></en_US>
 </I18N>
-<I18N key="col_purchase" description="國別報告表二">
+<I18N description="國別報告表二" key="col_purchase">
 <zh_TW>
 <![CDATA[採購]]></zh_TW>
 <en_US>
 <![CDATA[Purchasing or Procurement]]></en_US>
 </I18N>
-<I18N key="col_tax_paid" description="國別報告表一">
+<I18N description="國別報告表一" key="col_tax_paid">
 <zh_TW>
 <![CDATA[已納所得稅(現金收付制)]]></zh_TW>
 <en_US>
 <![CDATA[Income Tax Paid (on Cash Basis)]]></en_US>
 </I18N>
-<I18N key="col_out_of_business" description="國別報告表二">
+<I18N description="國別報告表二" key="col_out_of_business">
 <zh_TW>
 <![CDATA[停業]]></zh_TW>
 <en_US>
 <![CDATA[Dormant]]></en_US>
 </I18N>
-<I18N key="col_hold_share_or_other_eqty" description="國別報告表二">
+<I18N description="國別報告表二" key="col_hold_share_or_other_eqty">
 <zh_TW>
 <![CDATA[持有股份或其他權益工具]]></zh_TW>
 <en_US>
 <![CDATA[Holding Shares or Other Equity Instruments]]></en_US>
 </I18N>
-<I18N key="col_insurance" description="國別報告表二">
+<I18N description="國別報告表二" key="col_insurance">
 <zh_TW>
 <![CDATA[保險]]></zh_TW>
 <en_US>
 <![CDATA[Insurance]]></en_US>
 </I18N>
-<I18N key="col_admin_mgnt_sup" description="國別報告表二">
+<I18N description="國別報告表二" key="col_admin_mgnt_sup">
 <zh_TW>
 <![CDATA[行政、管理或支援服務]]></zh_TW>
 <en_US>
 <![CDATA[Administrative, Management or Support Services]]></en_US>
 </I18N>
-<I18N key="col_accu_surplus" description="國別報告表一">
+<I18N description="國別報告表一" key="col_accu_surplus">
 <zh_TW>
 <![CDATA[累積盈餘]]></zh_TW>
 <en_US>
 <![CDATA[Accumulated Earnings]]></en_US>
 </I18N>
-<I18N key="col_tangible_asset" description="國別報告表一">
+<I18N description="國別報告表一" key="col_tangible_asset">
 <zh_TW>
 <![CDATA[有形資產(現金及約當現金除外) ]]></zh_TW>
 <en_US>
 <![CDATA[Tangible Assets other than Cash and Cash Equivalents]]></en_US>
 </I18N>
-<I18N key="col_provide_serv_to_nrp" description="國別報告表二">
+<I18N description="國別報告表二" key="col_provide_serv_to_nrp">
 <zh_TW>
 <![CDATA[對非關係人提供服務]]></zh_TW>
 <en_US>
 <![CDATA[Provision of Services to Unrelated Parties]]></en_US>
 </I18N>
-<I18N key="col_hold_int_property" description="國別報告表二">
+<I18N description="國別報告表二" key="col_hold_int_property">
 <zh_TW>
 <![CDATA[持有或管理智慧財產權 ]]></zh_TW>
 <en_US>
 <![CDATA[Holding or Managing Intellectual Property]]></en_US>
 </I18N>
-<I18N key="col_main_ope_ther_ifmn" description="國別報告表二">
+<I18N description="國別報告表二" key="col_main_ope_ther_ifmn">
 <zh_TW>
 <![CDATA[主要營運活動_其他資訊]]></zh_TW>
 <en_US>
 <![CDATA[Main business activity(ies)-Additional Information]]></en_US>
 </I18N>
-<I18N key="period" description="">
+<I18N description="" key="period">
 <zh_TW>
 <![CDATA[期間]]></zh_TW>
 <en_US>
 <![CDATA[Period]]></en_US>
 </I18N>
-<I18N key="col_income" description="國別報告表一">
+<I18N description="國別報告表一" key="col_income">
 <zh_TW>
 <![CDATA[收入]]></zh_TW>
 <en_US>
 <![CDATA[Revenues]]></en_US>
 </I18N>
-<I18N key="col_num_of_emp" description="國別報告表一">
+<I18N description="國別報告表一" key="col_num_of_emp">
 <zh_TW>
 <![CDATA[員工人數]]></zh_TW>
 <en_US>
 <![CDATA[Number of Employees]]></en_US>
 </I18N>
-<I18N key="col_manufacture" description="國別報告表二">
+<I18N description="國別報告表二" key="col_manufacture">
 <zh_TW>
 <![CDATA[製造或生產]]></zh_TW>
 <en_US>
 <![CDATA[Manufacturing or Production]]></en_US>
 </I18N>
-<I18N key="col_regu_fin_serv" description="國別報告表二">
+<I18N description="國別報告表二" key="col_regu_fin_serv">
 <zh_TW>
 <![CDATA[受規範金融服務 ]]></zh_TW>
 <en_US>
 <![CDATA[Regulated Financial Services]]></en_US>
 </I18N>
-<I18N key="col_paid_up_capital" description="國別報告表一">
+<I18N description="國別報告表一" key="col_paid_up_capital">
 <zh_TW>
 <![CDATA[實收資本額]]></zh_TW>
 <en_US>
 <![CDATA[Stated Capital]]></en_US>
 </I18N>
-<I18N key="col_income_rel" description="國別報告表一">
+<I18N description="國別報告表一" key="col_income_rel">
 <zh_TW>
 <![CDATA[收入_關係人]]></zh_TW>
 <en_US>
 <![CDATA[Revenues-Related Party]]></en_US>
 </I18N>
-<I18N key="col_sales_mkt_distrbn" description="國別報告表二">
+<I18N description="國別報告表二" key="col_sales_mkt_distrbn">
 <zh_TW>
 <![CDATA[銷售、行銷或配銷 ]]></zh_TW>
 <en_US>
 <![CDATA[Sales, Marketing or Distribution]]></en_US>
 </I18N>
-<I18N key="col_curr_tax_payable" description="國別報告表一">
+<I18N description="國別報告表一" key="col_curr_tax_payable">
 <zh_TW>
 <![CDATA[當期應付所得稅]]></zh_TW>
 <en_US>
 <![CDATA[Income Tax Accrued-Current Year]]></en_US>
 </I18N>
-<I18N key="col_res_and_dev" description="國別報告表二">
+<I18N description="國別報告表二" key="col_res_and_dev">
 <zh_TW>
 <![CDATA[研究與發展]]></zh_TW>
 <en_US>
 <![CDATA[Research and Development]]></en_US>
 </I18N>
-<I18N key="col_others" description="國別報告表二">
+<I18N description="國別報告表二" key="col_others">
 <zh_TW>
 <![CDATA[其他]]></zh_TW>
 <en_US>
 <![CDATA[Main business activity(ies)-Other]]></en_US>
 </I18N>
-<I18N key="col_income_non_rel" description="國別報告表一">
+<I18N description="國別報告表一" key="col_income_non_rel">
 <zh_TW>
 <![CDATA[收入_非關係人]]></zh_TW>
 <en_US>
 <![CDATA[Revenues-Unrelated Party]]></en_US>
 </I18N>
-<I18N key="report1" description="">
+<I18N description="" key="report1">
 <zh_TW>
 <![CDATA[國別報告表一]]></zh_TW>
 <en_US>
 <![CDATA[CbCR Table 1]]></en_US>
 </I18N>
-<I18N key="report2" description="">
+<I18N description="" key="report2">
 <zh_TW>
 <![CDATA[國別報告表二]]></zh_TW>
 <en_US>
 <![CDATA[CbCR Table 2]]></en_US>
 </I18N>
-<I18N key="report_name" description="">
+<I18N description="" key="report_name">
 <zh_TW>
 <![CDATA[國別報告表]]></zh_TW>
 <en_US>
 <![CDATA[CbCR Report]]></en_US>
 </I18N>
-<I18N key="title" description="">
+<I18N description="" key="title">
 <zh_TW>
 <![CDATA[國別報告表]]></zh_TW>
 <en_US>
 <![CDATA[CbCR data import]]></en_US>
 </I18N>
-<I18N key="report3" description="">
+<I18N description="" key="report3">
 <zh_TW>
 <![CDATA[國別報告表三]]></zh_TW>
 <en_US>
 <![CDATA[CbCR Report Table 3]]></en_US>
 </I18N>
-<I18N key="country" description="國家地區">
+<I18N description="國家地區" key="country">
 <zh_TW>
 <![CDATA[國家地區]]></zh_TW>
 <en_US>
 <![CDATA[Country]]></en_US>
 </I18N>
-<I18N key="PLACE_HOLDER" description="">
+<I18N description="" key="PLACE_HOLDER">
 <zh_TW>
 <![CDATA[請提供任何必要或有助於了解國別報告應揭露資訊之簡要說明]]></zh_TW>
 </I18N>
-<I18N key="entity_name_zh" description="">
+<I18N description="" key="entity_name_zh">
 <zh_TW>
 <![CDATA[報告成員中文名稱]]></zh_TW>
 <en_US>
 <![CDATA[Chinese Name of Constituent Entity]]></en_US>
 </I18N>
-<I18N key="entity_name_en" description="">
+<I18N description="" key="entity_name_en">
 <zh_TW>
 <![CDATA[報告成員英文名稱]]></zh_TW>
 <en_US>
 <![CDATA[English Name of Constituent Entity]]></en_US>
 </I18N>
-</I18NMap>
-<TemplateThemeAttrMark class="com.fr.base.iofile.attr.TemplateThemeAttrMark">
-<TemplateThemeAttrMark name="相容主題" dark="false"/>
-</TemplateThemeAttrMark>
+</FileAttrErrorMarker-I18NMap>
 <StrategyConfigsAttr class="com.fr.esd.core.strategy.persistence.StrategyConfigsAttr">
 <StrategyConfigs>
 <StrategyConfig dsName="Dic_Country" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
@@ -3154,10 +3144,13 @@ if (result == true) {
 <StrategyConfig dsName="Dic_Combo" enabled="false" useGlobal="true" shouldMonitor="true" shouldEvolve="false" scheduleBySchema="false" timeToLive="1500000" timeToIdle="86400000" updateInterval="1500000" terminalTime="" updateSchema="0 0 8 * * ? *" activeInitiation="false"/>
 </StrategyConfigs>
 </StrategyConfigsAttr>
+<ForkIdAttrMark class="com.fr.base.iofile.attr.ForkIdAttrMark">
+<ForkIdAttrMark forkId="e60185df-cb53-4f82-be15-980c8b40f7cd"/>
+</ForkIdAttrMark>
 <TemplateIdAttMark class="com.fr.base.iofile.attr.TemplateIdAttrMark">
 <TemplateIdAttMark TemplateId="e60185df-cb53-4f82-be15-980c8b40f7cd"/>
 </TemplateIdAttMark>
-<TemplateCloudInfoAttrMark class="com.fr.plugin.cloud.analytics.attr.TemplateInfoAttrMark" pluginID="com.fr.plugin.cloud.analytics.v11" plugin-version="3.27.0.20240627">
+<TemplateCloudInfoAttrMark class="com.fr.plugin.cloud.analytics.attr.TemplateInfoAttrMark" pluginID="com.fr.plugin.cloud.analytics.v11" plugin-version="3.32.0.20241202">
 <TemplateCloudInfoAttrMark createTime="1645076805755"/>
 </TemplateCloudInfoAttrMark>
 </WorkBook>
